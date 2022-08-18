@@ -89,10 +89,6 @@ jobs:
           # do not produce debug symbols to keep memory usage down
           export RUSTFLAGS="-C debuginfo=0"
           export PATH=$PATH:/d/protoc/bin
-          mkdir .cargo
-          touch .cargo/config.toml
-          echo "[target.x86-pc-windows-msvc]" > .cargo/config.toml
-          echo "linker = \"lld\"" >> .cargo/config.toml
           cargo test
 
 
