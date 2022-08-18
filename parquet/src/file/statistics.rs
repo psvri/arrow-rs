@@ -115,7 +115,7 @@ macro_rules! statistics_enum_func {
     }};
 }
 
-/// Converts Thrift definition into `Statistics`.
+/// Converts Thrift definition into [`Statistics`].
 pub fn from_thrift(
     physical_type: Type,
     thrift_stats: Option<TStatistics>,
