@@ -69,11 +69,20 @@ jobs:
           unzip protoc-21.4-win64.zip
           export PATH=$PATH:/d/protoc/bin
           protoc --version
-
       - name: Setup Rust toolchain
         run: |
           rustup toolchain install stable --no-self-update
           rustup default stable
+      - name: Cache rust
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/
+            target/
+          key: ${{ runner.os }}-rust-windows-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-rust-windows-${{ env.cache-name }}-
+            ${{ runner.os }}-rust-windows
       - name: Run tests
         shell: bash
         run: |
