@@ -19,6 +19,7 @@
 //! line-delimited records. See the module level documentation for the
 //! [`reader`] and [`writer`] for usage examples.
 
+mod deserialize;
 pub mod reader;
 pub mod writer;
 

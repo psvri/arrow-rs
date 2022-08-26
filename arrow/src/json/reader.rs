@@ -52,8 +52,8 @@ use std::sync::Arc;
 
 use indexmap::map::IndexMap as HashMap;
 use indexmap::set::IndexSet as HashSet;
-use serde_json::json;
-use serde_json::{map::Map as JsonMap, Value};
+use json_deserializer::Value;
+use std::collections::BTreeMap;
 
 use crate::buffer::MutableBuffer;
 use crate::datatypes::*;
@@ -208,7 +208,7 @@ impl<'a, R: Read> ValueIter<'a, R> {
 }
 
 impl<'a, R: Read> Iterator for ValueIter<'a, R> {
-    type Item = Result<Value>;
+    type Item = Result<Value<'a>>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if let Some(max) = self.max_read_records {
@@ -347,11 +347,12 @@ fn infer_scalar_array_type(array: &[Value]) -> Result<InferredType> {
         match v {
             Value::Null => {}
             Value::Number(n) => {
-                if n.is_i64() {
-                    hs.insert(DataType::Int64);
-                } else {
-                    hs.insert(DataType::Float64);
-                }
+                match n {
+                    json_deserializer::Number::Float(_, _) => hs.insert(DataType::Int64),
+                    json_deserializer::Number::Integer(_, _) => {
+                        hs.insert(DataType::Float64)
+                    }
+                };
             }
             Value::Bool(_) => {
                 hs.insert(DataType::Boolean);
@@ -397,7 +398,7 @@ fn infer_struct_array_type(array: &[Value]) -> Result<InferredType> {
     for v in array {
         match v {
             Value::Object(map) => {
-                collect_field_types_from_object(&mut field_types, map)?;
+                collect_field_types_from_object(&mut field_types, &map)?;
             }
             _ => {
                 return Err(ArrowError::JsonError(format!(
@@ -424,12 +425,12 @@ fn infer_array_element_type(array: &[Value]) -> Result<InferredType> {
 
 fn collect_field_types_from_object(
     field_types: &mut HashMap<String, InferredType>,
-    map: &JsonMap<String, Value>,
+    map: &BTreeMap<String, Value>,
 ) -> Result<()> {
     for (k, v) in map {
         match v {
             Value::Array(array) => {
-                let ele_type = infer_array_element_type(array)?;
+                let ele_type = infer_array_element_type(&array)?;
 
                 if !field_types.contains_key(k) {
                     match ele_type {
@@ -503,7 +504,7 @@ fn collect_field_types_from_object(
                 }
                 match field_types.get_mut(k).unwrap() {
                     InferredType::Object(inner_field_types) => {
-                        collect_field_types_from_object(inner_field_types, inner_map)?;
+                        collect_field_types_from_object(inner_field_types, &inner_map)?;
                     }
                     t => {
                         return Err(ArrowError::JsonError(format!(
@@ -532,9 +533,9 @@ fn collect_field_types_from_object(
 /// The reason we diverge here is because we don't have utilities to deal with JSON data once it's
 /// interpreted as Strings. We should match Spark's behavior once we added more JSON parsing
 /// kernels in the future.
-pub fn infer_json_schema_from_iterator<I>(value_iter: I) -> Result<Schema>
+pub fn infer_json_schema_from_iterator<'a, I>(value_iter: I) -> Result<Schema>
 where
-    I: Iterator<Item = Result<Value>>,
+    I: Iterator<Item = Result<Value<'a>>>,
 {
     let mut field_types: HashMap<String, InferredType> = HashMap::new();
 
@@ -673,9 +674,9 @@ impl Decoder {
     /// interator into a [`RecordBatch`].
     ///
     /// Returns `None` if the input iterator is exhausted.
-    pub fn next_batch<I>(&self, value_iter: &mut I) -> Result<Option<RecordBatch>>
+    pub fn next_batch<'a, I>(&self, value_iter: &mut I) -> Result<Option<RecordBatch>>
     where
-        I: Iterator<Item = Result<Value>>,
+        I: Iterator<Item = Result<Value<'a>>>,
     {
         let batch_size = self.options.batch_size;
         let mut rows: Vec<Value> = Vec::with_capacity(batch_size);
@@ -822,6 +823,14 @@ impl Decoder {
                 } else if let Value::Array(n) = value {
                     n.iter()
                         .map(|v: &Value| {
+                            match v {
+                                Value::Null => "null",
+                                Value::String(_) => todo!(),
+                                Value::Number(_) => todo!(),
+                                Value::Bool(_) => todo!(),
+                                Value::Object(_) => todo!(),
+                                Value::Array(_) => todo!(),
+                            }
                             if v.is_string() {
                                 Some(v.as_str().unwrap().to_string())
                             } else if v.is_array() || v.is_object() || v.is_null() {
@@ -1546,7 +1555,7 @@ fn json_value_as_string(value: &Value) -> Option<String> {
 /// single-value lists.
 /// This is used to read into nested lists (list of list, list of struct) and non-dictionary lists.
 #[inline]
-fn flatten_json_values(values: &[Value]) -> Vec<Value> {
+fn flatten_json_values<'a>(values: &'a [Value]) -> Vec<Value<'a>> {
     values
         .iter()
         .flat_map(|row| {
