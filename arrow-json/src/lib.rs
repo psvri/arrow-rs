@@ -19,6 +19,9 @@
 //! line-delimited records. See the module level documentation for the
 //! [`reader`] and [`writer`] for usage examples.
 
+#![warn(missing_docs)]
+#![deny(rustdoc::broken_intra_doc_links)]
+
 pub mod reader;
 pub mod writer;
 
@@ -30,6 +33,7 @@ use serde_json::{Number, Value};
 
 /// Trait declaring any type that is serializable to JSON. This includes all primitive types (bool, i32, etc.).
 pub trait JsonSerializable: 'static {
+    /// Returns am optional json value
     fn into_json_value(self) -> Option<Value>;
 }
 
