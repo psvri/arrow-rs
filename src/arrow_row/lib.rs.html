@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-row/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-a23c9d150ad85d8b.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_row" data-themes="" data-resource-suffix="" data-rustdoc-version="1.72.0-nightly (330727467 2023-06-29)" data-channel="nightly" data-search-js="search-91b58767224854cb.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ><script src="../../static.files/storage-59fd9b8ccb335783.js"></script><script defer src="../../static.files/source-script-106908c7a7964ba4.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../arrow_row/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-row/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-a23c9d150ad85d8b.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_row" data-themes="" data-resource-suffix="" data-rustdoc-version="1.72.0-nightly (f4b80cacf 2023-06-30)" data-channel="nightly" data-search-js="search-91b58767224854cb.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ><script src="../../static.files/storage-59fd9b8ccb335783.js"></script><script defer src="../../static.files/source-script-106908c7a7964ba4.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../arrow_row/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -2314,6 +2314,68 @@
 <a href="#2314" id="2314">2314</a>
 <a href="#2315" id="2315">2315</a>
 <a href="#2316" id="2316">2316</a>
+<a href="#2317" id="2317">2317</a>
+<a href="#2318" id="2318">2318</a>
+<a href="#2319" id="2319">2319</a>
+<a href="#2320" id="2320">2320</a>
+<a href="#2321" id="2321">2321</a>
+<a href="#2322" id="2322">2322</a>
+<a href="#2323" id="2323">2323</a>
+<a href="#2324" id="2324">2324</a>
+<a href="#2325" id="2325">2325</a>
+<a href="#2326" id="2326">2326</a>
+<a href="#2327" id="2327">2327</a>
+<a href="#2328" id="2328">2328</a>
+<a href="#2329" id="2329">2329</a>
+<a href="#2330" id="2330">2330</a>
+<a href="#2331" id="2331">2331</a>
+<a href="#2332" id="2332">2332</a>
+<a href="#2333" id="2333">2333</a>
+<a href="#2334" id="2334">2334</a>
+<a href="#2335" id="2335">2335</a>
+<a href="#2336" id="2336">2336</a>
+<a href="#2337" id="2337">2337</a>
+<a href="#2338" id="2338">2338</a>
+<a href="#2339" id="2339">2339</a>
+<a href="#2340" id="2340">2340</a>
+<a href="#2341" id="2341">2341</a>
+<a href="#2342" id="2342">2342</a>
+<a href="#2343" id="2343">2343</a>
+<a href="#2344" id="2344">2344</a>
+<a href="#2345" id="2345">2345</a>
+<a href="#2346" id="2346">2346</a>
+<a href="#2347" id="2347">2347</a>
+<a href="#2348" id="2348">2348</a>
+<a href="#2349" id="2349">2349</a>
+<a href="#2350" id="2350">2350</a>
+<a href="#2351" id="2351">2351</a>
+<a href="#2352" id="2352">2352</a>
+<a href="#2353" id="2353">2353</a>
+<a href="#2354" id="2354">2354</a>
+<a href="#2355" id="2355">2355</a>
+<a href="#2356" id="2356">2356</a>
+<a href="#2357" id="2357">2357</a>
+<a href="#2358" id="2358">2358</a>
+<a href="#2359" id="2359">2359</a>
+<a href="#2360" id="2360">2360</a>
+<a href="#2361" id="2361">2361</a>
+<a href="#2362" id="2362">2362</a>
+<a href="#2363" id="2363">2363</a>
+<a href="#2364" id="2364">2364</a>
+<a href="#2365" id="2365">2365</a>
+<a href="#2366" id="2366">2366</a>
+<a href="#2367" id="2367">2367</a>
+<a href="#2368" id="2368">2368</a>
+<a href="#2369" id="2369">2369</a>
+<a href="#2370" id="2370">2370</a>
+<a href="#2371" id="2371">2371</a>
+<a href="#2372" id="2372">2372</a>
+<a href="#2373" id="2373">2373</a>
+<a href="#2374" id="2374">2374</a>
+<a href="#2375" id="2375">2375</a>
+<a href="#2376" id="2376">2376</a>
+<a href="#2377" id="2377">2377</a>
+<a href="#2378" id="2378">2378</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -2774,7 +2836,7 @@
                     <span class="kw">let </span>nulls = converter.convert_columns(<span class="kw-2">&amp;</span>[null_array])<span class="question-mark">?</span>;
 
                     <span class="kw">let </span>owned = OwnedRow {
-                        data: nulls.buffer,
+                        data: nulls.buffer.into(),
                         config: nulls.config,
                     };
                     <span class="prelude-val">Ok</span>(<span class="self">Self</span>::DictionaryValues(converter, owned))
@@ -2812,7 +2874,7 @@
 
                 <span class="kw">let </span>nulls = converter.convert_columns(<span class="kw-2">&amp;</span>nulls)<span class="question-mark">?</span>;
                 <span class="kw">let </span>owned = OwnedRow {
-                    data: nulls.buffer,
+                    data: nulls.buffer.into(),
                     config: nulls.config,
                 };
 
@@ -3031,7 +3093,13 @@
             </span>columns.iter().zip(<span class="self">self</span>.fields.iter()).zip(encoders)
         {
             <span class="comment">// We encode a column at a time to minimise dispatch overheads
-            </span>encode_column(<span class="kw-2">&amp;mut </span>rows, column.as_ref(), field.options, <span class="kw-2">&amp;</span>encoder)
+            </span>encode_column(
+                <span class="kw-2">&amp;mut </span>rows.buffer,
+                <span class="kw-2">&amp;mut </span>rows.offsets,
+                column.as_ref(),
+                field.options,
+                <span class="kw-2">&amp;</span>encoder,
+            )
         }
 
         <span class="kw">if </span><span class="macro">cfg!</span>(debug_assertions) {
@@ -3070,6 +3138,48 @@
         // We have validated that the rows came from this [`RowConverter`]
         // and therefore must be valid
         </span><span class="kw">unsafe </span>{ <span class="self">self</span>.convert_raw(<span class="kw-2">&amp;mut </span>rows, validate_utf8) }
+    }
+
+    <span class="doccomment">/// Returns an empty [`Rows`] with capacity for `row_capacity` rows with
+    /// a total length of `data_capacity`
+    ///
+    /// This can be used to buffer a selection of [`Row`]
+    ///
+    /// ```
+    /// # use std::sync::Arc;
+    /// # use std::collections::HashSet;
+    /// # use arrow_array::cast::AsArray;
+    /// # use arrow_array::StringArray;
+    /// # use arrow_row::{Row, RowConverter, SortField};
+    /// # use arrow_schema::DataType;
+    /// #
+    /// let mut converter = RowConverter::new(vec![SortField::new(DataType::Utf8)]).unwrap();
+    /// let array = StringArray::from(vec![&quot;hello&quot;, &quot;world&quot;, &quot;a&quot;, &quot;a&quot;, &quot;hello&quot;]);
+    ///
+    /// // Convert to row format and deduplicate
+    /// let converted = converter.convert_columns(&amp;[Arc::new(array)]).unwrap();
+    /// let mut distinct_rows = converter.empty_rows(3, 100);
+    /// let mut dedup: HashSet&lt;Row&gt; = HashSet::with_capacity(3);
+    /// converted.iter().filter(|row| dedup.insert(*row)).for_each(|row| distinct_rows.push(row));
+    ///
+    /// // Note: we could skip buffering and feed the filtered iterator directly
+    /// // into convert_rows, this is done for demonstration purposes only
+    /// let distinct = converter.convert_rows(&amp;distinct_rows).unwrap();
+    /// let values: Vec&lt;_&gt; = distinct[0].as_string::&lt;i32&gt;().iter().map(Option::unwrap).collect();
+    /// assert_eq!(&amp;values, &amp;[&quot;hello&quot;, &quot;world&quot;, &quot;a&quot;]);
+    /// ```
+    </span><span class="kw">pub fn </span>empty_rows(<span class="kw-2">&amp;</span><span class="self">self</span>, row_capacity: usize, data_capacity: usize) -&gt; Rows {
+        <span class="kw">let </span><span class="kw-2">mut </span>offsets = Vec::with_capacity(row_capacity.saturating_add(<span class="number">1</span>));
+        offsets.push(<span class="number">0</span>);
+
+        Rows {
+            offsets,
+            buffer: Vec::with_capacity(data_capacity),
+            config: RowConfig {
+                fields: <span class="self">self</span>.fields.clone(),
+                validate_utf8: <span class="bool-val">false</span>,
+            },
+        }
     }
 
     <span class="doccomment">/// Convert raw bytes into [`ArrayRef`]
@@ -3148,14 +3258,25 @@
 </span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub struct </span>Rows {
     <span class="doccomment">/// Underlying row bytes
-    </span>buffer: Box&lt;[u8]&gt;,
+    </span>buffer: Vec&lt;u8&gt;,
     <span class="doccomment">/// Row `i` has data `&amp;buffer[offsets[i]..offsets[i+1]]`
-    </span>offsets: Box&lt;[usize]&gt;,
+    </span>offsets: Vec&lt;usize&gt;,
     <span class="doccomment">/// The config for these rows
     </span>config: RowConfig,
 }
 
 <span class="kw">impl </span>Rows {
+    <span class="doccomment">/// Append a [`Row`] to this [`Rows`]
+    </span><span class="kw">pub fn </span>push(<span class="kw-2">&amp;mut </span><span class="self">self</span>, row: Row&lt;<span class="lifetime">&#39;_</span>&gt;) {
+        <span class="macro">assert!</span>(
+            Arc::ptr_eq(<span class="kw-2">&amp;</span>row.config.fields, <span class="kw-2">&amp;</span><span class="self">self</span>.config.fields),
+            <span class="string">&quot;row was not produced by this RowConverter&quot;
+        </span>);
+        <span class="self">self</span>.config.validate_utf8 |= row.config.validate_utf8;
+        <span class="self">self</span>.buffer.extend_from_slice(row.data);
+        <span class="self">self</span>.offsets.push(<span class="self">self</span>.buffer.len())
+    }
+
     <span class="kw">pub fn </span>row(<span class="kw-2">&amp;</span><span class="self">self</span>, row: usize) -&gt; Row&lt;<span class="lifetime">&#39;_</span>&gt; {
         <span class="kw">let </span>end = <span class="self">self</span>.offsets[row + <span class="number">1</span>];
         <span class="kw">let </span>start = <span class="self">self</span>.offsets[row];
@@ -3487,15 +3608,16 @@
     <span class="kw">let </span>buffer = <span class="macro">vec!</span>[<span class="number">0_u8</span>; cur_offset];
 
     Rows {
-        buffer: buffer.into(),
-        offsets: offsets.into(),
+        buffer,
+        offsets,
         config,
     }
 }
 
 <span class="doccomment">/// Encodes a column to the provided [`Rows`] incrementing the offsets as it progresses
 </span><span class="kw">fn </span>encode_column(
-    out: <span class="kw-2">&amp;mut </span>Rows,
+    data: <span class="kw-2">&amp;mut </span>[u8],
+    offsets: <span class="kw-2">&amp;mut </span>[usize],
     column: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Array,
     opts: SortOptions,
     encoder: <span class="kw-2">&amp;</span>Encoder&lt;<span class="lifetime">&#39;_</span>&gt;,
@@ -3503,22 +3625,22 @@
     <span class="kw">match </span>encoder {
         Encoder::Stateless =&gt; {
             <span class="macro">downcast_primitive_array! </span>{
-                column =&gt; fixed::encode(out, column, opts),
+                column =&gt; fixed::encode(data, offsets, column, opts),
                 DataType::Null =&gt; {}
-                DataType::Boolean =&gt; fixed::encode(out, column.as_boolean(), opts),
+                DataType::Boolean =&gt; fixed::encode(data, offsets, column.as_boolean(), opts),
                 DataType::Binary =&gt; {
-                    variable::encode(out, as_generic_binary_array::&lt;i32&gt;(column).iter(), opts)
+                    variable::encode(data, offsets, as_generic_binary_array::&lt;i32&gt;(column).iter(), opts)
                 }
                 DataType::LargeBinary =&gt; {
-                    variable::encode(out, as_generic_binary_array::&lt;i64&gt;(column).iter(), opts)
+                    variable::encode(data, offsets, as_generic_binary_array::&lt;i64&gt;(column).iter(), opts)
                 }
                 DataType::Utf8 =&gt; variable::encode(
-                    out,
+                    data, offsets,
                     column.as_string::&lt;i32&gt;().iter().map(|x| x.map(|x| x.as_bytes())),
                     opts,
                 ),
                 DataType::LargeUtf8 =&gt; variable::encode(
-                    out,
+                    data, offsets,
                     column.as_string::&lt;i64&gt;()
                         .iter()
                         .map(|x| x.map(|x| x.as_bytes())),
@@ -3526,27 +3648,27 @@
                 ),
                 DataType::FixedSizeBinary(<span class="kw">_</span>) =&gt; {
                     <span class="kw">let </span>array = column.as_any().downcast_ref().unwrap();
-                    fixed::encode_fixed_size_binary(out, array, opts)
+                    fixed::encode_fixed_size_binary(data, offsets, array, opts)
                 }
                 <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(),
             }
         }
         Encoder::Dictionary(dict) =&gt; {
             <span class="macro">downcast_dictionary_array! </span>{
-                column =&gt; encode_dictionary(out, column, dict, opts),
+                column =&gt; encode_dictionary(data, offsets, column, dict, opts),
                 <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>()
             }
         }
         Encoder::DictionaryValues(values, nulls) =&gt; {
             <span class="macro">downcast_dictionary_array! </span>{
-                column =&gt; encode_dictionary_values(out, column, values, nulls),
+                column =&gt; encode_dictionary_values(data, offsets, column, values, nulls),
                 <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>()
             }
         }
         Encoder::Struct(rows, null) =&gt; {
             <span class="kw">let </span>array = as_struct_array(column);
             <span class="kw">let </span>null_sentinel = null_sentinel(opts);
-            out.offsets
+            offsets
                 .iter_mut()
                 .skip(<span class="number">1</span>)
                 .enumerate()
@@ -3556,15 +3678,17 @@
                         <span class="bool-val">false </span>=&gt; (<span class="kw-2">*</span>null, null_sentinel),
                     };
                     <span class="kw">let </span>end_offset = <span class="kw-2">*</span>offset + <span class="number">1 </span>+ row.as_ref().len();
-                    out.buffer[<span class="kw-2">*</span>offset] = sentinel;
-                    out.buffer[<span class="kw-2">*</span>offset + <span class="number">1</span>..end_offset].copy_from_slice(row.as_ref());
+                    data[<span class="kw-2">*</span>offset] = sentinel;
+                    data[<span class="kw-2">*</span>offset + <span class="number">1</span>..end_offset].copy_from_slice(row.as_ref());
                     <span class="kw-2">*</span>offset = end_offset;
                 })
         }
         Encoder::List(rows) =&gt; <span class="kw">match </span>column.data_type() {
-            DataType::List(<span class="kw">_</span>) =&gt; list::encode(out, rows, opts, as_list_array(column)),
+            DataType::List(<span class="kw">_</span>) =&gt; {
+                list::encode(data, offsets, rows, opts, as_list_array(column))
+            }
             DataType::LargeList(<span class="kw">_</span>) =&gt; {
-                list::encode(out, rows, opts, as_large_list_array(column))
+                list::encode(data, offsets, rows, opts, as_large_list_array(column))
             }
             <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(),
         },
@@ -3700,9 +3824,9 @@
         .unwrap();
         <span class="kw">let </span>rows = converter.convert_columns(<span class="kw-2">&amp;</span>cols).unwrap();
 
-        <span class="macro">assert_eq!</span>(rows.offsets.as_ref(), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">8</span>, <span class="number">16</span>, <span class="number">24</span>, <span class="number">32</span>, <span class="number">40</span>, <span class="number">48</span>, <span class="number">56</span>]);
+        <span class="macro">assert_eq!</span>(rows.offsets, <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">8</span>, <span class="number">16</span>, <span class="number">24</span>, <span class="number">32</span>, <span class="number">40</span>, <span class="number">48</span>, <span class="number">56</span>]);
         <span class="macro">assert_eq!</span>(
-            rows.buffer.as_ref(),
+            rows.buffer,
             <span class="kw-2">&amp;</span>[
                 <span class="number">1</span>, <span class="number">128</span>, <span class="number">1</span>, <span class="comment">//
                 </span><span class="number">1</span>, <span class="number">191</span>, <span class="number">166</span>, <span class="number">102</span>, <span class="number">102</span>, <span class="comment">//
