@@ -99,9 +99,7 @@ pub unsafe fn unset_bit_raw(data: *mut u8, i: usize) {
 /// Returns the ceil of `value`/`divisor`
 #[inline]
 pub fn ceil(value: usize, divisor: usize) -> usize {
-    // Rewrite as `value.div_ceil(&divisor)` after
-    // https://github.com/rust-lang/rust/issues/88581 is merged.
-    value / divisor + (0 != value % divisor) as usize
+    value.div_ceil(divisor)
 }
 
 /// Performs SIMD bitwise binary operations.
