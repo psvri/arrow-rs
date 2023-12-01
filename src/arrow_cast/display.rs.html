@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-cast/src/display.rs`."><title>display.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-a23c9d150ad85d8b.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_cast" data-themes="" data-resource-suffix="" data-rustdoc-version="1.72.0-nightly (f4b80cacf 2023-06-30)" data-channel="nightly" data-search-js="search-91b58767224854cb.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ><script src="../../static.files/storage-59fd9b8ccb335783.js"></script><script defer src="../../static.files/source-script-106908c7a7964ba4.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../arrow_cast/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-cast/src/display.rs`."><title>display.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e6a78389201e676c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_cast" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (87e1447aa 2023-11-30)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -909,6 +909,177 @@
 <a href="#909" id="909">909</a>
 <a href="#910" id="910">910</a>
 <a href="#911" id="911">911</a>
+<a href="#912" id="912">912</a>
+<a href="#913" id="913">913</a>
+<a href="#914" id="914">914</a>
+<a href="#915" id="915">915</a>
+<a href="#916" id="916">916</a>
+<a href="#917" id="917">917</a>
+<a href="#918" id="918">918</a>
+<a href="#919" id="919">919</a>
+<a href="#920" id="920">920</a>
+<a href="#921" id="921">921</a>
+<a href="#922" id="922">922</a>
+<a href="#923" id="923">923</a>
+<a href="#924" id="924">924</a>
+<a href="#925" id="925">925</a>
+<a href="#926" id="926">926</a>
+<a href="#927" id="927">927</a>
+<a href="#928" id="928">928</a>
+<a href="#929" id="929">929</a>
+<a href="#930" id="930">930</a>
+<a href="#931" id="931">931</a>
+<a href="#932" id="932">932</a>
+<a href="#933" id="933">933</a>
+<a href="#934" id="934">934</a>
+<a href="#935" id="935">935</a>
+<a href="#936" id="936">936</a>
+<a href="#937" id="937">937</a>
+<a href="#938" id="938">938</a>
+<a href="#939" id="939">939</a>
+<a href="#940" id="940">940</a>
+<a href="#941" id="941">941</a>
+<a href="#942" id="942">942</a>
+<a href="#943" id="943">943</a>
+<a href="#944" id="944">944</a>
+<a href="#945" id="945">945</a>
+<a href="#946" id="946">946</a>
+<a href="#947" id="947">947</a>
+<a href="#948" id="948">948</a>
+<a href="#949" id="949">949</a>
+<a href="#950" id="950">950</a>
+<a href="#951" id="951">951</a>
+<a href="#952" id="952">952</a>
+<a href="#953" id="953">953</a>
+<a href="#954" id="954">954</a>
+<a href="#955" id="955">955</a>
+<a href="#956" id="956">956</a>
+<a href="#957" id="957">957</a>
+<a href="#958" id="958">958</a>
+<a href="#959" id="959">959</a>
+<a href="#960" id="960">960</a>
+<a href="#961" id="961">961</a>
+<a href="#962" id="962">962</a>
+<a href="#963" id="963">963</a>
+<a href="#964" id="964">964</a>
+<a href="#965" id="965">965</a>
+<a href="#966" id="966">966</a>
+<a href="#967" id="967">967</a>
+<a href="#968" id="968">968</a>
+<a href="#969" id="969">969</a>
+<a href="#970" id="970">970</a>
+<a href="#971" id="971">971</a>
+<a href="#972" id="972">972</a>
+<a href="#973" id="973">973</a>
+<a href="#974" id="974">974</a>
+<a href="#975" id="975">975</a>
+<a href="#976" id="976">976</a>
+<a href="#977" id="977">977</a>
+<a href="#978" id="978">978</a>
+<a href="#979" id="979">979</a>
+<a href="#980" id="980">980</a>
+<a href="#981" id="981">981</a>
+<a href="#982" id="982">982</a>
+<a href="#983" id="983">983</a>
+<a href="#984" id="984">984</a>
+<a href="#985" id="985">985</a>
+<a href="#986" id="986">986</a>
+<a href="#987" id="987">987</a>
+<a href="#988" id="988">988</a>
+<a href="#989" id="989">989</a>
+<a href="#990" id="990">990</a>
+<a href="#991" id="991">991</a>
+<a href="#992" id="992">992</a>
+<a href="#993" id="993">993</a>
+<a href="#994" id="994">994</a>
+<a href="#995" id="995">995</a>
+<a href="#996" id="996">996</a>
+<a href="#997" id="997">997</a>
+<a href="#998" id="998">998</a>
+<a href="#999" id="999">999</a>
+<a href="#1000" id="1000">1000</a>
+<a href="#1001" id="1001">1001</a>
+<a href="#1002" id="1002">1002</a>
+<a href="#1003" id="1003">1003</a>
+<a href="#1004" id="1004">1004</a>
+<a href="#1005" id="1005">1005</a>
+<a href="#1006" id="1006">1006</a>
+<a href="#1007" id="1007">1007</a>
+<a href="#1008" id="1008">1008</a>
+<a href="#1009" id="1009">1009</a>
+<a href="#1010" id="1010">1010</a>
+<a href="#1011" id="1011">1011</a>
+<a href="#1012" id="1012">1012</a>
+<a href="#1013" id="1013">1013</a>
+<a href="#1014" id="1014">1014</a>
+<a href="#1015" id="1015">1015</a>
+<a href="#1016" id="1016">1016</a>
+<a href="#1017" id="1017">1017</a>
+<a href="#1018" id="1018">1018</a>
+<a href="#1019" id="1019">1019</a>
+<a href="#1020" id="1020">1020</a>
+<a href="#1021" id="1021">1021</a>
+<a href="#1022" id="1022">1022</a>
+<a href="#1023" id="1023">1023</a>
+<a href="#1024" id="1024">1024</a>
+<a href="#1025" id="1025">1025</a>
+<a href="#1026" id="1026">1026</a>
+<a href="#1027" id="1027">1027</a>
+<a href="#1028" id="1028">1028</a>
+<a href="#1029" id="1029">1029</a>
+<a href="#1030" id="1030">1030</a>
+<a href="#1031" id="1031">1031</a>
+<a href="#1032" id="1032">1032</a>
+<a href="#1033" id="1033">1033</a>
+<a href="#1034" id="1034">1034</a>
+<a href="#1035" id="1035">1035</a>
+<a href="#1036" id="1036">1036</a>
+<a href="#1037" id="1037">1037</a>
+<a href="#1038" id="1038">1038</a>
+<a href="#1039" id="1039">1039</a>
+<a href="#1040" id="1040">1040</a>
+<a href="#1041" id="1041">1041</a>
+<a href="#1042" id="1042">1042</a>
+<a href="#1043" id="1043">1043</a>
+<a href="#1044" id="1044">1044</a>
+<a href="#1045" id="1045">1045</a>
+<a href="#1046" id="1046">1046</a>
+<a href="#1047" id="1047">1047</a>
+<a href="#1048" id="1048">1048</a>
+<a href="#1049" id="1049">1049</a>
+<a href="#1050" id="1050">1050</a>
+<a href="#1051" id="1051">1051</a>
+<a href="#1052" id="1052">1052</a>
+<a href="#1053" id="1053">1053</a>
+<a href="#1054" id="1054">1054</a>
+<a href="#1055" id="1055">1055</a>
+<a href="#1056" id="1056">1056</a>
+<a href="#1057" id="1057">1057</a>
+<a href="#1058" id="1058">1058</a>
+<a href="#1059" id="1059">1059</a>
+<a href="#1060" id="1060">1060</a>
+<a href="#1061" id="1061">1061</a>
+<a href="#1062" id="1062">1062</a>
+<a href="#1063" id="1063">1063</a>
+<a href="#1064" id="1064">1064</a>
+<a href="#1065" id="1065">1065</a>
+<a href="#1066" id="1066">1066</a>
+<a href="#1067" id="1067">1067</a>
+<a href="#1068" id="1068">1068</a>
+<a href="#1069" id="1069">1069</a>
+<a href="#1070" id="1070">1070</a>
+<a href="#1071" id="1071">1071</a>
+<a href="#1072" id="1072">1072</a>
+<a href="#1073" id="1073">1073</a>
+<a href="#1074" id="1074">1074</a>
+<a href="#1075" id="1075">1075</a>
+<a href="#1076" id="1076">1076</a>
+<a href="#1077" id="1077">1077</a>
+<a href="#1078" id="1078">1078</a>
+<a href="#1079" id="1079">1079</a>
+<a href="#1080" id="1080">1080</a>
+<a href="#1081" id="1081">1081</a>
+<a href="#1082" id="1082">1082</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -945,6 +1116,16 @@
 
 <span class="kw">type </span>TimeFormat&lt;<span class="lifetime">&#39;a</span>&gt; = <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;;
 
+<span class="doccomment">/// Format for displaying durations
+</span><span class="attr">#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[non_exhaustive]
+</span><span class="kw">pub enum </span>DurationFormat {
+    <span class="doccomment">/// ISO 8601 - `P198DT72932.972880S`
+    </span>ISO8601,
+    <span class="doccomment">/// A human readable representation - `198 days 16 hours 34 mins 15.407810000 secs`
+    </span>Pretty,
+}
+
 <span class="doccomment">/// Options for formatting arrays
 ///
 /// By default nulls are formatted as `&quot;&quot;` and temporal types formatted
@@ -967,10 +1148,18 @@
     </span>timestamp_tz_format: TimeFormat&lt;<span class="lifetime">&#39;a</span>&gt;,
     <span class="doccomment">/// Time format for time arrays
     </span>time_format: TimeFormat&lt;<span class="lifetime">&#39;a</span>&gt;,
+    <span class="doccomment">/// Duration format
+    </span>duration_format: DurationFormat,
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Default <span class="kw">for </span>FormatOptions&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::new()
+    }
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; FormatOptions&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="kw">pub const fn </span>new() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             safe: <span class="bool-val">true</span>,
             null: <span class="string">&quot;&quot;</span>,
@@ -979,14 +1168,13 @@
             timestamp_format: <span class="prelude-val">None</span>,
             timestamp_tz_format: <span class="prelude-val">None</span>,
             time_format: <span class="prelude-val">None</span>,
+            duration_format: DurationFormat::ISO8601,
         }
     }
-}
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; FormatOptions&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="doccomment">/// If set to `true` any formatting errors will be written to the output
     /// instead of being converted into a [`std::fmt::Error`]
-    </span><span class="kw">pub fn </span>with_display_error(<span class="kw-2">mut </span><span class="self">self</span>, safe: bool) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub const fn </span>with_display_error(<span class="kw-2">mut </span><span class="self">self</span>, safe: bool) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.safe = safe;
         <span class="self">self
     </span>}
@@ -994,12 +1182,12 @@
     <span class="doccomment">/// Overrides the string used to represent a null
     ///
     /// Defaults to `&quot;&quot;`
-    </span><span class="kw">pub fn </span>with_null(<span class="self">self</span>, null: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub const fn </span>with_null(<span class="self">self</span>, null: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{ null, ..<span class="self">self </span>}
     }
 
     <span class="doccomment">/// Overrides the format used for [`DataType::Date32`] columns
-    </span><span class="kw">pub fn </span>with_date_format(<span class="self">self</span>, date_format: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub const fn </span>with_date_format(<span class="self">self</span>, date_format: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             date_format,
             ..<span class="self">self
@@ -1007,7 +1195,7 @@
     }
 
     <span class="doccomment">/// Overrides the format used for [`DataType::Date64`] columns
-    </span><span class="kw">pub fn </span>with_datetime_format(<span class="self">self</span>, datetime_format: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub const fn </span>with_datetime_format(<span class="self">self</span>, datetime_format: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             datetime_format,
             ..<span class="self">self
@@ -1015,7 +1203,7 @@
     }
 
     <span class="doccomment">/// Overrides the format used for [`DataType::Timestamp`] columns without a timezone
-    </span><span class="kw">pub fn </span>with_timestamp_format(<span class="self">self</span>, timestamp_format: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub const fn </span>with_timestamp_format(<span class="self">self</span>, timestamp_format: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             timestamp_format,
             ..<span class="self">self
@@ -1023,7 +1211,7 @@
     }
 
     <span class="doccomment">/// Overrides the format used for [`DataType::Timestamp`] columns with a timezone
-    </span><span class="kw">pub fn </span>with_timestamp_tz_format(<span class="self">self</span>, timestamp_tz_format: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub const fn </span>with_timestamp_tz_format(<span class="self">self</span>, timestamp_tz_format: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             timestamp_tz_format,
             ..<span class="self">self
@@ -1031,9 +1219,19 @@
     }
 
     <span class="doccomment">/// Overrides the format used for [`DataType::Time32`] and [`DataType::Time64`] columns
-    </span><span class="kw">pub fn </span>with_time_format(<span class="self">self</span>, time_format: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub const fn </span>with_time_format(<span class="self">self</span>, time_format: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             time_format,
+            ..<span class="self">self
+        </span>}
+    }
+
+    <span class="doccomment">/// Overrides the format used for duration columns
+    ///
+    /// Defaults to [`DurationFormat::ISO8601`]
+    </span><span class="kw">pub const fn </span>with_duration_format(<span class="self">self</span>, duration_format: DurationFormat) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            duration_format,
             ..<span class="self">self
         </span>}
     }
@@ -1054,9 +1252,7 @@
         <span class="kw">match </span><span class="self">self</span>.formatter.format.write(<span class="self">self</span>.idx, s) {
             <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(()),
             <span class="prelude-val">Err</span>(FormatError::Arrow(e)) =&gt; <span class="prelude-val">Err</span>(e),
-            <span class="prelude-val">Err</span>(FormatError::Format(<span class="kw">_</span>)) =&gt; {
-                <span class="prelude-val">Err</span>(ArrowError::CastError(<span class="string">&quot;Format error&quot;</span>.to_string()))
-            }
+            <span class="prelude-val">Err</span>(FormatError::Format(<span class="kw">_</span>)) =&gt; <span class="prelude-val">Err</span>(ArrowError::CastError(<span class="string">&quot;Format error&quot;</span>.to_string())),
         }
     }
 
@@ -1141,10 +1337,7 @@
     <span class="doccomment">/// Returns an [`ArrayFormatter`] that can be used to format `array`
     ///
     /// This returns an error if an array of the given data type cannot be formatted
-    </span><span class="kw">pub fn </span>try_new(
-        array: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw">dyn </span>Array,
-        options: <span class="kw-2">&amp;</span>FormatOptions&lt;<span class="lifetime">&#39;a</span>&gt;,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ArrowError&gt; {
+    </span><span class="kw">pub fn </span>try_new(array: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw">dyn </span>Array, options: <span class="kw-2">&amp;</span>FormatOptions&lt;<span class="lifetime">&#39;a</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ArrowError&gt; {
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
             format: make_formatter(array, options)<span class="question-mark">?</span>,
             safe: options.safe,
@@ -1280,8 +1473,15 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; DisplayIndex <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>NullArray {
-    <span class="kw">fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, _idx: usize, _f: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>Write) -&gt; FormatResult {
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; DisplayIndexState&lt;<span class="lifetime">&#39;a</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>NullArray {
+    <span class="kw">type </span>State = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str;
+
+    <span class="kw">fn </span>prepare(<span class="kw-2">&amp;</span><span class="self">self</span>, options: <span class="kw-2">&amp;</span>FormatOptions&lt;<span class="lifetime">&#39;a</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::State, ArrowError&gt; {
+        <span class="prelude-val">Ok</span>(options.null)
+    }
+
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, state: <span class="kw-2">&amp;</span><span class="self">Self</span>::State, _idx: usize, f: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>Write) -&gt; FormatResult {
+        f.write_str(state)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 }
@@ -1346,9 +1546,7 @@
             <span class="kw">let </span>date = Utc.from_utc_datetime(<span class="kw-2">&amp;</span>naive).with_timezone(<span class="kw-2">&amp;</span>tz);
             <span class="kw">match </span>format {
                 <span class="prelude-val">Some</span>(s) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, date.format(s))<span class="question-mark">?</span>,
-                <span class="prelude-val">None </span>=&gt; {
-                    <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, date.to_rfc3339_opts(SecondsFormat::AutoSi, <span class="bool-val">true</span>))<span class="question-mark">?
-                </span>}
+                <span class="prelude-val">None </span>=&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, date.to_rfc3339_opts(SecondsFormat::AutoSi, <span class="bool-val">true</span>))<span class="question-mark">?</span>,
             }
         }
         <span class="prelude-val">None </span>=&gt; <span class="kw">match </span>format {
@@ -1400,19 +1598,11 @@
         <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; DisplayIndexState&lt;<span class="lifetime">&#39;a</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>PrimitiveArray&lt;<span class="macro-nonterminal">$t</span>&gt; {
             <span class="kw">type </span>State = TimeFormat&lt;<span class="lifetime">&#39;a</span>&gt;;
 
-            <span class="kw">fn </span>prepare(
-                <span class="kw-2">&amp;</span><span class="self">self</span>,
-                options: <span class="kw-2">&amp;</span>FormatOptions&lt;<span class="lifetime">&#39;a</span>&gt;,
-            ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::State, ArrowError&gt; {
+            <span class="kw">fn </span>prepare(<span class="kw-2">&amp;</span><span class="self">self</span>, options: <span class="kw-2">&amp;</span>FormatOptions&lt;<span class="lifetime">&#39;a</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::State, ArrowError&gt; {
                 <span class="prelude-val">Ok</span>(options.<span class="macro-nonterminal">$format</span>)
             }
 
-            <span class="kw">fn </span>write(
-                <span class="kw-2">&amp;</span><span class="self">self</span>,
-                fmt: <span class="kw-2">&amp;</span><span class="self">Self</span>::State,
-                idx: usize,
-                f: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>Write,
-            ) -&gt; FormatResult {
+            <span class="kw">fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;</span><span class="self">Self</span>::State, idx: usize, f: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>Write) -&gt; FormatResult {
                 <span class="kw">let </span>value = <span class="self">self</span>.value(idx);
                 <span class="kw">let </span>naive = <span class="macro-nonterminal">$convert</span>(value <span class="kw">as _</span>).ok_or_else(|| {
                     ArrowError::CastError(<span class="macro">format!</span>(
@@ -1445,20 +1635,76 @@
 <span class="macro">temporal_display!</span>(time64ns_to_time, time_format, Time64NanosecondType);
 
 <span class="macro">macro_rules! </span>duration_display {
-    (<span class="macro-nonterminal">$convert</span>:ident, <span class="macro-nonterminal">$t</span>:ty) =&gt; {
-        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; DisplayIndex <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>PrimitiveArray&lt;<span class="macro-nonterminal">$t</span>&gt; {
-            <span class="kw">fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, idx: usize, f: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>Write) -&gt; FormatResult {
-                <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, <span class="macro-nonterminal">$convert</span>(<span class="self">self</span>.value(idx)))<span class="question-mark">?</span>;
+    (<span class="macro-nonterminal">$convert</span>:ident, <span class="macro-nonterminal">$t</span>:ty, <span class="macro-nonterminal">$scale</span>:tt) =&gt; {
+        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; DisplayIndexState&lt;<span class="lifetime">&#39;a</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>PrimitiveArray&lt;<span class="macro-nonterminal">$t</span>&gt; {
+            <span class="kw">type </span>State = DurationFormat;
+
+            <span class="kw">fn </span>prepare(<span class="kw-2">&amp;</span><span class="self">self</span>, options: <span class="kw-2">&amp;</span>FormatOptions&lt;<span class="lifetime">&#39;a</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::State, ArrowError&gt; {
+                <span class="prelude-val">Ok</span>(options.duration_format)
+            }
+
+            <span class="kw">fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;</span><span class="self">Self</span>::State, idx: usize, f: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>Write) -&gt; FormatResult {
+                <span class="kw">let </span>v = <span class="self">self</span>.value(idx);
+                <span class="kw">match </span>fmt {
+                    DurationFormat::ISO8601 =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, <span class="macro-nonterminal">$convert</span>(v))<span class="question-mark">?</span>,
+                    DurationFormat::Pretty =&gt; <span class="macro">duration_fmt!</span>(f, v, <span class="macro-nonterminal">$scale</span>)<span class="question-mark">?</span>,
+                }
                 <span class="prelude-val">Ok</span>(())
             }
         }
     };
 }
 
-<span class="macro">duration_display!</span>(duration_s_to_duration, DurationSecondType);
-<span class="macro">duration_display!</span>(duration_ms_to_duration, DurationMillisecondType);
-<span class="macro">duration_display!</span>(duration_us_to_duration, DurationMicrosecondType);
-<span class="macro">duration_display!</span>(duration_ns_to_duration, DurationNanosecondType);
+<span class="macro">macro_rules! </span>duration_fmt {
+    (<span class="macro-nonterminal">$f</span>:ident, <span class="macro-nonterminal">$v</span>:expr, <span class="number">0</span>) =&gt; {{
+        <span class="kw">let </span>secs = <span class="macro-nonterminal">$v</span>;
+        <span class="kw">let </span>mins = secs / <span class="number">60</span>;
+        <span class="kw">let </span>hours = mins / <span class="number">60</span>;
+        <span class="kw">let </span>days = hours / <span class="number">24</span>;
+
+        <span class="kw">let </span>secs = secs - (mins * <span class="number">60</span>);
+        <span class="kw">let </span>mins = mins - (hours * <span class="number">60</span>);
+        <span class="kw">let </span>hours = hours - (days * <span class="number">24</span>);
+        <span class="macro">write!</span>(<span class="macro-nonterminal">$f</span>, <span class="string">&quot;{days} days {hours} hours {mins} mins {secs} secs&quot;</span>)
+    }};
+    (<span class="macro-nonterminal">$f</span>:ident, <span class="macro-nonterminal">$v</span>:expr, <span class="macro-nonterminal">$scale</span>:tt) =&gt; {{
+        <span class="kw">let </span>subsec = <span class="macro-nonterminal">$v</span>;
+        <span class="kw">let </span>secs = subsec / <span class="number">10_i64</span>.pow(<span class="macro-nonterminal">$scale</span>);
+        <span class="kw">let </span>mins = secs / <span class="number">60</span>;
+        <span class="kw">let </span>hours = mins / <span class="number">60</span>;
+        <span class="kw">let </span>days = hours / <span class="number">24</span>;
+
+        <span class="kw">let </span>subsec = subsec - (secs * <span class="number">10_i64</span>.pow(<span class="macro-nonterminal">$scale</span>));
+        <span class="kw">let </span>secs = secs - (mins * <span class="number">60</span>);
+        <span class="kw">let </span>mins = mins - (hours * <span class="number">60</span>);
+        <span class="kw">let </span>hours = hours - (days * <span class="number">24</span>);
+        <span class="kw">match </span>subsec.is_negative() {
+            <span class="bool-val">true </span>=&gt; {
+                <span class="macro">write!</span>(
+                    <span class="macro-nonterminal">$f</span>,
+                    <span class="macro">concat!</span>(<span class="string">&quot;{} days {} hours {} mins -{}.{:0&quot;</span>, <span class="macro-nonterminal">$scale</span>, <span class="string">&quot;} secs&quot;</span>),
+                    days,
+                    hours,
+                    mins,
+                    secs.abs(),
+                    subsec.abs()
+                )
+            }
+            <span class="bool-val">false </span>=&gt; {
+                <span class="macro">write!</span>(
+                    <span class="macro-nonterminal">$f</span>,
+                    <span class="macro">concat!</span>(<span class="string">&quot;{} days {} hours {} mins {}.{:0&quot;</span>, <span class="macro-nonterminal">$scale</span>, <span class="string">&quot;} secs&quot;</span>),
+                    days, hours, mins, secs, subsec
+                )
+            }
+        }
+    }};
+}
+
+<span class="macro">duration_display!</span>(duration_s_to_duration, DurationSecondType, <span class="number">0</span>);
+<span class="macro">duration_display!</span>(duration_ms_to_duration, DurationMillisecondType, <span class="number">3</span>);
+<span class="macro">duration_display!</span>(duration_us_to_duration, DurationMicrosecondType, <span class="number">6</span>);
+<span class="macro">duration_display!</span>(duration_ns_to_duration, DurationNanosecondType, <span class="number">9</span>);
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; DisplayIndex <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>PrimitiveArray&lt;IntervalYearMonthType&gt; {
     <span class="kw">fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, idx: usize, f: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>Write) -&gt; FormatResult {
@@ -1514,8 +1760,7 @@
     <span class="kw">fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, idx: usize, f: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>Write) -&gt; FormatResult {
         <span class="kw">let </span>value: u128 = <span class="self">self</span>.value(idx) <span class="kw">as </span>u128;
 
-        <span class="kw">let </span>months_part: i32 =
-            ((value &amp; <span class="number">0xFFFFFFFF000000000000000000000000</span>) &gt;&gt; <span class="number">96</span>) <span class="kw">as </span>i32;
+        <span class="kw">let </span>months_part: i32 = ((value &amp; <span class="number">0xFFFFFFFF000000000000000000000000</span>) &gt;&gt; <span class="number">96</span>) <span class="kw">as </span>i32;
         <span class="kw">let </span>days_part: i32 = ((value &amp; <span class="number">0xFFFFFFFF0000000000000000</span>) &gt;&gt; <span class="number">64</span>) <span class="kw">as </span>i32;
         <span class="kw">let </span>nanoseconds_part: i64 = (value &amp; <span class="number">0xFFFFFFFFFFFFFFFF</span>) <span class="kw">as </span>i64;
 
@@ -1747,10 +1992,7 @@
 /// suitable for converting large arrays or record batches.
 ///
 /// Please see [`ArrayFormatter`] for a more performant interface
-</span><span class="kw">pub fn </span>array_value_to_string(
-    column: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Array,
-    row: usize,
-) -&gt; <span class="prelude-ty">Result</span>&lt;String, ArrowError&gt; {
+</span><span class="kw">pub fn </span>array_value_to_string(column: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Array, row: usize) -&gt; <span class="prelude-ty">Result</span>&lt;String, ArrowError&gt; {
     <span class="kw">let </span>options = FormatOptions::default().with_display_error(<span class="bool-val">true</span>);
     <span class="kw">let </span>formatter = ArrayFormatter::try_new(column, <span class="kw-2">&amp;</span>options)<span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>(formatter.value(row).to_string())
@@ -1777,8 +2019,18 @@
 </span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
+    <span class="doccomment">/// Test to verify options can be constant. See #4580
+    </span><span class="kw">const </span>TEST_CONST_OPTIONS: FormatOptions&lt;<span class="lifetime">&#39;static</span>&gt; = FormatOptions::new()
+        .with_date_format(<span class="prelude-val">Some</span>(<span class="string">&quot;foo&quot;</span>))
+        .with_timestamp_format(<span class="prelude-val">Some</span>(<span class="string">&quot;404&quot;</span>));
+
     <span class="attr">#[test]
-    </span><span class="kw">fn </span>test_map_arry_to_string() {
+    </span><span class="kw">fn </span>test_const_options() {
+        <span class="macro">assert_eq!</span>(TEST_CONST_OPTIONS.date_format, <span class="prelude-val">Some</span>(<span class="string">&quot;foo&quot;</span>));
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_map_array_to_string() {
         <span class="kw">let </span>keys = <span class="macro">vec!</span>[<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;d&quot;</span>, <span class="string">&quot;e&quot;</span>, <span class="string">&quot;f&quot;</span>, <span class="string">&quot;g&quot;</span>, <span class="string">&quot;h&quot;</span>];
         <span class="kw">let </span>values_data = UInt32Array::from(<span class="macro">vec!</span>[<span class="number">0u32</span>, <span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>, <span class="number">60</span>, <span class="number">70</span>]);
 
@@ -1786,38 +2038,128 @@
         //  [[a, b, c], [d, e, f], [g, h]]
         </span><span class="kw">let </span>entry_offsets = [<span class="number">0</span>, <span class="number">3</span>, <span class="number">6</span>, <span class="number">8</span>];
 
-        <span class="kw">let </span>map_array = MapArray::new_from_strings(
-            keys.clone().into_iter(),
-            <span class="kw-2">&amp;</span>values_data,
-            <span class="kw-2">&amp;</span>entry_offsets,
-        )
-        .unwrap();
+        <span class="kw">let </span>map_array =
+            MapArray::new_from_strings(keys.clone().into_iter(), <span class="kw-2">&amp;</span>values_data, <span class="kw-2">&amp;</span>entry_offsets)
+                .unwrap();
         <span class="macro">assert_eq!</span>(
             <span class="string">&quot;{d: 30, e: 40, f: 50}&quot;</span>,
             array_value_to_string(<span class="kw-2">&amp;</span>map_array, <span class="number">1</span>).unwrap()
         );
     }
 
+    <span class="kw">fn </span>format_array(array: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Array, fmt: <span class="kw-2">&amp;</span>FormatOptions) -&gt; Vec&lt;String&gt; {
+        <span class="kw">let </span>fmt = ArrayFormatter::try_new(array, fmt).unwrap();
+        (<span class="number">0</span>..array.len()).map(|x| fmt.value(x).to_string()).collect()
+    }
+
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_array_value_to_string_duration() {
-        <span class="kw">let </span>ns_array = DurationNanosecondArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">None</span>]);
-        <span class="macro">assert_eq!</span>(
-            array_value_to_string(<span class="kw-2">&amp;</span>ns_array, <span class="number">0</span>).unwrap(),
-            <span class="string">&quot;PT0.000000001S&quot;
-        </span>);
-        <span class="macro">assert_eq!</span>(array_value_to_string(<span class="kw-2">&amp;</span>ns_array, <span class="number">1</span>).unwrap(), <span class="string">&quot;&quot;</span>);
+        <span class="kw">let </span>iso_fmt = FormatOptions::new();
+        <span class="kw">let </span>pretty_fmt = FormatOptions::new().with_duration_format(DurationFormat::Pretty);
 
-        <span class="kw">let </span>us_array = DurationMicrosecondArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">None</span>]);
-        <span class="macro">assert_eq!</span>(array_value_to_string(<span class="kw-2">&amp;</span>us_array, <span class="number">0</span>).unwrap(), <span class="string">&quot;PT0.000001S&quot;</span>);
-        <span class="macro">assert_eq!</span>(array_value_to_string(<span class="kw-2">&amp;</span>us_array, <span class="number">1</span>).unwrap(), <span class="string">&quot;&quot;</span>);
+        <span class="kw">let </span>array = DurationNanosecondArray::from(<span class="macro">vec!</span>[
+            <span class="number">1</span>,
+            -<span class="number">1</span>,
+            <span class="number">1000</span>,
+            -<span class="number">1000</span>,
+            (<span class="number">45 </span>* <span class="number">60 </span>* <span class="number">60 </span>* <span class="number">24 </span>+ <span class="number">14 </span>* <span class="number">60 </span>* <span class="number">60 </span>+ <span class="number">2 </span>* <span class="number">60 </span>+ <span class="number">34</span>) * <span class="number">1_000_000_000 </span>+ <span class="number">123456789</span>,
+            -(<span class="number">45 </span>* <span class="number">60 </span>* <span class="number">60 </span>* <span class="number">24 </span>+ <span class="number">14 </span>* <span class="number">60 </span>* <span class="number">60 </span>+ <span class="number">2 </span>* <span class="number">60 </span>+ <span class="number">34</span>) * <span class="number">1_000_000_000 </span>- <span class="number">123456789</span>,
+        ]);
+        <span class="kw">let </span>iso = format_array(<span class="kw-2">&amp;</span>array, <span class="kw-2">&amp;</span>iso_fmt);
+        <span class="kw">let </span>pretty = format_array(<span class="kw-2">&amp;</span>array, <span class="kw-2">&amp;</span>pretty_fmt);
 
-        <span class="kw">let </span>ms_array = DurationMillisecondArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">None</span>]);
-        <span class="macro">assert_eq!</span>(array_value_to_string(<span class="kw-2">&amp;</span>ms_array, <span class="number">0</span>).unwrap(), <span class="string">&quot;PT0.001S&quot;</span>);
-        <span class="macro">assert_eq!</span>(array_value_to_string(<span class="kw-2">&amp;</span>ms_array, <span class="number">1</span>).unwrap(), <span class="string">&quot;&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">0</span>], <span class="string">&quot;PT0.000000001S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">0</span>], <span class="string">&quot;0 days 0 hours 0 mins 0.000000001 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">1</span>], <span class="string">&quot;-PT0.000000001S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">1</span>], <span class="string">&quot;0 days 0 hours 0 mins -0.000000001 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">2</span>], <span class="string">&quot;PT0.000001S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">2</span>], <span class="string">&quot;0 days 0 hours 0 mins 0.000001000 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">3</span>], <span class="string">&quot;-PT0.000001S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">3</span>], <span class="string">&quot;0 days 0 hours 0 mins -0.000001000 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">4</span>], <span class="string">&quot;P45DT50554.123456789S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">4</span>], <span class="string">&quot;45 days 14 hours 2 mins 34.123456789 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">5</span>], <span class="string">&quot;-P45DT50554.123456789S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">5</span>], <span class="string">&quot;-45 days -14 hours -2 mins -34.123456789 secs&quot;</span>);
 
-        <span class="kw">let </span>s_array = DurationSecondArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">None</span>]);
-        <span class="macro">assert_eq!</span>(array_value_to_string(<span class="kw-2">&amp;</span>s_array, <span class="number">0</span>).unwrap(), <span class="string">&quot;PT1S&quot;</span>);
-        <span class="macro">assert_eq!</span>(array_value_to_string(<span class="kw-2">&amp;</span>s_array, <span class="number">1</span>).unwrap(), <span class="string">&quot;&quot;</span>);
+        <span class="kw">let </span>array = DurationMicrosecondArray::from(<span class="macro">vec!</span>[
+            <span class="number">1</span>,
+            -<span class="number">1</span>,
+            <span class="number">1000</span>,
+            -<span class="number">1000</span>,
+            (<span class="number">45 </span>* <span class="number">60 </span>* <span class="number">60 </span>* <span class="number">24 </span>+ <span class="number">14 </span>* <span class="number">60 </span>* <span class="number">60 </span>+ <span class="number">2 </span>* <span class="number">60 </span>+ <span class="number">34</span>) * <span class="number">1_000_000 </span>+ <span class="number">123456</span>,
+            -(<span class="number">45 </span>* <span class="number">60 </span>* <span class="number">60 </span>* <span class="number">24 </span>+ <span class="number">14 </span>* <span class="number">60 </span>* <span class="number">60 </span>+ <span class="number">2 </span>* <span class="number">60 </span>+ <span class="number">34</span>) * <span class="number">1_000_000 </span>- <span class="number">123456</span>,
+        ]);
+        <span class="kw">let </span>iso = format_array(<span class="kw-2">&amp;</span>array, <span class="kw-2">&amp;</span>iso_fmt);
+        <span class="kw">let </span>pretty = format_array(<span class="kw-2">&amp;</span>array, <span class="kw-2">&amp;</span>pretty_fmt);
+
+        <span class="macro">assert_eq!</span>(iso[<span class="number">0</span>], <span class="string">&quot;PT0.000001S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">0</span>], <span class="string">&quot;0 days 0 hours 0 mins 0.000001 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">1</span>], <span class="string">&quot;-PT0.000001S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">1</span>], <span class="string">&quot;0 days 0 hours 0 mins -0.000001 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">2</span>], <span class="string">&quot;PT0.001S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">2</span>], <span class="string">&quot;0 days 0 hours 0 mins 0.001000 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">3</span>], <span class="string">&quot;-PT0.001S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">3</span>], <span class="string">&quot;0 days 0 hours 0 mins -0.001000 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">4</span>], <span class="string">&quot;P45DT50554.123456S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">4</span>], <span class="string">&quot;45 days 14 hours 2 mins 34.123456 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">5</span>], <span class="string">&quot;-P45DT50554.123456S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">5</span>], <span class="string">&quot;-45 days -14 hours -2 mins -34.123456 secs&quot;</span>);
+
+        <span class="kw">let </span>array = DurationMillisecondArray::from(<span class="macro">vec!</span>[
+            <span class="number">1</span>,
+            -<span class="number">1</span>,
+            <span class="number">1000</span>,
+            -<span class="number">1000</span>,
+            (<span class="number">45 </span>* <span class="number">60 </span>* <span class="number">60 </span>* <span class="number">24 </span>+ <span class="number">14 </span>* <span class="number">60 </span>* <span class="number">60 </span>+ <span class="number">2 </span>* <span class="number">60 </span>+ <span class="number">34</span>) * <span class="number">1_000 </span>+ <span class="number">123</span>,
+            -(<span class="number">45 </span>* <span class="number">60 </span>* <span class="number">60 </span>* <span class="number">24 </span>+ <span class="number">14 </span>* <span class="number">60 </span>* <span class="number">60 </span>+ <span class="number">2 </span>* <span class="number">60 </span>+ <span class="number">34</span>) * <span class="number">1_000 </span>- <span class="number">123</span>,
+        ]);
+        <span class="kw">let </span>iso = format_array(<span class="kw-2">&amp;</span>array, <span class="kw-2">&amp;</span>iso_fmt);
+        <span class="kw">let </span>pretty = format_array(<span class="kw-2">&amp;</span>array, <span class="kw-2">&amp;</span>pretty_fmt);
+
+        <span class="macro">assert_eq!</span>(iso[<span class="number">0</span>], <span class="string">&quot;PT0.001S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">0</span>], <span class="string">&quot;0 days 0 hours 0 mins 0.001 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">1</span>], <span class="string">&quot;-PT0.001S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">1</span>], <span class="string">&quot;0 days 0 hours 0 mins -0.001 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">2</span>], <span class="string">&quot;PT1S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">2</span>], <span class="string">&quot;0 days 0 hours 0 mins 1.000 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">3</span>], <span class="string">&quot;-PT1S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">3</span>], <span class="string">&quot;0 days 0 hours 0 mins -1.000 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">4</span>], <span class="string">&quot;P45DT50554.123S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">4</span>], <span class="string">&quot;45 days 14 hours 2 mins 34.123 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">5</span>], <span class="string">&quot;-P45DT50554.123S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">5</span>], <span class="string">&quot;-45 days -14 hours -2 mins -34.123 secs&quot;</span>);
+
+        <span class="kw">let </span>array = DurationSecondArray::from(<span class="macro">vec!</span>[
+            <span class="number">1</span>,
+            -<span class="number">1</span>,
+            <span class="number">1000</span>,
+            -<span class="number">1000</span>,
+            <span class="number">45 </span>* <span class="number">60 </span>* <span class="number">60 </span>* <span class="number">24 </span>+ <span class="number">14 </span>* <span class="number">60 </span>* <span class="number">60 </span>+ <span class="number">2 </span>* <span class="number">60 </span>+ <span class="number">34</span>,
+            -<span class="number">45 </span>* <span class="number">60 </span>* <span class="number">60 </span>* <span class="number">24 </span>- <span class="number">14 </span>* <span class="number">60 </span>* <span class="number">60 </span>- <span class="number">2 </span>* <span class="number">60 </span>- <span class="number">34</span>,
+        ]);
+        <span class="kw">let </span>iso = format_array(<span class="kw-2">&amp;</span>array, <span class="kw-2">&amp;</span>iso_fmt);
+        <span class="kw">let </span>pretty = format_array(<span class="kw-2">&amp;</span>array, <span class="kw-2">&amp;</span>pretty_fmt);
+
+        <span class="macro">assert_eq!</span>(iso[<span class="number">0</span>], <span class="string">&quot;PT1S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">0</span>], <span class="string">&quot;0 days 0 hours 0 mins 1 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">1</span>], <span class="string">&quot;-PT1S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">1</span>], <span class="string">&quot;0 days 0 hours 0 mins -1 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">2</span>], <span class="string">&quot;PT1000S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">2</span>], <span class="string">&quot;0 days 0 hours 16 mins 40 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">3</span>], <span class="string">&quot;-PT1000S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">3</span>], <span class="string">&quot;0 days 0 hours -16 mins -40 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">4</span>], <span class="string">&quot;P45DT50554S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">4</span>], <span class="string">&quot;45 days 14 hours 2 mins 34 secs&quot;</span>);
+        <span class="macro">assert_eq!</span>(iso[<span class="number">5</span>], <span class="string">&quot;-P45DT50554S&quot;</span>);
+        <span class="macro">assert_eq!</span>(pretty[<span class="number">5</span>], <span class="string">&quot;-45 days -14 hours -2 mins -34 secs&quot;</span>);
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_null() {
+        <span class="kw">let </span>array = NullArray::new(<span class="number">2</span>);
+        <span class="kw">let </span>options = FormatOptions::new().with_null(<span class="string">&quot;NULL&quot;</span>);
+        <span class="kw">let </span>formatted = format_array(<span class="kw-2">&amp;</span>array, <span class="kw-2">&amp;</span>options);
+        <span class="macro">assert_eq!</span>(formatted, <span class="kw-2">&amp;</span>[<span class="string">&quot;NULL&quot;</span>.to_string(), <span class="string">&quot;NULL&quot;</span>.to_string()])
     }
 }
 </code></pre></div></section></main></body></html>

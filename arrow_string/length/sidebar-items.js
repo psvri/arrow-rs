@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["bit_length","bit_length_binary","bit_length_string","length","length_binary","length_list","length_string"],"macro":["kernel_dict","unary_offsets"]};
+window.SIDEBAR_ITEMS = {"fn":["bit_length","bit_length_impl","length","length_impl"]};

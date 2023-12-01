@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/arrow/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-a23c9d150ad85d8b.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.72.0-nightly (f4b80cacf 2023-06-30)" data-channel="nightly" data-search-js="search-91b58767224854cb.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ><script src="../../../static.files/storage-59fd9b8ccb335783.js"></script><script defer src="../../../static.files/source-script-106908c7a7964ba4.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../parquet/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/arrow/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e6a78389201e676c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (87e1447aa 2023-11-30)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -210,12 +210,6 @@
 <a href="#210" id="210">210</a>
 <a href="#211" id="211">211</a>
 <a href="#212" id="212">212</a>
-<a href="#213" id="213">213</a>
-<a href="#214" id="214">214</a>
-<a href="#215" id="215">215</a>
-<a href="#216" id="216">216</a>
-<a href="#217" id="217">217</a>
-<a href="#218" id="218">218</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -233,7 +227,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="doccomment">//! Provides API for reading/writing Arrow
+</span><span class="doccomment">//! High-level API for reading/writing Arrow
 //! [RecordBatch](arrow_array::RecordBatch)es and
 //! [Array](arrow_array::Array)s to/from Parquet Files.
 //!
@@ -243,12 +237,13 @@
 //!# Example of writing Arrow record batch to Parquet file
 //!
 //!```rust
-//! use arrow_array::{Int32Array, ArrayRef};
-//! use arrow_array::RecordBatch;
-//! use parquet::arrow::arrow_writer::ArrowWriter;
-//! use parquet::file::properties::WriterProperties;
-//! use std::fs::File;
-//! use std::sync::Arc;
+//! # use arrow_array::{Int32Array, ArrayRef};
+//! # use arrow_array::RecordBatch;
+//! # use parquet::arrow::arrow_writer::ArrowWriter;
+//! # use parquet::file::properties::WriterProperties;
+//! # use tempfile::tempfile;
+//! # use std::sync::Arc;
+//! # use parquet::basic::Compression;
 //! let ids = Int32Array::from(vec![1, 2, 3, 4]);
 //! let vals = Int32Array::from(vec![5, 6, 7, 8]);
 //! let batch = RecordBatch::try_from_iter(vec![
@@ -256,9 +251,14 @@
 //!   (&quot;val&quot;, Arc::new(vals) as ArrayRef),
 //! ]).unwrap();
 //!
-//! let file = File::create(&quot;data.parquet&quot;).unwrap();
+//! let file = tempfile().unwrap();
 //!
-//! let mut writer = ArrowWriter::try_new(file, batch.schema(), None).unwrap();
+//! // WriterProperties can be used to set Parquet file options
+//! let props = WriterProperties::builder()
+//!     .set_compression(Compression::SNAPPY)
+//!     .build();
+//!
+//! let mut writer = ArrowWriter::try_new(file, batch.schema(), Some(props)).unwrap();
 //!
 //! writer.write(&amp;batch).expect(&quot;Writing batch&quot;);
 //!
@@ -266,24 +266,11 @@
 //! writer.close().unwrap();
 //! ```
 //!
-//! `WriterProperties` can be used to set Parquet file options
-//! ```rust
-//! use parquet::file::properties::WriterProperties;
-//! use parquet::basic::{ Compression, Encoding };
-//! use parquet::file::properties::WriterVersion;
-//!
-//! // File compression
-//! let props = WriterProperties::builder()
-//!     .set_compression(Compression::SNAPPY)
-//!     .build();
-//! ```
-//!
 //! # Example of reading parquet file into arrow record batch
 //!
 //! ```rust
-//! use std::fs::File;
-//! use parquet::arrow::arrow_reader::ParquetRecordBatchReaderBuilder;
-//!
+//! # use std::fs::File;
+//! # use parquet::arrow::arrow_reader::ParquetRecordBatchReaderBuilder;
 //! # use std::sync::Arc;
 //! # use arrow_array::Int32Array;
 //! # use arrow::datatypes::{DataType, Field, Schema};
@@ -306,7 +293,7 @@
 //! #     writer.write(&amp;batch).expect(&quot;Writing batch&quot;);
 //! # }
 //! # writer.close().unwrap();
-//!
+//! #
 //! let file = File::open(&quot;data.parquet&quot;).unwrap();
 //!
 //! let builder = ParquetRecordBatchReaderBuilder::try_new(file).unwrap();
@@ -347,6 +334,13 @@
 
 <span class="doccomment">/// Schema metadata key used to store serialized Arrow IPC schema
 </span><span class="kw">pub const </span>ARROW_SCHEMA_META_KEY: <span class="kw-2">&amp;</span>str = <span class="string">&quot;ARROW:schema&quot;</span>;
+
+<span class="doccomment">/// The value of this metadata key, if present on [`Field::metadata`], will be used
+/// to populate [`BasicTypeInfo::id`]
+///
+/// [`Field::metadata`]: arrow_schema::Field::metadata
+/// [`BasicTypeInfo::id`]: crate::schema::types::BasicTypeInfo::id
+</span><span class="kw">pub const </span>PARQUET_FIELD_ID_META_KEY: <span class="kw-2">&amp;</span>str = <span class="string">&quot;PARQUET:field_id&quot;</span>;
 
 <span class="doccomment">/// A [`ProjectionMask`] identifies a set of columns within a potentially nested schema to project
 ///
@@ -393,10 +387,7 @@
     /// Note: repeated or out of order indices will not impact the final mask
     ///
     /// i.e. `[0, 1, 2]` will construct the same mask as `[1, 0, 0, 2]`
-    </span><span class="kw">pub fn </span>leaves(
-        schema: <span class="kw-2">&amp;</span>SchemaDescriptor,
-        indices: <span class="kw">impl </span>IntoIterator&lt;Item = usize&gt;,
-    ) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub fn </span>leaves(schema: <span class="kw-2">&amp;</span>SchemaDescriptor, indices: <span class="kw">impl </span>IntoIterator&lt;Item = usize&gt;) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>mask = <span class="macro">vec!</span>[<span class="bool-val">false</span>; schema.num_columns()];
         <span class="kw">for </span>leaf_idx <span class="kw">in </span>indices {
             mask[leaf_idx] = <span class="bool-val">true</span>;
@@ -409,10 +400,7 @@
     /// Note: repeated or out of order indices will not impact the final mask
     ///
     /// i.e. `[0, 1, 2]` will construct the same mask as `[1, 0, 0, 2]`
-    </span><span class="kw">pub fn </span>roots(
-        schema: <span class="kw-2">&amp;</span>SchemaDescriptor,
-        indices: <span class="kw">impl </span>IntoIterator&lt;Item = usize&gt;,
-    ) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub fn </span>roots(schema: <span class="kw-2">&amp;</span>SchemaDescriptor, indices: <span class="kw">impl </span>IntoIterator&lt;Item = usize&gt;) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>num_root_columns = schema.root_schema().get_fields().len();
         <span class="kw">let </span><span class="kw-2">mut </span>root_mask = <span class="macro">vec!</span>[<span class="bool-val">false</span>; num_root_columns];
         <span class="kw">for </span>root_idx <span class="kw">in </span>indices {

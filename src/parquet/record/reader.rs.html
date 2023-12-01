@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/record/reader.rs`."><title>reader.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-a23c9d150ad85d8b.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.72.0-nightly (f4b80cacf 2023-06-30)" data-channel="nightly" data-search-js="search-91b58767224854cb.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ><script src="../../../static.files/storage-59fd9b8ccb335783.js"></script><script defer src="../../../static.files/source-script-106908c7a7964ba4.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../parquet/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/record/reader.rs`."><title>reader.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e6a78389201e676c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (87e1447aa 2023-11-30)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1641,6 +1641,65 @@
 <a href="#1641" id="1641">1641</a>
 <a href="#1642" id="1642">1642</a>
 <a href="#1643" id="1643">1643</a>
+<a href="#1644" id="1644">1644</a>
+<a href="#1645" id="1645">1645</a>
+<a href="#1646" id="1646">1646</a>
+<a href="#1647" id="1647">1647</a>
+<a href="#1648" id="1648">1648</a>
+<a href="#1649" id="1649">1649</a>
+<a href="#1650" id="1650">1650</a>
+<a href="#1651" id="1651">1651</a>
+<a href="#1652" id="1652">1652</a>
+<a href="#1653" id="1653">1653</a>
+<a href="#1654" id="1654">1654</a>
+<a href="#1655" id="1655">1655</a>
+<a href="#1656" id="1656">1656</a>
+<a href="#1657" id="1657">1657</a>
+<a href="#1658" id="1658">1658</a>
+<a href="#1659" id="1659">1659</a>
+<a href="#1660" id="1660">1660</a>
+<a href="#1661" id="1661">1661</a>
+<a href="#1662" id="1662">1662</a>
+<a href="#1663" id="1663">1663</a>
+<a href="#1664" id="1664">1664</a>
+<a href="#1665" id="1665">1665</a>
+<a href="#1666" id="1666">1666</a>
+<a href="#1667" id="1667">1667</a>
+<a href="#1668" id="1668">1668</a>
+<a href="#1669" id="1669">1669</a>
+<a href="#1670" id="1670">1670</a>
+<a href="#1671" id="1671">1671</a>
+<a href="#1672" id="1672">1672</a>
+<a href="#1673" id="1673">1673</a>
+<a href="#1674" id="1674">1674</a>
+<a href="#1675" id="1675">1675</a>
+<a href="#1676" id="1676">1676</a>
+<a href="#1677" id="1677">1677</a>
+<a href="#1678" id="1678">1678</a>
+<a href="#1679" id="1679">1679</a>
+<a href="#1680" id="1680">1680</a>
+<a href="#1681" id="1681">1681</a>
+<a href="#1682" id="1682">1682</a>
+<a href="#1683" id="1683">1683</a>
+<a href="#1684" id="1684">1684</a>
+<a href="#1685" id="1685">1685</a>
+<a href="#1686" id="1686">1686</a>
+<a href="#1687" id="1687">1687</a>
+<a href="#1688" id="1688">1688</a>
+<a href="#1689" id="1689">1689</a>
+<a href="#1690" id="1690">1690</a>
+<a href="#1691" id="1691">1691</a>
+<a href="#1692" id="1692">1692</a>
+<a href="#1693" id="1693">1693</a>
+<a href="#1694" id="1694">1694</a>
+<a href="#1695" id="1695">1695</a>
+<a href="#1696" id="1696">1696</a>
+<a href="#1697" id="1697">1697</a>
+<a href="#1698" id="1698">1698</a>
+<a href="#1699" id="1699">1699</a>
+<a href="#1700" id="1700">1700</a>
+<a href="#1701" id="1701">1701</a>
+<a href="#1702" id="1702">1702</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1659,7 +1718,7 @@
 // under the License.
 
 </span><span class="doccomment">//! Contains implementation of record assembly and converting Parquet types into
-//! [`Row`](crate::record::Row)s.
+//! [`Row`]s.
 
 </span><span class="kw">use </span>std::{collections::HashMap, fmt, sync::Arc};
 
@@ -1725,14 +1784,8 @@
         <span class="kw">let </span><span class="kw-2">mut </span>path = Vec::new();
 
         <span class="kw">for </span>field <span class="kw">in </span>descr.root_schema().get_fields() {
-            <span class="kw">let </span>reader = <span class="self">self</span>.reader_tree(
-                field.clone(),
-                <span class="kw-2">&amp;mut </span>path,
-                <span class="number">0</span>,
-                <span class="number">0</span>,
-                <span class="kw-2">&amp;</span>paths,
-                row_group_reader,
-            )<span class="question-mark">?</span>;
+            <span class="kw">let </span>reader =
+                <span class="self">self</span>.reader_tree(field.clone(), <span class="kw-2">&amp;mut </span>path, <span class="number">0</span>, <span class="number">0</span>, <span class="kw-2">&amp;</span>paths, row_group_reader)<span class="question-mark">?</span>;
             readers.push(reader);
         }
 
@@ -1795,11 +1848,7 @@
             <span class="kw">match </span>field.get_basic_info().converted_type() {
                 <span class="comment">// List types
                 </span>ConvertedType::LIST =&gt; {
-                    <span class="macro">assert_eq!</span>(
-                        field.get_fields().len(),
-                        <span class="number">1</span>,
-                        <span class="string">&quot;Invalid list type {field:?}&quot;
-                    </span>);
+                    <span class="macro">assert_eq!</span>(field.get_fields().len(), <span class="number">1</span>, <span class="string">&quot;Invalid list type {field:?}&quot;</span>);
 
                     <span class="kw">let </span>repeated_field = field.get_fields()[<span class="number">0</span>].clone();
                     <span class="macro">assert_eq!</span>(
@@ -1851,11 +1900,7 @@
                 }
                 <span class="comment">// Map types (key-value pairs)
                 </span>ConvertedType::MAP | ConvertedType::MAP_KEY_VALUE =&gt; {
-                    <span class="macro">assert_eq!</span>(
-                        field.get_fields().len(),
-                        <span class="number">1</span>,
-                        <span class="string">&quot;Invalid map type: {field:?}&quot;
-                    </span>);
+                    <span class="macro">assert_eq!</span>(field.get_fields().len(), <span class="number">1</span>, <span class="string">&quot;Invalid map type: {field:?}&quot;</span>);
                     <span class="macro">assert!</span>(
                         !field.get_fields()[<span class="number">0</span>].is_primitive(),
                         <span class="string">&quot;Invalid map type: {field:?}&quot;
@@ -1917,7 +1962,7 @@
                     <span class="kw">let </span>required_field = Type::group_type_builder(field.name())
                         .with_repetition(Repetition::REQUIRED)
                         .with_converted_type(field.get_basic_info().converted_type())
-                        .with_fields(<span class="kw-2">&amp;mut </span>Vec::from(field.get_fields()))
+                        .with_fields(field.get_fields().to_vec())
                         .build()<span class="question-mark">?</span>;
 
                     path.pop();
@@ -1931,12 +1976,12 @@
                         row_group_reader,
                     )<span class="question-mark">?</span>;
 
-                    Reader::RepeatedReader(
+                    <span class="kw">return </span><span class="prelude-val">Ok</span>(Reader::RepeatedReader(
                         field,
                         curr_def_level - <span class="number">1</span>,
                         curr_rep_level - <span class="number">1</span>,
                         Box::new(reader),
-                    )
+                    ));
                 }
                 <span class="comment">// Group types (structs)
                 </span><span class="kw">_ </span>=&gt; {
@@ -2047,8 +2092,7 @@
             Reader::GroupReader(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw-2">ref mut </span>readers) =&gt; {
                 <span class="kw">let </span><span class="kw-2">mut </span>fields = Vec::new();
                 <span class="kw">for </span>reader <span class="kw">in </span>readers {
-                    fields
-                        .push((String::from(reader.field_name()), reader.read_field()<span class="question-mark">?</span>));
+                    fields.push((String::from(reader.field_name()), reader.read_field()<span class="question-mark">?</span>));
                 }
                 <span class="prelude-val">Ok</span>(make_row(fields))
             }
@@ -2079,10 +2123,7 @@
                     <span class="kw">if </span>reader.repetition() != Repetition::OPTIONAL
                         || reader.current_def_level() &gt; def_level
                     {
-                        fields.push((
-                            String::from(reader.field_name()),
-                            reader.read_field()<span class="question-mark">?</span>,
-                        ));
+                        fields.push((String::from(reader.field_name()), reader.read_field()<span class="question-mark">?</span>));
                     } <span class="kw">else </span>{
                         reader.advance_columns();
                         fields.push((String::from(reader.field_name()), Field::Null));
@@ -2114,13 +2155,7 @@
                 }
                 Field::ListInternal(make_list(elements))
             }
-            Reader::KeyValueReader(
-                <span class="kw">_</span>,
-                def_level,
-                rep_level,
-                <span class="kw-2">ref mut </span>keys,
-                <span class="kw-2">ref mut </span>values,
-            ) =&gt; {
+            Reader::KeyValueReader(<span class="kw">_</span>, def_level, rep_level, <span class="kw-2">ref mut </span>keys, <span class="kw-2">ref mut </span>values) =&gt; {
                 <span class="kw">let </span><span class="kw-2">mut </span>pairs = Vec::new();
                 <span class="kw">loop </span>{
                     <span class="kw">if </span>keys.current_def_level() &gt; def_level {
@@ -2261,7 +2296,7 @@
 // Row iterators
 
 </span><span class="doccomment">/// The enum Either with variants That represents a reference and a box of
-/// [`FileReader`](crate::file::reader::FileReader).
+/// [`FileReader`].
 </span><span class="kw">enum </span>Either&lt;<span class="lifetime">&#39;a</span>&gt; {
     Left(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw">dyn </span>FileReader),
     Right(Box&lt;<span class="kw">dyn </span>FileReader&gt;),
@@ -2276,9 +2311,20 @@
     }
 }
 
-<span class="doccomment">/// Iterator of [`Row`](crate::record::Row)s.
-/// It is used either for a single row group to iterate over data in that row group, or
-/// an entire file with auto buffering of all row groups.
+<span class="doccomment">/// Access parquet data as an iterator of [`Row`]
+///
+/// # Caveats
+///
+/// Parquet stores data in a columnar fashion using [Dremel] encoding, and is therefore highly
+/// optimised for reading data by column, not row. As a consequence applications concerned with
+/// performance should prefer the columnar arrow or [ColumnReader] APIs.
+///
+/// Additionally the current implementation does not correctly handle repeated fields ([#2394]),
+/// and workloads looking to handle such schema should use the other APIs.
+///
+/// [#2394]: https://github.com/apache/arrow-rs/issues/2394
+/// [ColumnReader]: crate::file::reader::RowGroupReader::get_column_reader
+/// [Dremel]: https://research.google/pubs/pub36632/
 </span><span class="kw">pub struct </span>RowIter&lt;<span class="lifetime">&#39;a</span>&gt; {
     descr: SchemaDescPtr,
     tree_builder: TreeBuilder,
@@ -2289,7 +2335,7 @@
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; RowIter&lt;<span class="lifetime">&#39;a</span>&gt; {
-    <span class="doccomment">/// Creates a new iterator of [`Row`](crate::record::Row)s.
+    <span class="doccomment">/// Creates a new iterator of [`Row`]s.
     </span><span class="kw">fn </span>new(
         file_reader: <span class="prelude-ty">Option</span>&lt;Either&lt;<span class="lifetime">&#39;a</span>&gt;&gt;,
         row_iter: <span class="prelude-ty">Option</span>&lt;ReaderIter&gt;,
@@ -2311,23 +2357,18 @@
         }
     }
 
-    <span class="doccomment">/// Creates iterator of [`Row`](crate::record::Row)s for all row groups in a
+    <span class="doccomment">/// Creates iterator of [`Row`]s for all row groups in a
     /// file.
     </span><span class="kw">pub fn </span>from_file(proj: <span class="prelude-ty">Option</span>&lt;Type&gt;, reader: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw">dyn </span>FileReader) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>either = Either::Left(reader);
-        <span class="kw">let </span>descr = <span class="self">Self</span>::get_proj_descr(
-            proj,
-            reader.metadata().file_metadata().schema_descr_ptr(),
-        )<span class="question-mark">?</span>;
+        <span class="kw">let </span>descr =
+            <span class="self">Self</span>::get_proj_descr(proj, reader.metadata().file_metadata().schema_descr_ptr())<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(<span class="self">Self</span>::new(<span class="prelude-val">Some</span>(either), <span class="prelude-val">None</span>, descr))
     }
 
-    <span class="doccomment">/// Creates iterator of [`Row`](crate::record::Row)s for a specific row group.
-    </span><span class="kw">pub fn </span>from_row_group(
-        proj: <span class="prelude-ty">Option</span>&lt;Type&gt;,
-        reader: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw">dyn </span>RowGroupReader,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+    <span class="doccomment">/// Creates iterator of [`Row`]s for a specific row group.
+    </span><span class="kw">pub fn </span>from_row_group(proj: <span class="prelude-ty">Option</span>&lt;Type&gt;, reader: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw">dyn </span>RowGroupReader) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>descr = <span class="self">Self</span>::get_proj_descr(proj, reader.metadata().schema_descr_ptr())<span class="question-mark">?</span>;
         <span class="kw">let </span>tree_builder = <span class="self">Self</span>::tree_builder();
         <span class="kw">let </span>row_iter = tree_builder.as_iter(descr.clone(), reader)<span class="question-mark">?</span>;
@@ -2337,8 +2378,7 @@
         </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>::new(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(row_iter), descr))
     }
 
-    <span class="doccomment">/// Creates a iterator of [`Row`](crate::record::Row)s from a
-    /// [`FileReader`](crate::file::reader::FileReader) using the full file schema.
+    <span class="doccomment">/// Creates a iterator of [`Row`]s from a [`FileReader`] using the full file schema.
     </span><span class="kw">pub fn </span>from_file_into(reader: Box&lt;<span class="kw">dyn </span>FileReader&gt;) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>either = Either::Right(reader);
         <span class="kw">let </span>descr = either
@@ -2350,7 +2390,7 @@
         <span class="self">Self</span>::new(<span class="prelude-val">Some</span>(either), <span class="prelude-val">None</span>, descr)
     }
 
-    <span class="doccomment">/// Tries to create a iterator of [`Row`](crate::record::Row)s using projections.
+    <span class="doccomment">/// Tries to create a iterator of [`Row`]s using projections.
     /// Returns a error if a file reader is not the source of this iterator.
     ///
     /// The Projected schema can be a subset of or equal to the file schema,
@@ -2374,10 +2414,7 @@
     <span class="doccomment">/// Helper method to get schema descriptor for projected schema.
     /// If projection is None, then full schema is returned.
     </span><span class="attr">#[inline]
-    </span><span class="kw">fn </span>get_proj_descr(
-        proj: <span class="prelude-ty">Option</span>&lt;Type&gt;,
-        root_descr: SchemaDescPtr,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;SchemaDescPtr&gt; {
+    </span><span class="kw">fn </span>get_proj_descr(proj: <span class="prelude-ty">Option</span>&lt;Type&gt;, root_descr: SchemaDescPtr) -&gt; <span class="prelude-ty">Result</span>&lt;SchemaDescPtr&gt; {
         <span class="kw">match </span>proj {
             <span class="prelude-val">Some</span>(projection) =&gt; {
                 <span class="comment">// check if projection is part of file schema
@@ -2390,6 +2427,12 @@
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(root_descr),
         }
     }
+
+    <span class="doccomment">/// Sets batch size for this row iter.
+    </span><span class="kw">pub fn </span>with_batch_size(<span class="kw-2">mut </span><span class="self">self</span>, batch_size: usize) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.tree_builder = <span class="self">self</span>.tree_builder.with_batch_size(batch_size);
+        <span class="self">self
+    </span>}
 
     <span class="doccomment">/// Returns common tree builder, so the same settings are applied to both iterators
     /// from file reader and row group.
@@ -2436,7 +2479,7 @@
     }
 }
 
-<span class="doccomment">/// Internal iterator of [`Row`](crate::record::Row)s for a reader.
+<span class="doccomment">/// Internal iterator of [`Row`]s for a reader.
 </span><span class="kw">pub struct </span>ReaderIter {
     root_reader: Reader,
     records_left: usize,
@@ -2470,11 +2513,14 @@
 </span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
+    <span class="kw">use </span><span class="kw">crate</span>::data_type::Int64Type;
     <span class="kw">use </span><span class="kw">crate</span>::errors::Result;
     <span class="kw">use </span><span class="kw">crate</span>::file::reader::{FileReader, SerializedFileReader};
-    <span class="kw">use </span><span class="kw">crate</span>::record::api::{Field, Row, RowAccessor, RowFormatter};
+    <span class="kw">use </span><span class="kw">crate</span>::file::writer::SerializedFileWriter;
+    <span class="kw">use </span><span class="kw">crate</span>::record::api::{Field, Row, RowAccessor};
     <span class="kw">use </span><span class="kw">crate</span>::schema::parser::parse_message_type;
     <span class="kw">use </span><span class="kw">crate</span>::util::test_common::file_util::{get_test_file, get_test_path};
+    <span class="kw">use </span>bytes::Bytes;
     <span class="kw">use </span>std::convert::TryFrom;
 
     <span class="comment">// Convenient macros to assemble row, list, map, and group.
@@ -2637,17 +2683,11 @@
                                     <span class="macro">list!</span>[
                                         <span class="macro">group!</span>[
                                             (<span class="string">&quot;E&quot;</span>.to_string(), Field::Int(<span class="number">10</span>)),
-                                            (
-                                                <span class="string">&quot;F&quot;</span>.to_string(),
-                                                Field::Str(<span class="string">&quot;aaa&quot;</span>.to_string())
-                                            )
+                                            (<span class="string">&quot;F&quot;</span>.to_string(), Field::Str(<span class="string">&quot;aaa&quot;</span>.to_string()))
                                         ],
                                         <span class="macro">group!</span>[
                                             (<span class="string">&quot;E&quot;</span>.to_string(), Field::Int(-<span class="number">10</span>)),
-                                            (
-                                                <span class="string">&quot;F&quot;</span>.to_string(),
-                                                Field::Str(<span class="string">&quot;bbb&quot;</span>.to_string())
-                                            )
+                                            (<span class="string">&quot;F&quot;</span>.to_string(), Field::Str(<span class="string">&quot;bbb&quot;</span>.to_string()))
                                         ]
                                     ],
                                     <span class="macro">list!</span>[<span class="macro">group!</span>[
@@ -2727,10 +2767,7 @@
                                         ],
                                         <span class="macro">group!</span>[
                                             (<span class="string">&quot;E&quot;</span>.to_string(), Field::Int(<span class="number">10</span>)),
-                                            (
-                                                <span class="string">&quot;F&quot;</span>.to_string(),
-                                                Field::Str(<span class="string">&quot;aaa&quot;</span>.to_string())
-                                            )
+                                            (<span class="string">&quot;F&quot;</span>.to_string(), Field::Str(<span class="string">&quot;aaa&quot;</span>.to_string()))
                                         ],
                                         <span class="macro">group!</span>[
                                             (<span class="string">&quot;E&quot;</span>.to_string(), Field::Null),
@@ -2738,10 +2775,7 @@
                                         ],
                                         <span class="macro">group!</span>[
                                             (<span class="string">&quot;E&quot;</span>.to_string(), Field::Int(-<span class="number">10</span>)),
-                                            (
-                                                <span class="string">&quot;F&quot;</span>.to_string(),
-                                                Field::Str(<span class="string">&quot;bbb&quot;</span>.to_string())
-                                            )
+                                            (<span class="string">&quot;F&quot;</span>.to_string(), Field::Str(<span class="string">&quot;bbb&quot;</span>.to_string()))
                                         ],
                                         <span class="macro">group!</span>[
                                             (<span class="string">&quot;E&quot;</span>.to_string(), Field::Null),
@@ -2751,10 +2785,7 @@
                                     <span class="macro">list!</span>[
                                         <span class="macro">group!</span>[
                                             (<span class="string">&quot;E&quot;</span>.to_string(), Field::Int(<span class="number">11</span>)),
-                                            (
-                                                <span class="string">&quot;F&quot;</span>.to_string(),
-                                                Field::Str(<span class="string">&quot;c&quot;</span>.to_string())
-                                            )
+                                            (<span class="string">&quot;F&quot;</span>.to_string(), Field::Str(<span class="string">&quot;c&quot;</span>.to_string()))
                                         ],
                                         Field::Null
                                     ],
@@ -2778,10 +2809,7 @@
                                 ),
                                 (
                                     Field::Str(<span class="string">&quot;g2&quot;</span>.to_string()),
-                                    <span class="macro">group!</span>[(
-                                        <span class="string">&quot;H&quot;</span>.to_string(),
-                                        <span class="macro">group!</span>[(<span class="string">&quot;i&quot;</span>.to_string(), <span class="macro">list!</span>[])]
-                                    )]
+                                    <span class="macro">group!</span>[(<span class="string">&quot;H&quot;</span>.to_string(), <span class="macro">group!</span>[(<span class="string">&quot;i&quot;</span>.to_string(), <span class="macro">list!</span>[])])]
                                 ),
                                 (Field::Str(<span class="string">&quot;g3&quot;</span>.to_string()), Field::Null),
                                 (
@@ -2915,8 +2943,7 @@
       }
     &quot;</span>;
         <span class="kw">let </span>schema = parse_message_type(schema).unwrap();
-        <span class="kw">let </span>rows =
-            test_file_reader_rows(<span class="string">&quot;nested_maps.snappy.parquet&quot;</span>, <span class="prelude-val">Some</span>(schema)).unwrap();
+        <span class="kw">let </span>rows = test_file_reader_rows(<span class="string">&quot;nested_maps.snappy.parquet&quot;</span>, <span class="prelude-val">Some</span>(schema)).unwrap();
         <span class="kw">let </span>expected_rows = <span class="macro">vec!</span>[
             <span class="macro">row!</span>[
                 (<span class="string">&quot;c&quot;</span>.to_string(), Field::Double(<span class="number">1.0</span>)),
@@ -2983,8 +3010,7 @@
       }
     &quot;</span>;
         <span class="kw">let </span>schema = parse_message_type(schema).unwrap();
-        <span class="kw">let </span>rows =
-            test_file_reader_rows(<span class="string">&quot;nested_maps.snappy.parquet&quot;</span>, <span class="prelude-val">Some</span>(schema)).unwrap();
+        <span class="kw">let </span>rows = test_file_reader_rows(<span class="string">&quot;nested_maps.snappy.parquet&quot;</span>, <span class="prelude-val">Some</span>(schema)).unwrap();
         <span class="kw">let </span>expected_rows = <span class="macro">vec!</span>[
             <span class="macro">row!</span>[(
                 <span class="string">&quot;a&quot;</span>.to_string(),
@@ -3050,8 +3076,7 @@
       }
     &quot;</span>;
         <span class="kw">let </span>schema = parse_message_type(schema).unwrap();
-        <span class="kw">let </span>rows =
-            test_file_reader_rows(<span class="string">&quot;nested_lists.snappy.parquet&quot;</span>, <span class="prelude-val">Some</span>(schema)).unwrap();
+        <span class="kw">let </span>rows = test_file_reader_rows(<span class="string">&quot;nested_lists.snappy.parquet&quot;</span>, <span class="prelude-val">Some</span>(schema)).unwrap();
         <span class="kw">let </span>expected_rows = <span class="macro">vec!</span>[
             <span class="macro">row!</span>[(
                 <span class="string">&quot;a&quot;</span>.to_string(),
@@ -3144,33 +3169,26 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_file_reader_iter() {
         <span class="kw">let </span>path = get_test_path(<span class="string">&quot;alltypes_plain.parquet&quot;</span>);
-        <span class="kw">let </span>vec = <span class="macro">vec!</span>[path]
-            .iter()
-            .map(|p| SerializedFileReader::try_from(p.as_path()).unwrap())
-            .flat_map(|r| RowIter::from_file_into(Box::new(r)))
-            .flat_map(|r| r.unwrap().get_int(<span class="number">0</span>))
-            .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+        <span class="kw">let </span>reader = SerializedFileReader::try_from(path.as_path()).unwrap();
+        <span class="kw">let </span>iter = RowIter::from_file_into(Box::new(reader));
 
-        <span class="macro">assert_eq!</span>(vec, <span class="macro">vec!</span>[<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">1</span>]);
+        <span class="kw">let </span>values: Vec&lt;<span class="kw">_</span>&gt; = iter.flat_map(|r| r.unwrap().get_int(<span class="number">0</span>)).collect();
+        <span class="macro">assert_eq!</span>(values, <span class="kw-2">&amp;</span>[<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">1</span>]);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_file_reader_iter_projection() {
         <span class="kw">let </span>path = get_test_path(<span class="string">&quot;alltypes_plain.parquet&quot;</span>);
-        <span class="kw">let </span>values = <span class="macro">vec!</span>[path]
-            .iter()
-            .map(|p| SerializedFileReader::try_from(p.as_path()).unwrap())
-            .flat_map(|r| {
-                <span class="kw">let </span>schema = <span class="string">&quot;message schema { OPTIONAL INT32 id; }&quot;</span>;
-                <span class="kw">let </span>proj = parse_message_type(schema).ok();
+        <span class="kw">let </span>reader = SerializedFileReader::try_from(path.as_path()).unwrap();
+        <span class="kw">let </span>schema = <span class="string">&quot;message schema { OPTIONAL INT32 id; }&quot;</span>;
+        <span class="kw">let </span>proj = parse_message_type(schema).ok();
 
-                RowIter::from_file_into(Box::new(r)).project(proj).unwrap()
-            })
-            .map(|r| <span class="macro">format!</span>(<span class="string">&quot;id:{}&quot;</span>, r.unwrap().fmt(<span class="number">0</span>)))
-            .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
-            .join(<span class="string">&quot;, &quot;</span>);
+        <span class="kw">let </span>iter = RowIter::from_file_into(Box::new(reader))
+            .project(proj)
+            .unwrap();
+        <span class="kw">let </span>values: Vec&lt;<span class="kw">_</span>&gt; = iter.flat_map(|r| r.unwrap().get_int(<span class="number">0</span>)).collect();
 
-        <span class="macro">assert_eq!</span>(values, <span class="string">&quot;id:4, id:5, id:6, id:7, id:2, id:3, id:0, id:1&quot;</span>);
+        <span class="macro">assert_eq!</span>(values, <span class="kw-2">&amp;</span>[<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">1</span>]);
     }
 
     <span class="attr">#[test]
@@ -3262,6 +3280,106 @@
                     )]
                 )
             ],
+        ];
+
+        <span class="macro">assert_eq!</span>(rows, expected_rows);
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_tree_reader_handle_nested_repeated_fields_with_no_annotation() {
+        <span class="comment">// Create schema
+        </span><span class="kw">let </span>schema = Arc::new(
+            parse_message_type(
+                <span class="string">&quot;
+            message schema {
+                REPEATED group level1 {
+                    REPEATED group level2 {
+                        REQUIRED group level3 {
+                            REQUIRED INT64 value3;
+                        }
+                    }
+                    REQUIRED INT64 value1;
+                }
+            }&quot;</span>,
+            )
+            .unwrap(),
+        );
+
+        <span class="comment">// Write Parquet file to buffer
+        </span><span class="kw">let </span><span class="kw-2">mut </span>buffer: Vec&lt;u8&gt; = Vec::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>file_writer =
+            SerializedFileWriter::new(<span class="kw-2">&amp;mut </span>buffer, schema, Default::default()).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>row_group_writer = file_writer.next_row_group().unwrap();
+
+        <span class="comment">// Write column level1.level2.level3.value3
+        </span><span class="kw">let </span><span class="kw-2">mut </span>column_writer = row_group_writer.next_column().unwrap().unwrap();
+        column_writer
+            .typed::&lt;Int64Type&gt;()
+            .write_batch(<span class="kw-2">&amp;</span>[<span class="number">30</span>, <span class="number">31</span>, <span class="number">32</span>], <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>[<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>]), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]))
+            .unwrap();
+        column_writer.close().unwrap();
+
+        <span class="comment">// Write column level1.value1
+        </span><span class="kw">let </span><span class="kw-2">mut </span>column_writer = row_group_writer.next_column().unwrap().unwrap();
+        column_writer
+            .typed::&lt;Int64Type&gt;()
+            .write_batch(<span class="kw-2">&amp;</span>[<span class="number">10</span>, <span class="number">11</span>, <span class="number">12</span>], <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>]), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]))
+            .unwrap();
+        column_writer.close().unwrap();
+
+        <span class="comment">// Finalize Parquet file
+        </span>row_group_writer.close().unwrap();
+        file_writer.close().unwrap();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>buffer[<span class="number">0</span>..<span class="number">4</span>], <span class="string">b&quot;PAR1&quot;</span>);
+
+        <span class="comment">// Read Parquet file from buffer
+        </span><span class="kw">let </span>file_reader = SerializedFileReader::new(Bytes::from(buffer)).unwrap();
+        <span class="kw">let </span>rows: Vec&lt;<span class="kw">_</span>&gt; = file_reader
+            .get_row_iter(<span class="prelude-val">None</span>)
+            .unwrap()
+            .map(|row| row.unwrap())
+            .collect();
+
+        <span class="kw">let </span>expected_rows = <span class="macro">vec!</span>[
+            <span class="macro">row!</span>[(
+                <span class="string">&quot;level1&quot;</span>.to_string(),
+                <span class="macro">list!</span>[<span class="macro">group!</span>[
+                    (
+                        <span class="string">&quot;level2&quot;</span>.to_string(),
+                        <span class="macro">list!</span>[<span class="macro">group!</span>[(
+                            <span class="string">&quot;level3&quot;</span>.to_string(),
+                            <span class="macro">group!</span>[(<span class="string">&quot;value3&quot;</span>.to_string(), Field::Long(<span class="number">30</span>))]
+                        )]]
+                    ),
+                    (<span class="string">&quot;value1&quot;</span>.to_string(), Field::Long(<span class="number">10</span>))
+                ]]
+            )],
+            <span class="macro">row!</span>[(
+                <span class="string">&quot;level1&quot;</span>.to_string(),
+                <span class="macro">list!</span>[<span class="macro">group!</span>[
+                    (
+                        <span class="string">&quot;level2&quot;</span>.to_string(),
+                        <span class="macro">list!</span>[<span class="macro">group!</span>[(
+                            <span class="string">&quot;level3&quot;</span>.to_string(),
+                            <span class="macro">group!</span>[(<span class="string">&quot;value3&quot;</span>.to_string(), Field::Long(<span class="number">31</span>))]
+                        )]]
+                    ),
+                    (<span class="string">&quot;value1&quot;</span>.to_string(), Field::Long(<span class="number">11</span>))
+                ]]
+            )],
+            <span class="macro">row!</span>[(
+                <span class="string">&quot;level1&quot;</span>.to_string(),
+                <span class="macro">list!</span>[<span class="macro">group!</span>[
+                    (
+                        <span class="string">&quot;level2&quot;</span>.to_string(),
+                        <span class="macro">list!</span>[<span class="macro">group!</span>[(
+                            <span class="string">&quot;level3&quot;</span>.to_string(),
+                            <span class="macro">group!</span>[(<span class="string">&quot;value3&quot;</span>.to_string(), Field::Long(<span class="number">32</span>))]
+                        )]]
+                    ),
+                    (<span class="string">&quot;value1&quot;</span>.to_string(), Field::Long(<span class="number">12</span>))
+                ]]
+            )],
         ];
 
         <span class="macro">assert_eq!</span>(rows, expected_rows);

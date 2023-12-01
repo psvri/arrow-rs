@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["BufferSpec"],"fn":["contains_nulls","count_nulls","into_buffers","layout","new_buffers"],"mod":["buffers"],"struct":["ArrayData","ArrayDataBuilder","DataTypeLayout"],"type":["ArrayDataRef"]};
+window.SIDEBAR_ITEMS = {"enum":["BufferSpec"],"fn":["contains_nulls","count_nulls","into_buffers","layout","new_buffers"],"struct":["ArrayData","ArrayDataBuilder","DataTypeLayout"],"type":["ArrayDataRef"]};

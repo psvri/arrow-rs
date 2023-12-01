@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-array/src/types.rs`."><title>types.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-a23c9d150ad85d8b.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_array" data-themes="" data-resource-suffix="" data-rustdoc-version="1.72.0-nightly (f4b80cacf 2023-06-30)" data-channel="nightly" data-search-js="search-91b58767224854cb.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ><script src="../../static.files/storage-59fd9b8ccb335783.js"></script><script defer src="../../static.files/source-script-106908c7a7964ba4.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../arrow_array/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-array/src/types.rs`."><title>types.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e6a78389201e676c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_array" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (87e1447aa 2023-11-30)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1567,196 +1567,6 @@
 <a href="#1567" id="1567">1567</a>
 <a href="#1568" id="1568">1568</a>
 <a href="#1569" id="1569">1569</a>
-<a href="#1570" id="1570">1570</a>
-<a href="#1571" id="1571">1571</a>
-<a href="#1572" id="1572">1572</a>
-<a href="#1573" id="1573">1573</a>
-<a href="#1574" id="1574">1574</a>
-<a href="#1575" id="1575">1575</a>
-<a href="#1576" id="1576">1576</a>
-<a href="#1577" id="1577">1577</a>
-<a href="#1578" id="1578">1578</a>
-<a href="#1579" id="1579">1579</a>
-<a href="#1580" id="1580">1580</a>
-<a href="#1581" id="1581">1581</a>
-<a href="#1582" id="1582">1582</a>
-<a href="#1583" id="1583">1583</a>
-<a href="#1584" id="1584">1584</a>
-<a href="#1585" id="1585">1585</a>
-<a href="#1586" id="1586">1586</a>
-<a href="#1587" id="1587">1587</a>
-<a href="#1588" id="1588">1588</a>
-<a href="#1589" id="1589">1589</a>
-<a href="#1590" id="1590">1590</a>
-<a href="#1591" id="1591">1591</a>
-<a href="#1592" id="1592">1592</a>
-<a href="#1593" id="1593">1593</a>
-<a href="#1594" id="1594">1594</a>
-<a href="#1595" id="1595">1595</a>
-<a href="#1596" id="1596">1596</a>
-<a href="#1597" id="1597">1597</a>
-<a href="#1598" id="1598">1598</a>
-<a href="#1599" id="1599">1599</a>
-<a href="#1600" id="1600">1600</a>
-<a href="#1601" id="1601">1601</a>
-<a href="#1602" id="1602">1602</a>
-<a href="#1603" id="1603">1603</a>
-<a href="#1604" id="1604">1604</a>
-<a href="#1605" id="1605">1605</a>
-<a href="#1606" id="1606">1606</a>
-<a href="#1607" id="1607">1607</a>
-<a href="#1608" id="1608">1608</a>
-<a href="#1609" id="1609">1609</a>
-<a href="#1610" id="1610">1610</a>
-<a href="#1611" id="1611">1611</a>
-<a href="#1612" id="1612">1612</a>
-<a href="#1613" id="1613">1613</a>
-<a href="#1614" id="1614">1614</a>
-<a href="#1615" id="1615">1615</a>
-<a href="#1616" id="1616">1616</a>
-<a href="#1617" id="1617">1617</a>
-<a href="#1618" id="1618">1618</a>
-<a href="#1619" id="1619">1619</a>
-<a href="#1620" id="1620">1620</a>
-<a href="#1621" id="1621">1621</a>
-<a href="#1622" id="1622">1622</a>
-<a href="#1623" id="1623">1623</a>
-<a href="#1624" id="1624">1624</a>
-<a href="#1625" id="1625">1625</a>
-<a href="#1626" id="1626">1626</a>
-<a href="#1627" id="1627">1627</a>
-<a href="#1628" id="1628">1628</a>
-<a href="#1629" id="1629">1629</a>
-<a href="#1630" id="1630">1630</a>
-<a href="#1631" id="1631">1631</a>
-<a href="#1632" id="1632">1632</a>
-<a href="#1633" id="1633">1633</a>
-<a href="#1634" id="1634">1634</a>
-<a href="#1635" id="1635">1635</a>
-<a href="#1636" id="1636">1636</a>
-<a href="#1637" id="1637">1637</a>
-<a href="#1638" id="1638">1638</a>
-<a href="#1639" id="1639">1639</a>
-<a href="#1640" id="1640">1640</a>
-<a href="#1641" id="1641">1641</a>
-<a href="#1642" id="1642">1642</a>
-<a href="#1643" id="1643">1643</a>
-<a href="#1644" id="1644">1644</a>
-<a href="#1645" id="1645">1645</a>
-<a href="#1646" id="1646">1646</a>
-<a href="#1647" id="1647">1647</a>
-<a href="#1648" id="1648">1648</a>
-<a href="#1649" id="1649">1649</a>
-<a href="#1650" id="1650">1650</a>
-<a href="#1651" id="1651">1651</a>
-<a href="#1652" id="1652">1652</a>
-<a href="#1653" id="1653">1653</a>
-<a href="#1654" id="1654">1654</a>
-<a href="#1655" id="1655">1655</a>
-<a href="#1656" id="1656">1656</a>
-<a href="#1657" id="1657">1657</a>
-<a href="#1658" id="1658">1658</a>
-<a href="#1659" id="1659">1659</a>
-<a href="#1660" id="1660">1660</a>
-<a href="#1661" id="1661">1661</a>
-<a href="#1662" id="1662">1662</a>
-<a href="#1663" id="1663">1663</a>
-<a href="#1664" id="1664">1664</a>
-<a href="#1665" id="1665">1665</a>
-<a href="#1666" id="1666">1666</a>
-<a href="#1667" id="1667">1667</a>
-<a href="#1668" id="1668">1668</a>
-<a href="#1669" id="1669">1669</a>
-<a href="#1670" id="1670">1670</a>
-<a href="#1671" id="1671">1671</a>
-<a href="#1672" id="1672">1672</a>
-<a href="#1673" id="1673">1673</a>
-<a href="#1674" id="1674">1674</a>
-<a href="#1675" id="1675">1675</a>
-<a href="#1676" id="1676">1676</a>
-<a href="#1677" id="1677">1677</a>
-<a href="#1678" id="1678">1678</a>
-<a href="#1679" id="1679">1679</a>
-<a href="#1680" id="1680">1680</a>
-<a href="#1681" id="1681">1681</a>
-<a href="#1682" id="1682">1682</a>
-<a href="#1683" id="1683">1683</a>
-<a href="#1684" id="1684">1684</a>
-<a href="#1685" id="1685">1685</a>
-<a href="#1686" id="1686">1686</a>
-<a href="#1687" id="1687">1687</a>
-<a href="#1688" id="1688">1688</a>
-<a href="#1689" id="1689">1689</a>
-<a href="#1690" id="1690">1690</a>
-<a href="#1691" id="1691">1691</a>
-<a href="#1692" id="1692">1692</a>
-<a href="#1693" id="1693">1693</a>
-<a href="#1694" id="1694">1694</a>
-<a href="#1695" id="1695">1695</a>
-<a href="#1696" id="1696">1696</a>
-<a href="#1697" id="1697">1697</a>
-<a href="#1698" id="1698">1698</a>
-<a href="#1699" id="1699">1699</a>
-<a href="#1700" id="1700">1700</a>
-<a href="#1701" id="1701">1701</a>
-<a href="#1702" id="1702">1702</a>
-<a href="#1703" id="1703">1703</a>
-<a href="#1704" id="1704">1704</a>
-<a href="#1705" id="1705">1705</a>
-<a href="#1706" id="1706">1706</a>
-<a href="#1707" id="1707">1707</a>
-<a href="#1708" id="1708">1708</a>
-<a href="#1709" id="1709">1709</a>
-<a href="#1710" id="1710">1710</a>
-<a href="#1711" id="1711">1711</a>
-<a href="#1712" id="1712">1712</a>
-<a href="#1713" id="1713">1713</a>
-<a href="#1714" id="1714">1714</a>
-<a href="#1715" id="1715">1715</a>
-<a href="#1716" id="1716">1716</a>
-<a href="#1717" id="1717">1717</a>
-<a href="#1718" id="1718">1718</a>
-<a href="#1719" id="1719">1719</a>
-<a href="#1720" id="1720">1720</a>
-<a href="#1721" id="1721">1721</a>
-<a href="#1722" id="1722">1722</a>
-<a href="#1723" id="1723">1723</a>
-<a href="#1724" id="1724">1724</a>
-<a href="#1725" id="1725">1725</a>
-<a href="#1726" id="1726">1726</a>
-<a href="#1727" id="1727">1727</a>
-<a href="#1728" id="1728">1728</a>
-<a href="#1729" id="1729">1729</a>
-<a href="#1730" id="1730">1730</a>
-<a href="#1731" id="1731">1731</a>
-<a href="#1732" id="1732">1732</a>
-<a href="#1733" id="1733">1733</a>
-<a href="#1734" id="1734">1734</a>
-<a href="#1735" id="1735">1735</a>
-<a href="#1736" id="1736">1736</a>
-<a href="#1737" id="1737">1737</a>
-<a href="#1738" id="1738">1738</a>
-<a href="#1739" id="1739">1739</a>
-<a href="#1740" id="1740">1740</a>
-<a href="#1741" id="1741">1741</a>
-<a href="#1742" id="1742">1742</a>
-<a href="#1743" id="1743">1743</a>
-<a href="#1744" id="1744">1744</a>
-<a href="#1745" id="1745">1745</a>
-<a href="#1746" id="1746">1746</a>
-<a href="#1747" id="1747">1747</a>
-<a href="#1748" id="1748">1748</a>
-<a href="#1749" id="1749">1749</a>
-<a href="#1750" id="1750">1750</a>
-<a href="#1751" id="1751">1751</a>
-<a href="#1752" id="1752">1752</a>
-<a href="#1753" id="1753">1753</a>
-<a href="#1754" id="1754">1754</a>
-<a href="#1755" id="1755">1755</a>
-<a href="#1756" id="1756">1756</a>
-<a href="#1757" id="1757">1757</a>
-<a href="#1758" id="1758">1758</a>
-<a href="#1759" id="1759">1759</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1776,14 +1586,17 @@
 
 </span><span class="doccomment">//! Zero-sized types used to parameterize generic array implementations
 
-</span><span class="kw">use </span><span class="kw">crate</span>::delta::shift_months;
+</span><span class="kw">use </span><span class="kw">crate</span>::delta::{
+    add_days_datetime, add_months_datetime, shift_months, sub_days_datetime, sub_months_datetime,
+};
+<span class="kw">use </span><span class="kw">crate</span>::temporal_conversions::as_datetime_with_timezone;
+<span class="kw">use </span><span class="kw">crate</span>::timezone::Tz;
 <span class="kw">use crate</span>::{ArrowNativeTypeOp, OffsetSizeTrait};
 <span class="kw">use </span>arrow_buffer::{i256, Buffer, OffsetBuffer};
 <span class="kw">use </span>arrow_data::decimal::{validate_decimal256_precision, validate_decimal_precision};
 <span class="kw">use </span>arrow_schema::{
-    ArrowError, DataType, IntervalUnit, TimeUnit, DECIMAL128_MAX_PRECISION,
-    DECIMAL128_MAX_SCALE, DECIMAL256_MAX_PRECISION, DECIMAL256_MAX_SCALE,
-    DECIMAL_DEFAULT_SCALE,
+    ArrowError, DataType, IntervalUnit, TimeUnit, DECIMAL128_MAX_PRECISION, DECIMAL128_MAX_SCALE,
+    DECIMAL256_MAX_PRECISION, DECIMAL256_MAX_SCALE, DECIMAL_DEFAULT_SCALE,
 };
 <span class="kw">use </span>chrono::{Duration, NaiveDate, NaiveDateTime};
 <span class="kw">use </span>half::f16;
@@ -2109,158 +1922,184 @@
     }
 }
 
+<span class="kw">fn </span>add_year_months&lt;T: ArrowTimestampType&gt;(
+    timestamp: &lt;T <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+    delta: &lt;IntervalYearMonthType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+    tz: Tz,
+) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;T <span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+    <span class="kw">let </span>months = IntervalYearMonthType::to_months(delta);
+    <span class="kw">let </span>res = as_datetime_with_timezone::&lt;T&gt;(timestamp, tz)<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = add_months_datetime(res, months)<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = res.naive_utc();
+    T::make_value(res)
+}
+
+<span class="kw">fn </span>add_day_time&lt;T: ArrowTimestampType&gt;(
+    timestamp: &lt;T <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+    delta: &lt;IntervalDayTimeType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+    tz: Tz,
+) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;T <span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+    <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(delta);
+    <span class="kw">let </span>res = as_datetime_with_timezone::&lt;T&gt;(timestamp, tz)<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = add_days_datetime(res, days)<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = res.checked_add_signed(Duration::milliseconds(ms <span class="kw">as </span>i64))<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = res.naive_utc();
+    T::make_value(res)
+}
+
+<span class="kw">fn </span>add_month_day_nano&lt;T: ArrowTimestampType&gt;(
+    timestamp: &lt;T <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+    delta: &lt;IntervalMonthDayNanoType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+    tz: Tz,
+) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;T <span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+    <span class="kw">let </span>(months, days, nanos) = IntervalMonthDayNanoType::to_parts(delta);
+    <span class="kw">let </span>res = as_datetime_with_timezone::&lt;T&gt;(timestamp, tz)<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = add_months_datetime(res, months)<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = add_days_datetime(res, days)<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = res.checked_add_signed(Duration::nanoseconds(nanos))<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = res.naive_utc();
+    T::make_value(res)
+}
+
+<span class="kw">fn </span>subtract_year_months&lt;T: ArrowTimestampType&gt;(
+    timestamp: &lt;T <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+    delta: &lt;IntervalYearMonthType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+    tz: Tz,
+) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;T <span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+    <span class="kw">let </span>months = IntervalYearMonthType::to_months(delta);
+    <span class="kw">let </span>res = as_datetime_with_timezone::&lt;T&gt;(timestamp, tz)<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = sub_months_datetime(res, months)<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = res.naive_utc();
+    T::make_value(res)
+}
+
+<span class="kw">fn </span>subtract_day_time&lt;T: ArrowTimestampType&gt;(
+    timestamp: &lt;T <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+    delta: &lt;IntervalDayTimeType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+    tz: Tz,
+) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;T <span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+    <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(delta);
+    <span class="kw">let </span>res = as_datetime_with_timezone::&lt;T&gt;(timestamp, tz)<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = sub_days_datetime(res, days)<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = res.checked_sub_signed(Duration::milliseconds(ms <span class="kw">as </span>i64))<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = res.naive_utc();
+    T::make_value(res)
+}
+
+<span class="kw">fn </span>subtract_month_day_nano&lt;T: ArrowTimestampType&gt;(
+    timestamp: &lt;T <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+    delta: &lt;IntervalMonthDayNanoType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+    tz: Tz,
+) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;T <span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+    <span class="kw">let </span>(months, days, nanos) = IntervalMonthDayNanoType::to_parts(delta);
+    <span class="kw">let </span>res = as_datetime_with_timezone::&lt;T&gt;(timestamp, tz)<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = sub_months_datetime(res, months)<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = sub_days_datetime(res, days)<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = res.checked_sub_signed(Duration::nanoseconds(nanos))<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = res.naive_utc();
+    T::make_value(res)
+}
+
 <span class="kw">impl </span>TimestampSecondType {
-    <span class="doccomment">/// Adds the given IntervalYearMonthType to an arrow TimestampSecondType
+    <span class="doccomment">/// Adds the given IntervalYearMonthType to an arrow TimestampSecondType.
+    ///
+    /// Returns `None` when it will result in overflow.
     ///
     /// # Arguments
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>add_year_months(
-        timestamp: &lt;TimestampSecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalYearMonthType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampSecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt; {
-        <span class="kw">let </span>prior = NaiveDateTime::from_timestamp_opt(timestamp, <span class="number">0</span>).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-
-        <span class="kw">let </span>months = IntervalYearMonthType::to_months(delta);
-        <span class="kw">let </span>posterior = shift_months(prior, months);
-        TimestampSecondType::make_value(posterior)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        add_year_months::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
-    <span class="doccomment">/// Adds the given IntervalDayTimeType to an arrow TimestampSecondType
+    <span class="doccomment">/// Adds the given IntervalDayTimeType to an arrow TimestampSecondType.
+    ///
+    /// Returns `None` when it will result in overflow.
     ///
     /// # Arguments
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>add_day_time(
-        timestamp: &lt;TimestampSecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalDayTimeType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampSecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt; {
-        <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(delta);
-        <span class="kw">let </span>res = NaiveDateTime::from_timestamp_opt(timestamp, <span class="number">0</span>).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::days(days <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::milliseconds(ms <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        TimestampSecondType::make_value(res)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        add_day_time::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
     <span class="doccomment">/// Adds the given IntervalMonthDayNanoType to an arrow TimestampSecondType
     ///
+    /// Returns `None` when it will result in overflow.
     /// # Arguments
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>add_month_day_nano(
-        timestamp: &lt;TimestampSecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalMonthDayNanoType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampSecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt; {
-        <span class="kw">let </span>(months, days, nanos) = IntervalMonthDayNanoType::to_parts(delta);
-        <span class="kw">let </span>res = NaiveDateTime::from_timestamp_opt(timestamp, <span class="number">0</span>).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = shift_months(res, months);
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::days(days <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::nanoseconds(nanos))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        TimestampSecondType::make_value(res)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        add_month_day_nano::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
     <span class="doccomment">/// Subtracts the given IntervalYearMonthType to an arrow TimestampSecondType
     ///
+    /// Returns `None` when it will result in overflow.
+    ///
     /// # Arguments
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>subtract_year_months(
-        timestamp: &lt;TimestampSecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalYearMonthType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampSecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt; {
-        <span class="kw">let </span>prior = NaiveDateTime::from_timestamp_opt(timestamp, <span class="number">0</span>).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>months = IntervalYearMonthType::to_months(-delta);
-        <span class="kw">let </span>posterior = shift_months(prior, months);
-        TimestampSecondType::make_value(posterior)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        subtract_year_months::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
     <span class="doccomment">/// Subtracts the given IntervalDayTimeType to an arrow TimestampSecondType
     ///
+    /// Returns `None` when it will result in overflow.
+    ///
     /// # Arguments
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>subtract_day_time(
-        timestamp: &lt;TimestampSecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalDayTimeType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampSecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt; {
-        <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(-delta);
-        <span class="kw">let </span>res = NaiveDateTime::from_timestamp_opt(timestamp, <span class="number">0</span>).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::days(days <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::microseconds(ms <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        TimestampSecondType::make_value(res)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        subtract_day_time::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
     <span class="doccomment">/// Subtracts the given IntervalMonthDayNanoType to an arrow TimestampSecondType
     ///
+    /// Returns `None` when it will result in overflow.
+    ///
     /// # Arguments
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>subtract_month_day_nano(
-        timestamp: &lt;TimestampSecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalMonthDayNanoType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampSecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt; {
-        <span class="kw">let </span>(months, days, nanos) = IntervalMonthDayNanoType::to_parts(delta);
-        <span class="kw">let </span>res = NaiveDateTime::from_timestamp_opt(timestamp, <span class="number">0</span>).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = shift_months(res, -months);
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::days(-days <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::nanoseconds(-nanos))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        TimestampSecondType::make_value(res)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        subtract_month_day_nano::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 }
 
@@ -2271,18 +2110,13 @@
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>add_year_months(
-        timestamp: &lt;TimestampMicrosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalYearMonthType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampMicrosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt;
-    {
-        <span class="kw">let </span>prior = NaiveDateTime::from_timestamp_micros(timestamp).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>months = IntervalYearMonthType::to_months(delta);
-        <span class="kw">let </span>posterior = shift_months(prior, months);
-        TimestampMicrosecondType::make_value(posterior)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        add_year_months::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
     <span class="doccomment">/// Adds the given IntervalDayTimeType to an arrow TimestampMicrosecondType
@@ -2291,27 +2125,13 @@
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>add_day_time(
-        timestamp: &lt;TimestampMicrosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalDayTimeType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampMicrosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt;
-    {
-        <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(delta);
-        <span class="kw">let </span>res = NaiveDateTime::from_timestamp_micros(timestamp).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::days(days <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::milliseconds(ms <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        TimestampMicrosecondType::make_value(res)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        add_day_time::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
     <span class="doccomment">/// Adds the given IntervalMonthDayNanoType to an arrow TimestampMicrosecondType
@@ -2320,28 +2140,13 @@
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>add_month_day_nano(
-        timestamp: &lt;TimestampMicrosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalMonthDayNanoType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampMicrosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt;
-    {
-        <span class="kw">let </span>(months, days, nanos) = IntervalMonthDayNanoType::to_parts(delta);
-        <span class="kw">let </span>res = NaiveDateTime::from_timestamp_micros(timestamp).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = shift_months(res, months);
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::days(days <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::nanoseconds(nanos))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        TimestampMicrosecondType::make_value(res)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        add_month_day_nano::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
     <span class="doccomment">/// Subtracts the given IntervalYearMonthType to an arrow TimestampMicrosecondType
@@ -2350,18 +2155,13 @@
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>subtract_year_months(
-        timestamp: &lt;TimestampMicrosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalYearMonthType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampMicrosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt;
-    {
-        <span class="kw">let </span>prior = NaiveDateTime::from_timestamp_micros(timestamp).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>months = IntervalYearMonthType::to_months(-delta);
-        <span class="kw">let </span>posterior = shift_months(prior, months);
-        TimestampMicrosecondType::make_value(posterior)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        subtract_year_months::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
     <span class="doccomment">/// Subtracts the given IntervalDayTimeType to an arrow TimestampMicrosecondType
@@ -2370,27 +2170,13 @@
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>subtract_day_time(
-        timestamp: &lt;TimestampMicrosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalDayTimeType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampMicrosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt;
-    {
-        <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(-delta);
-        <span class="kw">let </span>res = NaiveDateTime::from_timestamp_micros(timestamp).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::days(days <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::milliseconds(ms <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        TimestampMicrosecondType::make_value(res)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        subtract_day_time::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
     <span class="doccomment">/// Subtracts the given IntervalMonthDayNanoType to an arrow TimestampMicrosecondType
@@ -2399,28 +2185,13 @@
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>subtract_month_day_nano(
-        timestamp: &lt;TimestampMicrosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalMonthDayNanoType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampMicrosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt;
-    {
-        <span class="kw">let </span>(months, days, nanos) = IntervalMonthDayNanoType::to_parts(delta);
-        <span class="kw">let </span>res = NaiveDateTime::from_timestamp_micros(timestamp).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = shift_months(res, -months);
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::days(-days <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::nanoseconds(-nanos))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        TimestampMicrosecondType::make_value(res)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        subtract_month_day_nano::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 }
 
@@ -2431,18 +2202,13 @@
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>add_year_months(
-        timestamp: &lt;TimestampMillisecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalYearMonthType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampMillisecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt;
-    {
-        <span class="kw">let </span>prior = NaiveDateTime::from_timestamp_millis(timestamp).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>months = IntervalYearMonthType::to_months(delta);
-        <span class="kw">let </span>posterior = shift_months(prior, months);
-        TimestampMillisecondType::make_value(posterior)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        add_year_months::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
     <span class="doccomment">/// Adds the given IntervalDayTimeType to an arrow TimestampMillisecondType
@@ -2451,27 +2217,13 @@
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>add_day_time(
-        timestamp: &lt;TimestampMillisecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalDayTimeType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampMillisecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt;
-    {
-        <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(delta);
-        <span class="kw">let </span>res = NaiveDateTime::from_timestamp_millis(timestamp).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::days(days <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::milliseconds(ms <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        TimestampMillisecondType::make_value(res)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        add_day_time::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
     <span class="doccomment">/// Adds the given IntervalMonthDayNanoType to an arrow TimestampMillisecondType
@@ -2480,28 +2232,13 @@
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>add_month_day_nano(
-        timestamp: &lt;TimestampMillisecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalMonthDayNanoType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampMillisecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt;
-    {
-        <span class="kw">let </span>(months, days, nanos) = IntervalMonthDayNanoType::to_parts(delta);
-        <span class="kw">let </span>res = NaiveDateTime::from_timestamp_millis(timestamp).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = shift_months(res, months);
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::days(days <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::nanoseconds(nanos))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        TimestampMillisecondType::make_value(res)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        add_month_day_nano::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
     <span class="doccomment">/// Subtracts the given IntervalYearMonthType to an arrow TimestampMillisecondType
@@ -2510,18 +2247,13 @@
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>subtract_year_months(
-        timestamp: &lt;TimestampMillisecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalYearMonthType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampMillisecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt;
-    {
-        <span class="kw">let </span>prior = NaiveDateTime::from_timestamp_millis(timestamp).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>months = IntervalYearMonthType::to_months(-delta);
-        <span class="kw">let </span>posterior = shift_months(prior, months);
-        TimestampMillisecondType::make_value(posterior)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        subtract_year_months::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
     <span class="doccomment">/// Subtracts the given IntervalDayTimeType to an arrow TimestampMillisecondType
@@ -2530,27 +2262,13 @@
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>subtract_day_time(
-        timestamp: &lt;TimestampMillisecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalDayTimeType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampMillisecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt;
-    {
-        <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(-delta);
-        <span class="kw">let </span>res = NaiveDateTime::from_timestamp_millis(timestamp).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::days(days <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::milliseconds(ms <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        TimestampMillisecondType::make_value(res)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        subtract_day_time::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
     <span class="doccomment">/// Subtracts the given IntervalMonthDayNanoType to an arrow TimestampMillisecondType
@@ -2559,28 +2277,13 @@
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>subtract_month_day_nano(
-        timestamp: &lt;TimestampMillisecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalMonthDayNanoType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampMillisecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt;
-    {
-        <span class="kw">let </span>(months, days, nanos) = IntervalMonthDayNanoType::to_parts(delta);
-        <span class="kw">let </span>res = NaiveDateTime::from_timestamp_millis(timestamp).ok_or_else(|| {
-            ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = shift_months(res, -months);
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::days(-days <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::nanoseconds(-nanos))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        TimestampMillisecondType::make_value(res)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        subtract_month_day_nano::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 }
 
@@ -2591,19 +2294,13 @@
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>add_year_months(
-        timestamp: &lt;TimestampNanosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalYearMonthType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampNanosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt; {
-        <span class="kw">let </span>seconds = timestamp / <span class="number">1_000_000_000</span>;
-        <span class="kw">let </span>nanos = timestamp % <span class="number">1_000_000_000</span>;
-        <span class="kw">let </span>prior = NaiveDateTime::from_timestamp_opt(seconds, nanos <span class="kw">as </span>u32).ok_or_else(
-            || ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()),
-        )<span class="question-mark">?</span>;
-        <span class="kw">let </span>months = IntervalYearMonthType::to_months(delta);
-        <span class="kw">let </span>posterior = shift_months(prior, months);
-        TimestampNanosecondType::make_value(posterior)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        add_year_months::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
     <span class="doccomment">/// Adds the given IntervalDayTimeType to an arrow TimestampNanosecondType
@@ -2612,28 +2309,13 @@
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>add_day_time(
-        timestamp: &lt;TimestampNanosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalDayTimeType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampNanosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt; {
-        <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(delta);
-        <span class="kw">let </span>seconds = timestamp / <span class="number">1_000_000_000</span>;
-        <span class="kw">let </span>nanos = timestamp % <span class="number">1_000_000_000</span>;
-        <span class="kw">let </span>res = NaiveDateTime::from_timestamp_opt(seconds, nanos <span class="kw">as </span>u32).ok_or_else(
-            || ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()),
-        )<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::days(days <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::milliseconds(ms <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        TimestampNanosecondType::make_value(res)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        add_day_time::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
     <span class="doccomment">/// Adds the given IntervalMonthDayNanoType to an arrow TimestampNanosecondType
@@ -2642,114 +2324,58 @@
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>add_month_day_nano(
-        timestamp: &lt;TimestampNanosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalMonthDayNanoType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampNanosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt; {
-        <span class="kw">let </span>seconds = timestamp / <span class="number">1_000_000_000</span>;
-        <span class="kw">let </span>nanos = timestamp % <span class="number">1_000_000_000</span>;
-        <span class="kw">let </span>res = NaiveDateTime::from_timestamp_opt(seconds, nanos <span class="kw">as </span>u32).ok_or_else(
-            || ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()),
-        )<span class="question-mark">?</span>;
-
-        <span class="kw">let </span>(months, days, nanos) = IntervalMonthDayNanoType::to_parts(delta);
-        <span class="kw">let </span>res = shift_months(res, months);
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::days(days <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::nanoseconds(nanos))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        TimestampNanosecondType::make_value(res)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        add_month_day_nano::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
-    <span class="doccomment">/// Subtracs the given IntervalYearMonthType to an arrow TimestampNanosecondType
+    <span class="doccomment">/// Subtracts the given IntervalYearMonthType to an arrow TimestampNanosecondType
     ///
     /// # Arguments
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>subtract_year_months(
-        timestamp: &lt;TimestampNanosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalYearMonthType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampNanosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt; {
-        <span class="kw">let </span>seconds = timestamp / <span class="number">1_000_000_000</span>;
-        <span class="kw">let </span>nanos = timestamp % <span class="number">1_000_000_000</span>;
-        <span class="kw">let </span>prior = NaiveDateTime::from_timestamp_opt(seconds, nanos <span class="kw">as </span>u32).ok_or_else(
-            || ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()),
-        )<span class="question-mark">?</span>;
-        <span class="kw">let </span>months = IntervalYearMonthType::to_months(-delta);
-        <span class="kw">let </span>posterior = shift_months(prior, months);
-        TimestampNanosecondType::make_value(posterior)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        subtract_year_months::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
-    <span class="doccomment">/// Subtracs the given IntervalDayTimeType to an arrow TimestampNanosecondType
+    <span class="doccomment">/// Subtracts the given IntervalDayTimeType to an arrow TimestampNanosecondType
     ///
     /// # Arguments
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>subtract_day_time(
-        timestamp: &lt;TimestampNanosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalDayTimeType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampNanosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt; {
-        <span class="kw">let </span>seconds = timestamp / <span class="number">1_000_000_000</span>;
-        <span class="kw">let </span>nanos = timestamp % <span class="number">1_000_000_000</span>;
-        <span class="kw">let </span>res = NaiveDateTime::from_timestamp_opt(seconds, nanos <span class="kw">as </span>u32).ok_or_else(
-            || ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()),
-        )<span class="question-mark">?</span>;
-
-        <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(-delta);
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::days(days <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::milliseconds(ms <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        TimestampNanosecondType::make_value(res)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        subtract_day_time::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 
-    <span class="doccomment">/// Subtracs the given IntervalMonthDayNanoType to an arrow TimestampNanosecondType
+    <span class="doccomment">/// Subtracts the given IntervalMonthDayNanoType to an arrow TimestampNanosecondType
     ///
     /// # Arguments
     ///
     /// * `timestamp` - The date on which to perform the operation
     /// * `delta` - The interval to add
+    /// * `tz` - The timezone in which to interpret `timestamp`
     </span><span class="kw">pub fn </span>subtract_month_day_nano(
-        timestamp: &lt;TimestampNanosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
+        timestamp: &lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalMonthDayNanoType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;&lt;TimestampNanosecondType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native, ArrowError&gt; {
-        <span class="kw">let </span>seconds = timestamp / <span class="number">1_000_000_000</span>;
-        <span class="kw">let </span>nanos = timestamp % <span class="number">1_000_000_000</span>;
-        <span class="kw">let </span>res = NaiveDateTime::from_timestamp_opt(seconds, nanos <span class="kw">as </span>u32).ok_or_else(
-            || ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()),
-        )<span class="question-mark">?</span>;
-
-        <span class="kw">let </span>(months, days, nanos) = IntervalMonthDayNanoType::to_parts(delta);
-        <span class="kw">let </span>res = shift_months(res, -months);
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::days(-days <span class="kw">as </span>i64))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        <span class="kw">let </span>res = res
-            .checked_add_signed(Duration::nanoseconds(-nanos))
-            .ok_or_else(|| {
-                ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string())
-            })<span class="question-mark">?</span>;
-        TimestampNanosecondType::make_value(res)
-            .ok_or_else(|| ArrowError::ComputeError(<span class="string">&quot;Timestamp out of range&quot;</span>.to_string()))
+        tz: Tz,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>ArrowPrimitiveType&gt;::Native&gt; {
+        subtract_month_day_nano::&lt;<span class="self">Self</span>&gt;(timestamp, delta, tz)
     }
 }
 
@@ -2760,6 +2386,7 @@
     ///
     /// * `years` - The number of years (+/-) represented in this interval
     /// * `months` - The number of months (+/-) represented in this interval
+    </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>make_value(
         years: i32,
         months: i32,
@@ -2774,6 +2401,7 @@
     /// # Arguments
     ///
     /// * `i` - The IntervalYearMonthType::Native to convert
+    </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>to_months(i: &lt;IntervalYearMonthType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native) -&gt; i32 {
         i
     }
@@ -2786,6 +2414,7 @@
     ///
     /// * `days` - The number of days (+/-) represented in this interval
     /// * `millis` - The number of milliseconds (+/-) represented in this interval
+    </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>make_value(
         days: i32,
         millis: i32,
@@ -2812,9 +2441,8 @@
     /// # Arguments
     ///
     /// * `i` - The IntervalDayTimeType to convert
-    </span><span class="kw">pub fn </span>to_parts(
-        i: &lt;IntervalDayTimeType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
-    ) -&gt; (i32, i32) {
+    </span><span class="attr">#[inline]
+    </span><span class="kw">pub fn </span>to_parts(i: &lt;IntervalDayTimeType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native) -&gt; (i32, i32) {
         <span class="kw">let </span>days = (i &gt;&gt; <span class="number">32</span>) <span class="kw">as </span>i32;
         <span class="kw">let </span>ms = i <span class="kw">as </span>i32;
         (days, ms)
@@ -2829,6 +2457,7 @@
     /// * `months` - The number of months (+/-) represented in this interval
     /// * `days` - The number of days (+/-) represented in this interval
     /// * `nanos` - The number of nanoseconds (+/-) represented in this interval
+    </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>make_value(
         months: i32,
         days: i32,
@@ -2857,6 +2486,7 @@
     /// # Arguments
     ///
     /// * `i` - The IntervalMonthDayNanoType to convert
+    </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>to_parts(
         i: &lt;IntervalMonthDayNanoType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
     ) -&gt; (i32, i32, i64) {
@@ -2965,10 +2595,10 @@
         date: &lt;Date32Type <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalDayTimeType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
     ) -&gt; &lt;Date32Type <span class="kw">as </span>ArrowPrimitiveType&gt;::Native {
-        <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(-delta);
+        <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(delta);
         <span class="kw">let </span>res = Date32Type::to_naive_date(date);
-        <span class="kw">let </span>res = res.add(Duration::days(days <span class="kw">as </span>i64));
-        <span class="kw">let </span>res = res.add(Duration::milliseconds(ms <span class="kw">as </span>i64));
+        <span class="kw">let </span>res = res.sub(Duration::days(days <span class="kw">as </span>i64));
+        <span class="kw">let </span>res = res.sub(Duration::milliseconds(ms <span class="kw">as </span>i64));
         Date32Type::from_naive_date(res)
     }
 
@@ -2985,8 +2615,8 @@
         <span class="kw">let </span>(months, days, nanos) = IntervalMonthDayNanoType::to_parts(delta);
         <span class="kw">let </span>res = Date32Type::to_naive_date(date);
         <span class="kw">let </span>res = shift_months(res, -months);
-        <span class="kw">let </span>res = res.add(Duration::days(-days <span class="kw">as </span>i64));
-        <span class="kw">let </span>res = res.add(Duration::nanoseconds(-nanos));
+        <span class="kw">let </span>res = res.sub(Duration::days(days <span class="kw">as </span>i64));
+        <span class="kw">let </span>res = res.sub(Duration::nanoseconds(nanos));
         Date32Type::from_naive_date(res)
     }
 }
@@ -3089,10 +2719,10 @@
         date: &lt;Date64Type <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
         delta: &lt;IntervalDayTimeType <span class="kw">as </span>ArrowPrimitiveType&gt;::Native,
     ) -&gt; &lt;Date64Type <span class="kw">as </span>ArrowPrimitiveType&gt;::Native {
-        <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(-delta);
+        <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(delta);
         <span class="kw">let </span>res = Date64Type::to_naive_date(date);
-        <span class="kw">let </span>res = res.add(Duration::days(days <span class="kw">as </span>i64));
-        <span class="kw">let </span>res = res.add(Duration::milliseconds(ms <span class="kw">as </span>i64));
+        <span class="kw">let </span>res = res.sub(Duration::days(days <span class="kw">as </span>i64));
+        <span class="kw">let </span>res = res.sub(Duration::milliseconds(ms <span class="kw">as </span>i64));
         Date64Type::from_naive_date(res)
     }
 
@@ -3109,8 +2739,8 @@
         <span class="kw">let </span>(months, days, nanos) = IntervalMonthDayNanoType::to_parts(delta);
         <span class="kw">let </span>res = Date64Type::to_naive_date(date);
         <span class="kw">let </span>res = shift_months(res, -months);
-        <span class="kw">let </span>res = res.add(Duration::days(-days <span class="kw">as </span>i64));
-        <span class="kw">let </span>res = res.add(Duration::nanoseconds(-nanos));
+        <span class="kw">let </span>res = res.sub(Duration::days(days <span class="kw">as </span>i64));
+        <span class="kw">let </span>res = res.sub(Duration::nanoseconds(nanos));
         Date64Type::from_naive_date(res)
     }
 }
@@ -3156,10 +2786,7 @@
     </span><span class="kw">fn </span>format_decimal(value: <span class="self">Self</span>::Native, precision: u8, scale: i8) -&gt; String;
 
     <span class="doccomment">/// Validates that `value` contains no more than `precision` decimal digits
-    </span><span class="kw">fn </span>validate_decimal_precision(
-        value: <span class="self">Self</span>::Native,
-        precision: u8,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt;;
+    </span><span class="kw">fn </span>validate_decimal_precision(value: <span class="self">Self</span>::Native, precision: u8) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt;;
 }
 
 <span class="doccomment">/// Validate that `precision` and `scale` are valid for `T`
@@ -3303,13 +2930,15 @@
     }
 
     <span class="kw">impl </span>ByteArrayNativeType <span class="kw">for </span>[u8] {
-        <span class="kw">unsafe fn </span>from_bytes_unchecked(b: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="kw-2">&amp;</span><span class="self">Self </span>{
+        <span class="attr">#[inline]
+        </span><span class="kw">unsafe fn </span>from_bytes_unchecked(b: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="kw-2">&amp;</span><span class="self">Self </span>{
             b
         }
     }
 
     <span class="kw">impl </span>ByteArrayNativeType <span class="kw">for </span>str {
-        <span class="kw">unsafe fn </span>from_bytes_unchecked(b: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="kw-2">&amp;</span><span class="self">Self </span>{
+        <span class="attr">#[inline]
+        </span><span class="kw">unsafe fn </span>from_bytes_unchecked(b: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="kw-2">&amp;</span><span class="self">Self </span>{
             std::str::from_utf8_unchecked(b)
         }
     }
@@ -3333,10 +2962,7 @@
     </span><span class="kw">const </span>DATA_TYPE: DataType;
 
     <span class="doccomment">/// Verifies that every consecutive pair of `offsets` denotes a valid slice of `values`
-    </span><span class="kw">fn </span>validate(
-        offsets: <span class="kw-2">&amp;</span>OffsetBuffer&lt;<span class="self">Self</span>::Offset&gt;,
-        values: <span class="kw-2">&amp;</span>Buffer,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt;;
+    </span><span class="kw">fn </span>validate(offsets: <span class="kw-2">&amp;</span>OffsetBuffer&lt;<span class="self">Self</span>::Offset&gt;, values: <span class="kw-2">&amp;</span>Buffer) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt;;
 }
 
 <span class="doccomment">/// [`ByteArrayType`] for string arrays
@@ -3355,10 +2981,7 @@
         DataType::Utf8
     };
 
-    <span class="kw">fn </span>validate(
-        offsets: <span class="kw-2">&amp;</span>OffsetBuffer&lt;<span class="self">Self</span>::Offset&gt;,
-        values: <span class="kw-2">&amp;</span>Buffer,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt; {
+    <span class="kw">fn </span>validate(offsets: <span class="kw-2">&amp;</span>OffsetBuffer&lt;<span class="self">Self</span>::Offset&gt;, values: <span class="kw-2">&amp;</span>Buffer) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt; {
         <span class="comment">// Verify that the slice as a whole is valid UTF-8
         </span><span class="kw">let </span>validated = std::str::from_utf8(values).map_err(|e| {
             ArrowError::InvalidArgumentError(<span class="macro">format!</span>(<span class="string">&quot;Encountered non UTF-8 data: {e}&quot;</span>))
@@ -3404,10 +3027,7 @@
         DataType::Binary
     };
 
-    <span class="kw">fn </span>validate(
-        offsets: <span class="kw-2">&amp;</span>OffsetBuffer&lt;<span class="self">Self</span>::Offset&gt;,
-        values: <span class="kw-2">&amp;</span>Buffer,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt; {
+    <span class="kw">fn </span>validate(offsets: <span class="kw-2">&amp;</span>OffsetBuffer&lt;<span class="self">Self</span>::Offset&gt;, values: <span class="kw-2">&amp;</span>Buffer) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt; {
         <span class="comment">// offsets are guaranteed to be monotonically increasing and non-empty
         </span><span class="kw">let </span>max_offset = offsets.last().unwrap().as_usize();
         <span class="kw">if </span>values.len() &lt; max_offset {
@@ -3429,7 +3049,6 @@
 </span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use </span>arrow_data::{layout, BufferSpec};
-    <span class="kw">use </span>std::mem::size_of;
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>month_day_nano_should_roundtrip() {
@@ -3476,7 +3095,8 @@
         <span class="macro">assert_eq!</span>(
             spec,
             <span class="kw-2">&amp;</span>BufferSpec::FixedWidth {
-                byte_width: size_of::&lt;T::Native&gt;()
+                byte_width: std::mem::size_of::&lt;T::Native&gt;(),
+                alignment: std::mem::align_of::&lt;T::Native&gt;(),
             }
         );
     }

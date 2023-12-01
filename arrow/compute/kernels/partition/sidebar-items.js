@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["lexicographical_partition_ranges"]};
+window.SIDEBAR_ITEMS = {"fn":["lexicographical_partition_ranges","partition"],"struct":["Partitions"]};

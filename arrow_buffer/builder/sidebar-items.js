@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["boolean","null"],"struct":["BooleanBufferBuilder","NullBufferBuilder"]};
+window.SIDEBAR_ITEMS = {"mod":["boolean","null"],"struct":["BooleanBufferBuilder","BufferBuilder","NullBufferBuilder"]};

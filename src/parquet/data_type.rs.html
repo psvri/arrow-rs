@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/data_type.rs`."><title>data_type.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-a23c9d150ad85d8b.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.72.0-nightly (f4b80cacf 2023-06-30)" data-channel="nightly" data-search-js="search-91b58767224854cb.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ><script src="../../static.files/storage-59fd9b8ccb335783.js"></script><script defer src="../../static.files/source-script-106908c7a7964ba4.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../parquet/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/data_type.rs`."><title>data_type.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e6a78389201e676c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (87e1447aa 2023-11-30)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1284,50 +1284,6 @@
 <a href="#1284" id="1284">1284</a>
 <a href="#1285" id="1285">1285</a>
 <a href="#1286" id="1286">1286</a>
-<a href="#1287" id="1287">1287</a>
-<a href="#1288" id="1288">1288</a>
-<a href="#1289" id="1289">1289</a>
-<a href="#1290" id="1290">1290</a>
-<a href="#1291" id="1291">1291</a>
-<a href="#1292" id="1292">1292</a>
-<a href="#1293" id="1293">1293</a>
-<a href="#1294" id="1294">1294</a>
-<a href="#1295" id="1295">1295</a>
-<a href="#1296" id="1296">1296</a>
-<a href="#1297" id="1297">1297</a>
-<a href="#1298" id="1298">1298</a>
-<a href="#1299" id="1299">1299</a>
-<a href="#1300" id="1300">1300</a>
-<a href="#1301" id="1301">1301</a>
-<a href="#1302" id="1302">1302</a>
-<a href="#1303" id="1303">1303</a>
-<a href="#1304" id="1304">1304</a>
-<a href="#1305" id="1305">1305</a>
-<a href="#1306" id="1306">1306</a>
-<a href="#1307" id="1307">1307</a>
-<a href="#1308" id="1308">1308</a>
-<a href="#1309" id="1309">1309</a>
-<a href="#1310" id="1310">1310</a>
-<a href="#1311" id="1311">1311</a>
-<a href="#1312" id="1312">1312</a>
-<a href="#1313" id="1313">1313</a>
-<a href="#1314" id="1314">1314</a>
-<a href="#1315" id="1315">1315</a>
-<a href="#1316" id="1316">1316</a>
-<a href="#1317" id="1317">1317</a>
-<a href="#1318" id="1318">1318</a>
-<a href="#1319" id="1319">1319</a>
-<a href="#1320" id="1320">1320</a>
-<a href="#1321" id="1321">1321</a>
-<a href="#1322" id="1322">1322</a>
-<a href="#1323" id="1323">1323</a>
-<a href="#1324" id="1324">1324</a>
-<a href="#1325" id="1325">1325</a>
-<a href="#1326" id="1326">1326</a>
-<a href="#1327" id="1327">1327</a>
-<a href="#1328" id="1328">1328</a>
-<a href="#1329" id="1329">1329</a>
-<a href="#1330" id="1330">1330</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1348,6 +1304,7 @@
 </span><span class="doccomment">//! Data types that connect Parquet physical types with their Rust-specific
 //! representations.
 </span><span class="kw">use </span>bytes::Bytes;
+<span class="kw">use </span>half::f16;
 <span class="kw">use </span>std::cmp::Ordering;
 <span class="kw">use </span>std::fmt;
 <span class="kw">use </span>std::mem;
@@ -1358,7 +1315,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::column::reader::{ColumnReader, ColumnReaderImpl};
 <span class="kw">use </span><span class="kw">crate</span>::column::writer::{ColumnWriter, ColumnWriterImpl};
 <span class="kw">use </span><span class="kw">crate</span>::errors::{ParquetError, <span class="prelude-ty">Result</span>};
-<span class="kw">use </span><span class="kw">crate</span>::util::{bit_util::FromBytes, memory::ByteBufferPtr};
+<span class="kw">use </span><span class="kw">crate</span>::util::bit_util::FromBytes;
 
 <span class="doccomment">/// Rust representation for logical type INT96, value is backed by an array of `u32`.
 /// The type only takes 12 bytes, without extra padding.
@@ -1433,7 +1390,7 @@
 /// Value is backed by a byte buffer.
 </span><span class="attr">#[derive(Clone, Default)]
 </span><span class="kw">pub struct </span>ByteArray {
-    data: <span class="prelude-ty">Option</span>&lt;ByteBufferPtr&gt;,
+    data: <span class="prelude-ty">Option</span>&lt;Bytes&gt;,
 }
 
 <span class="comment">// Special case Debug that prints out byte arrays that are valid utf8 as &amp;str&#39;s
@@ -1460,7 +1417,7 @@
             (<span class="prelude-val">Some</span>(<span class="kw">_</span>), <span class="prelude-val">None</span>) =&gt; <span class="prelude-val">Some</span>(Ordering::Greater),
             (<span class="prelude-val">Some</span>(self_data), <span class="prelude-val">Some</span>(other_data)) =&gt; {
                 <span class="comment">// compare slices directly
-                </span>self_data.data().partial_cmp(other_data.data())
+                </span>self_data.partial_cmp(<span class="kw-2">&amp;</span>other_data)
             }
         }
     }
@@ -1497,7 +1454,7 @@
 
     <span class="doccomment">/// Set data from another byte buffer.
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>set_data(<span class="kw-2">&amp;mut </span><span class="self">self</span>, data: ByteBufferPtr) {
+    </span><span class="kw">pub fn </span>set_data(<span class="kw-2">&amp;mut </span><span class="self">self</span>, data: Bytes) {
         <span class="self">self</span>.data = <span class="prelude-val">Some</span>(data);
     }
 
@@ -1508,7 +1465,7 @@
             <span class="self">self</span>.data
                 .as_ref()
                 .expect(<span class="string">&quot;set_data should have been called&quot;</span>)
-                .range(start, len),
+                .slice(start..start + len),
         )
     }
 
@@ -1524,7 +1481,7 @@
 <span class="kw">impl </span>From&lt;Vec&lt;u8&gt;&gt; <span class="kw">for </span>ByteArray {
     <span class="kw">fn </span>from(buf: Vec&lt;u8&gt;) -&gt; ByteArray {
         <span class="self">Self </span>{
-            data: <span class="prelude-val">Some</span>(ByteBufferPtr::new(buf)),
+            data: <span class="prelude-val">Some</span>(buf.into()),
         }
     }
 }
@@ -1534,7 +1491,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>v = Vec::new();
         v.extend_from_slice(b);
         <span class="self">Self </span>{
-            data: <span class="prelude-val">Some</span>(ByteBufferPtr::new(v)),
+            data: <span class="prelude-val">Some</span>(v.into()),
         }
     }
 }
@@ -1544,20 +1501,20 @@
         <span class="kw">let </span><span class="kw-2">mut </span>v = Vec::new();
         v.extend_from_slice(s.as_bytes());
         <span class="self">Self </span>{
-            data: <span class="prelude-val">Some</span>(ByteBufferPtr::new(v)),
+            data: <span class="prelude-val">Some</span>(v.into()),
         }
-    }
-}
-
-<span class="kw">impl </span>From&lt;ByteBufferPtr&gt; <span class="kw">for </span>ByteArray {
-    <span class="kw">fn </span>from(ptr: ByteBufferPtr) -&gt; ByteArray {
-        <span class="self">Self </span>{ data: <span class="prelude-val">Some</span>(ptr) }
     }
 }
 
 <span class="kw">impl </span>From&lt;Bytes&gt; <span class="kw">for </span>ByteArray {
     <span class="kw">fn </span>from(value: Bytes) -&gt; <span class="self">Self </span>{
-        ByteBufferPtr::from(value).into()
+        <span class="self">Self </span>{ data: <span class="prelude-val">Some</span>(value) }
+    }
+}
+
+<span class="kw">impl </span>From&lt;f16&gt; <span class="kw">for </span>ByteArray {
+    <span class="kw">fn </span>from(value: f16) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::from(value.to_le_bytes().as_slice())
     }
 }
 
@@ -1869,9 +1826,7 @@
 
 <span class="kw">impl </span>AsBytes <span class="kw">for </span>Int96 {
     <span class="kw">fn </span>as_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8] {
-        <span class="kw">unsafe </span>{
-            std::slice::from_raw_parts(<span class="self">self</span>.data() <span class="kw">as </span><span class="kw-2">*const </span>[u32] <span class="kw">as </span><span class="kw-2">*const </span>u8, <span class="number">12</span>)
-        }
+        <span class="kw">unsafe </span>{ std::slice::from_raw_parts(<span class="self">self</span>.data() <span class="kw">as </span><span class="kw-2">*const </span>[u32] <span class="kw">as </span><span class="kw-2">*const </span>u8, <span class="number">12</span>) }
     }
 }
 
@@ -1912,9 +1867,10 @@
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>private {
+    <span class="kw">use </span>bytes::Bytes;
+
     <span class="kw">use </span><span class="kw">crate</span>::encodings::decoding::PlainDecoderDetails;
     <span class="kw">use </span><span class="kw">crate</span>::util::bit_util::{read_num_bytes, BitReader, BitWriter};
-    <span class="kw">use </span><span class="kw">crate</span>::util::memory::ByteBufferPtr;
 
     <span class="kw">use </span><span class="kw">crate</span>::basic::Type;
     <span class="kw">use </span>std::convert::TryInto;
@@ -1950,17 +1906,10 @@
         ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;;
 
         <span class="doccomment">/// Establish the data that will be decoded in a buffer
-        </span><span class="kw">fn </span>set_data(
-            decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails,
-            data: ByteBufferPtr,
-            num_values: usize,
-        );
+        </span><span class="kw">fn </span>set_data(decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails, data: Bytes, num_values: usize);
 
         <span class="doccomment">/// Decode the value from a given buffer for a higher level decoder
-        </span><span class="kw">fn </span>decode(
-            buffer: <span class="kw-2">&amp;mut </span>[<span class="self">Self</span>],
-            decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails,
-        ) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt;;
+        </span><span class="kw">fn </span>decode(buffer: <span class="kw-2">&amp;mut </span>[<span class="self">Self</span>], decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt;;
 
         <span class="kw">fn </span>skip(decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails, num_values: usize) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt;;
 
@@ -1971,7 +1920,7 @@
 
         <span class="doccomment">/// Return the value as i64 if possible
         ///
-        /// This is essentially the same as `std::convert::TryInto&lt;i64&gt;` but can
+        /// This is essentially the same as `std::convert::TryInto&lt;i64&gt;` but can&#39;t be
         /// implemented for `f32` and `f64`, types that would fail orphan rules
         </span><span class="kw">fn </span>as_i64(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;i64&gt; {
             <span class="prelude-val">Err</span>(<span class="macro">general_err!</span>(<span class="string">&quot;Type cannot be converted to i64&quot;</span>))
@@ -1979,7 +1928,7 @@
 
         <span class="doccomment">/// Return the value as u64 if possible
         ///
-        /// This is essentially the same as `std::convert::TryInto&lt;u64&gt;` but can
+        /// This is essentially the same as `std::convert::TryInto&lt;u64&gt;` but can&#39;t be
         /// implemented for `f32` and `f64`, types that would fail orphan rules
         </span><span class="kw">fn </span>as_u64(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
             <span class="self">self</span>.as_i64()
@@ -2010,20 +1959,13 @@
         }
 
         <span class="attr">#[inline]
-        </span><span class="kw">fn </span>set_data(
-            decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails,
-            data: ByteBufferPtr,
-            num_values: usize,
-        ) {
+        </span><span class="kw">fn </span>set_data(decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails, data: Bytes, num_values: usize) {
             decoder.bit_reader.replace(BitReader::new(data));
             decoder.num_values = num_values;
         }
 
         <span class="attr">#[inline]
-        </span><span class="kw">fn </span>decode(
-            buffer: <span class="kw-2">&amp;mut </span>[<span class="self">Self</span>],
-            decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails,
-        ) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+        </span><span class="kw">fn </span>decode(buffer: <span class="kw-2">&amp;mut </span>[<span class="self">Self</span>], decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
             <span class="kw">let </span>bit_reader = decoder.bit_reader.as_mut().unwrap();
             <span class="kw">let </span>num_values = std::cmp::min(buffer.len(), decoder.num_values);
             <span class="kw">let </span>values_read = bit_reader.get_batch(<span class="kw-2">&amp;mut </span>buffer[..num_values], <span class="number">1</span>);
@@ -2074,7 +2016,7 @@
                 }
 
                 <span class="attr">#[inline]
-                </span><span class="kw">fn </span>set_data(decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails, data: ByteBufferPtr, num_values: usize) {
+                </span><span class="kw">fn </span>set_data(decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails, data: Bytes, num_values: usize) {
                     decoder.data.replace(data);
                     decoder.start = <span class="number">0</span>;
                     decoder.num_values = num_values;
@@ -2094,7 +2036,9 @@
                     <span class="comment">// SAFETY: Raw types should be as per the standard rust bit-vectors
                     </span><span class="kw">unsafe </span>{
                         <span class="kw">let </span>raw_buffer = <span class="kw-2">&amp;mut </span><span class="self">Self</span>::slice_as_bytes_mut(buffer)[..bytes_to_decode];
-                        raw_buffer.copy_from_slice(data.range(decoder.start, bytes_to_decode).as_ref());
+                        raw_buffer.copy_from_slice(data.slice(
+                            decoder.start..decoder.start + bytes_to_decode
+                        ).as_ref());
                     };
                     decoder.start += bytes_to_decode;
                     decoder.num_values -= num_values;
@@ -2153,10 +2097,7 @@
         ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
             <span class="kw">for </span>value <span class="kw">in </span>values {
                 <span class="kw">let </span>raw = <span class="kw">unsafe </span>{
-                    std::slice::from_raw_parts(
-                        value.data() <span class="kw">as </span><span class="kw-2">*const </span>[u32] <span class="kw">as </span><span class="kw-2">*const </span>u8,
-                        <span class="number">12</span>,
-                    )
+                    std::slice::from_raw_parts(value.data() <span class="kw">as </span><span class="kw-2">*const </span>[u32] <span class="kw">as </span><span class="kw-2">*const </span>u8, <span class="number">12</span>)
                 };
                 writer.write_all(raw)<span class="question-mark">?</span>;
             }
@@ -2164,21 +2105,14 @@
         }
 
         <span class="attr">#[inline]
-        </span><span class="kw">fn </span>set_data(
-            decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails,
-            data: ByteBufferPtr,
-            num_values: usize,
-        ) {
+        </span><span class="kw">fn </span>set_data(decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails, data: Bytes, num_values: usize) {
             decoder.data.replace(data);
             decoder.start = <span class="number">0</span>;
             decoder.num_values = num_values;
         }
 
         <span class="attr">#[inline]
-        </span><span class="kw">fn </span>decode(
-            buffer: <span class="kw-2">&amp;mut </span>[<span class="self">Self</span>],
-            decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails,
-        ) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+        </span><span class="kw">fn </span>decode(buffer: <span class="kw-2">&amp;mut </span>[<span class="self">Self</span>], decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
             <span class="comment">// TODO - Remove the duplication between this and the general slice method
             </span><span class="kw">let </span>data = decoder
                 .data
@@ -2192,17 +2126,15 @@
                 <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">eof_err!</span>(<span class="string">&quot;Not enough bytes to decode&quot;</span>));
             }
 
-            <span class="kw">let </span>data_range = data.range(decoder.start, bytes_to_decode);
-            <span class="kw">let </span>bytes: <span class="kw-2">&amp;</span>[u8] = data_range.data();
+            <span class="kw">let </span>data_range = data.slice(decoder.start..decoder.start + bytes_to_decode);
+            <span class="kw">let </span>bytes: <span class="kw-2">&amp;</span>[u8] = <span class="kw-2">&amp;</span>data_range;
             decoder.start += bytes_to_decode;
 
             <span class="kw">let </span><span class="kw-2">mut </span>pos = <span class="number">0</span>; <span class="comment">// position in byte array
             </span><span class="kw">for </span>item <span class="kw">in </span>buffer.iter_mut().take(num_values) {
                 <span class="kw">let </span>elem0 = u32::from_le_bytes(bytes[pos..pos + <span class="number">4</span>].try_into().unwrap());
-                <span class="kw">let </span>elem1 =
-                    u32::from_le_bytes(bytes[pos + <span class="number">4</span>..pos + <span class="number">8</span>].try_into().unwrap());
-                <span class="kw">let </span>elem2 =
-                    u32::from_le_bytes(bytes[pos + <span class="number">8</span>..pos + <span class="number">12</span>].try_into().unwrap());
+                <span class="kw">let </span>elem1 = u32::from_le_bytes(bytes[pos + <span class="number">4</span>..pos + <span class="number">8</span>].try_into().unwrap());
+                <span class="kw">let </span>elem2 = u32::from_le_bytes(bytes[pos + <span class="number">8</span>..pos + <span class="number">12</span>].try_into().unwrap());
 
                 item.set_data(elem0, elem1, elem2);
                 pos += <span class="number">12</span>;
@@ -2260,21 +2192,14 @@
         }
 
         <span class="attr">#[inline]
-        </span><span class="kw">fn </span>set_data(
-            decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails,
-            data: ByteBufferPtr,
-            num_values: usize,
-        ) {
+        </span><span class="kw">fn </span>set_data(decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails, data: Bytes, num_values: usize) {
             decoder.data.replace(data);
             decoder.start = <span class="number">0</span>;
             decoder.num_values = num_values;
         }
 
         <span class="attr">#[inline]
-        </span><span class="kw">fn </span>decode(
-            buffer: <span class="kw-2">&amp;mut </span>[<span class="self">Self</span>],
-            decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails,
-        ) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+        </span><span class="kw">fn </span>decode(buffer: <span class="kw-2">&amp;mut </span>[<span class="self">Self</span>], decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
             <span class="kw">let </span>data = decoder
                 .data
                 .as_mut()
@@ -2282,8 +2207,7 @@
             <span class="kw">let </span>num_values = std::cmp::min(buffer.len(), decoder.num_values);
             <span class="kw">for </span>val_array <span class="kw">in </span>buffer.iter_mut().take(num_values) {
                 <span class="kw">let </span>len: usize =
-                    read_num_bytes::&lt;u32&gt;(<span class="number">4</span>, data.start_from(decoder.start).as_ref())
-                        <span class="kw">as </span>usize;
+                    read_num_bytes::&lt;u32&gt;(<span class="number">4</span>, data.slice(decoder.start..).as_ref()) <span class="kw">as </span>usize;
                 decoder.start += std::mem::size_of::&lt;u32&gt;();
 
                 <span class="kw">if </span>data.len() &lt; decoder.start + len {
@@ -2292,7 +2216,7 @@
 
                 <span class="kw">let </span>val: <span class="kw-2">&amp;mut </span><span class="self">Self </span>= val_array.as_mut_any().downcast_mut().unwrap();
 
-                val.set_data(data.range(decoder.start, len));
+                val.set_data(data.slice(decoder.start..decoder.start + len));
                 decoder.start += len;
             }
             decoder.num_values -= num_values;
@@ -2309,8 +2233,7 @@
 
             <span class="kw">for _ in </span><span class="number">0</span>..num_values {
                 <span class="kw">let </span>len: usize =
-                    read_num_bytes::&lt;u32&gt;(<span class="number">4</span>, data.start_from(decoder.start).as_ref())
-                        <span class="kw">as </span>usize;
+                    read_num_bytes::&lt;u32&gt;(<span class="number">4</span>, data.slice(decoder.start..).as_ref()) <span class="kw">as </span>usize;
                 decoder.start += std::mem::size_of::&lt;u32&gt;() + len;
             }
             decoder.num_values -= num_values;
@@ -2351,21 +2274,14 @@
         }
 
         <span class="attr">#[inline]
-        </span><span class="kw">fn </span>set_data(
-            decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails,
-            data: ByteBufferPtr,
-            num_values: usize,
-        ) {
+        </span><span class="kw">fn </span>set_data(decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails, data: Bytes, num_values: usize) {
             decoder.data.replace(data);
             decoder.start = <span class="number">0</span>;
             decoder.num_values = num_values;
         }
 
         <span class="attr">#[inline]
-        </span><span class="kw">fn </span>decode(
-            buffer: <span class="kw-2">&amp;mut </span>[<span class="self">Self</span>],
-            decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails,
-        ) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+        </span><span class="kw">fn </span>decode(buffer: <span class="kw-2">&amp;mut </span>[<span class="self">Self</span>], decoder: <span class="kw-2">&amp;mut </span>PlainDecoderDetails) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
             <span class="macro">assert!</span>(decoder.type_length &gt; <span class="number">0</span>);
 
             <span class="kw">let </span>data = decoder
@@ -2381,7 +2297,7 @@
                     <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">eof_err!</span>(<span class="string">&quot;Not enough bytes to decode&quot;</span>));
                 }
 
-                item.set_data(data.range(decoder.start, len));
+                item.set_data(data.slice(decoder.start..decoder.start + len));
                 decoder.start += len;
             }
             decoder.num_values -= num_values;
@@ -2445,9 +2361,7 @@
     <span class="kw">where
         </span><span class="self">Self</span>: Sized;
 
-    <span class="kw">fn </span>get_column_writer(
-        column_writer: ColumnWriter&lt;<span class="lifetime">&#39;_</span>&gt;,
-    ) -&gt; <span class="prelude-ty">Option</span>&lt;ColumnWriterImpl&lt;<span class="lifetime">&#39;_</span>, <span class="self">Self</span>&gt;&gt;
+    <span class="kw">fn </span>get_column_writer(column_writer: ColumnWriter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;ColumnWriterImpl&lt;<span class="lifetime">&#39;_</span>, <span class="self">Self</span>&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized;
 
@@ -2490,9 +2404,7 @@
                 <span class="macro-nonterminal">$size
             </span>}
 
-            <span class="kw">fn </span>get_column_reader(
-                column_reader: ColumnReader,
-            ) -&gt; <span class="prelude-ty">Option</span>&lt;ColumnReaderImpl&lt;<span class="self">Self</span>&gt;&gt; {
+            <span class="kw">fn </span>get_column_reader(column_reader: ColumnReader) -&gt; <span class="prelude-ty">Option</span>&lt;ColumnReaderImpl&lt;<span class="self">Self</span>&gt;&gt; {
                 <span class="kw">match </span>column_reader {
                     ColumnReader::<span class="macro-nonterminal">$reader_ident</span>(w) =&gt; <span class="prelude-val">Some</span>(w),
                     <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
@@ -2619,7 +2531,7 @@
         );
         <span class="macro">assert_eq!</span>(ByteArray::from(<span class="string">&quot;ABC&quot;</span>).data(), <span class="kw-2">&amp;</span>[<span class="string">b&#39;A&#39;</span>, <span class="string">b&#39;B&#39;</span>, <span class="string">b&#39;C&#39;</span>]);
         <span class="macro">assert_eq!</span>(
-            ByteArray::from(ByteBufferPtr::new(<span class="macro">vec!</span>[<span class="number">1u8</span>, <span class="number">2u8</span>, <span class="number">3u8</span>, <span class="number">4u8</span>, <span class="number">5u8</span>])).data(),
+            ByteArray::from(Bytes::from(<span class="macro">vec!</span>[<span class="number">1u8</span>, <span class="number">2u8</span>, <span class="number">3u8</span>, <span class="number">4u8</span>, <span class="number">5u8</span>])).data(),
             <span class="kw-2">&amp;</span>[<span class="number">1u8</span>, <span class="number">2u8</span>, <span class="number">3u8</span>, <span class="number">4u8</span>, <span class="number">5u8</span>]
         );
         <span class="kw">let </span>buf = <span class="macro">vec!</span>[<span class="number">6u8</span>, <span class="number">7u8</span>, <span class="number">8u8</span>, <span class="number">9u8</span>, <span class="number">10u8</span>];

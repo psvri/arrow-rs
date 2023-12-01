@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/file/writer.rs`."><title>writer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-a23c9d150ad85d8b.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.72.0-nightly (f4b80cacf 2023-06-30)" data-channel="nightly" data-search-js="search-91b58767224854cb.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ><script src="../../../static.files/storage-59fd9b8ccb335783.js"></script><script defer src="../../../static.files/source-script-106908c7a7964ba4.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../parquet/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/file/writer.rs`."><title>writer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e6a78389201e676c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (87e1447aa 2023-11-30)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1649,6 +1649,47 @@
 <a href="#1649" id="1649">1649</a>
 <a href="#1650" id="1650">1650</a>
 <a href="#1651" id="1651">1651</a>
+<a href="#1652" id="1652">1652</a>
+<a href="#1653" id="1653">1653</a>
+<a href="#1654" id="1654">1654</a>
+<a href="#1655" id="1655">1655</a>
+<a href="#1656" id="1656">1656</a>
+<a href="#1657" id="1657">1657</a>
+<a href="#1658" id="1658">1658</a>
+<a href="#1659" id="1659">1659</a>
+<a href="#1660" id="1660">1660</a>
+<a href="#1661" id="1661">1661</a>
+<a href="#1662" id="1662">1662</a>
+<a href="#1663" id="1663">1663</a>
+<a href="#1664" id="1664">1664</a>
+<a href="#1665" id="1665">1665</a>
+<a href="#1666" id="1666">1666</a>
+<a href="#1667" id="1667">1667</a>
+<a href="#1668" id="1668">1668</a>
+<a href="#1669" id="1669">1669</a>
+<a href="#1670" id="1670">1670</a>
+<a href="#1671" id="1671">1671</a>
+<a href="#1672" id="1672">1672</a>
+<a href="#1673" id="1673">1673</a>
+<a href="#1674" id="1674">1674</a>
+<a href="#1675" id="1675">1675</a>
+<a href="#1676" id="1676">1676</a>
+<a href="#1677" id="1677">1677</a>
+<a href="#1678" id="1678">1678</a>
+<a href="#1679" id="1679">1679</a>
+<a href="#1680" id="1680">1680</a>
+<a href="#1681" id="1681">1681</a>
+<a href="#1682" id="1682">1682</a>
+<a href="#1683" id="1683">1683</a>
+<a href="#1684" id="1684">1684</a>
+<a href="#1685" id="1685">1685</a>
+<a href="#1686" id="1686">1686</a>
+<a href="#1687" id="1687">1687</a>
+<a href="#1688" id="1688">1688</a>
+<a href="#1689" id="1689">1689</a>
+<a href="#1690" id="1690">1690</a>
+<a href="#1691" id="1691">1691</a>
+<a href="#1692" id="1692">1692</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1672,14 +1713,13 @@
 </span><span class="kw">use </span><span class="kw">crate</span>::bloom_filter::Sbbf;
 <span class="kw">use </span><span class="kw">crate</span>::format <span class="kw">as </span>parquet;
 <span class="kw">use </span><span class="kw">crate</span>::format::{ColumnIndex, OffsetIndex, RowGroup};
+<span class="kw">use </span><span class="kw">crate</span>::thrift::TSerializable;
 <span class="kw">use </span>std::fmt::Debug;
 <span class="kw">use </span>std::io::{BufWriter, IoSlice, Read};
 <span class="kw">use </span>std::{io::Write, sync::Arc};
-<span class="kw">use </span>thrift::protocol::{TCompactOutputProtocol, TSerializable};
+<span class="kw">use </span>thrift::protocol::TCompactOutputProtocol;
 
-<span class="kw">use </span><span class="kw">crate</span>::column::writer::{
-    get_typed_column_writer_mut, ColumnCloseResult, ColumnWriterImpl,
-};
+<span class="kw">use </span><span class="kw">crate</span>::column::writer::{get_typed_column_writer_mut, ColumnCloseResult, ColumnWriterImpl};
 <span class="kw">use </span><span class="kw">crate</span>::column::{
     page::{CompressedPage, PageWriteSpec, PageWriter},
     writer::{get_column_writer, ColumnWriter},
@@ -1688,9 +1728,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::errors::{ParquetError, <span class="prelude-ty">Result</span>};
 <span class="kw">use </span><span class="kw">crate</span>::file::reader::ChunkReader;
 <span class="kw">use </span><span class="kw">crate</span>::file::{metadata::<span class="kw-2">*</span>, properties::WriterPropertiesPtr, PARQUET_MAGIC};
-<span class="kw">use </span><span class="kw">crate</span>::schema::types::{
-    <span class="self">self</span>, ColumnDescPtr, SchemaDescPtr, SchemaDescriptor, TypePtr,
-};
+<span class="kw">use </span><span class="kw">crate</span>::schema::types::{<span class="self">self</span>, ColumnDescPtr, SchemaDescPtr, SchemaDescriptor, TypePtr};
 
 <span class="doccomment">/// A wrapper around a [`Write`] that keeps track of the number
 /// of bytes that have been written. The given [`Write`] is wrapped
@@ -1718,10 +1756,7 @@
     <span class="doccomment">/// Returns the underlying writer.
     </span><span class="kw">pub fn </span>into_inner(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;W&gt; {
         <span class="self">self</span>.inner.into_inner().map_err(|err| {
-            ParquetError::General(<span class="macro">format!</span>(
-                <span class="string">&quot;fail to get inner writer: {:?}&quot;</span>,
-                err.to_string()
-            ))
+            ParquetError::General(<span class="macro">format!</span>(<span class="string">&quot;fail to get inner writer: {:?}&quot;</span>, err.to_string()))
         })
     }
 }
@@ -1766,7 +1801,8 @@
             Vec&lt;<span class="prelude-ty">Option</span>&lt;ColumnIndex&gt;&gt;,
             Vec&lt;<span class="prelude-ty">Option</span>&lt;OffsetIndex&gt;&gt;,
         ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
-        + <span class="lifetime">&#39;a</span>,
+        + <span class="lifetime">&#39;a
+        </span>+ Send,
 &gt;;
 
 <span class="comment">// ----------------------------------------------------------------------
@@ -1834,27 +1870,28 @@
     /// previous row group must be finalised and closed using `RowGroupWriter::close` method.
     </span><span class="kw">pub fn </span>next_row_group(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;SerializedRowGroupWriter&lt;<span class="lifetime">&#39;_</span>, W&gt;&gt; {
         <span class="self">self</span>.assert_previous_writer_closed()<span class="question-mark">?</span>;
+        <span class="kw">let </span>ordinal = <span class="self">self</span>.row_group_index;
+
         <span class="self">self</span>.row_group_index += <span class="number">1</span>;
 
         <span class="kw">let </span>row_groups = <span class="kw-2">&amp;mut </span><span class="self">self</span>.row_groups;
         <span class="kw">let </span>row_bloom_filters = <span class="kw-2">&amp;mut </span><span class="self">self</span>.bloom_filters;
         <span class="kw">let </span>row_column_indexes = <span class="kw-2">&amp;mut </span><span class="self">self</span>.column_indexes;
         <span class="kw">let </span>row_offset_indexes = <span class="kw-2">&amp;mut </span><span class="self">self</span>.offset_indexes;
-        <span class="kw">let </span>on_close = |metadata,
-                        row_group_bloom_filter,
-                        row_group_column_index,
-                        row_group_offset_index| {
-            row_groups.push(metadata);
-            row_bloom_filters.push(row_group_bloom_filter);
-            row_column_indexes.push(row_group_column_index);
-            row_offset_indexes.push(row_group_offset_index);
-            <span class="prelude-val">Ok</span>(())
-        };
+        <span class="kw">let </span>on_close =
+            |metadata, row_group_bloom_filter, row_group_column_index, row_group_offset_index| {
+                row_groups.push(metadata);
+                row_bloom_filters.push(row_group_bloom_filter);
+                row_column_indexes.push(row_group_column_index);
+                row_offset_indexes.push(row_group_offset_index);
+                <span class="prelude-val">Ok</span>(())
+            };
 
         <span class="kw">let </span>row_group_writer = SerializedRowGroupWriter::new(
             <span class="self">self</span>.descr.clone(),
             <span class="self">self</span>.props.clone(),
             <span class="kw-2">&amp;mut </span><span class="self">self</span>.buf,
+            ordinal <span class="kw">as </span>i16,
             <span class="prelude-val">Some</span>(Box::new(on_close)),
         );
         <span class="prelude-val">Ok</span>(row_group_writer)
@@ -1884,8 +1921,7 @@
         // iter each column
         // write offset index to the file
         </span><span class="kw">for </span>(row_group_idx, row_group) <span class="kw">in </span>row_groups.iter_mut().enumerate() {
-            <span class="kw">for </span>(column_idx, column_metadata) <span class="kw">in </span>row_group.columns.iter_mut().enumerate()
-            {
+            <span class="kw">for </span>(column_idx, column_metadata) <span class="kw">in </span>row_group.columns.iter_mut().enumerate() {
                 <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.offset_indexes[row_group_idx][column_idx] {
                     <span class="prelude-val">Some</span>(offset_index) =&gt; {
                         <span class="kw">let </span>start_offset = <span class="self">self</span>.buf.bytes_written();
@@ -1915,12 +1951,15 @@
                     <span class="prelude-val">Some</span>(bloom_filter) =&gt; {
                         <span class="kw">let </span>start_offset = <span class="self">self</span>.buf.bytes_written();
                         bloom_filter.write(<span class="kw-2">&amp;mut </span><span class="self">self</span>.buf)<span class="question-mark">?</span>;
+                        <span class="kw">let </span>end_offset = <span class="self">self</span>.buf.bytes_written();
                         <span class="comment">// set offset and index for bloom filter
-                        </span>column_chunk
+                        </span><span class="kw">let </span>column_chunk_meta = column_chunk
                             .meta_data
                             .as_mut()
-                            .expect(<span class="string">&quot;can&#39;t have bloom filter without column metadata&quot;</span>)
-                            .bloom_filter_offset = <span class="prelude-val">Some</span>(start_offset <span class="kw">as </span>i64);
+                            .expect(<span class="string">&quot;can&#39;t have bloom filter without column metadata&quot;</span>);
+                        column_chunk_meta.bloom_filter_offset = <span class="prelude-val">Some</span>(start_offset <span class="kw">as </span>i64);
+                        column_chunk_meta.bloom_filter_length =
+                            <span class="prelude-val">Some</span>((end_offset - start_offset) <span class="kw">as </span>i32);
                     }
                     <span class="prelude-val">None </span>=&gt; {}
                 }
@@ -1935,8 +1974,7 @@
         // iter each column
         // write column index to the file
         </span><span class="kw">for </span>(row_group_idx, row_group) <span class="kw">in </span>row_groups.iter_mut().enumerate() {
-            <span class="kw">for </span>(column_idx, column_metadata) <span class="kw">in </span>row_group.columns.iter_mut().enumerate()
-            {
+            <span class="kw">for </span>(column_idx, column_metadata) <span class="kw">in </span>row_group.columns.iter_mut().enumerate() {
                 <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.column_indexes[row_group_idx][column_idx] {
                     <span class="prelude-val">Some</span>(column_index) =&gt; {
                         <span class="kw">let </span>start_offset = <span class="self">self</span>.buf.bytes_written();
@@ -1998,7 +2036,7 @@
         <span class="kw">let </span>end_pos = <span class="self">self</span>.buf.bytes_written();
 
         <span class="comment">// Write footer
-        </span><span class="kw">let </span>metadata_len = (end_pos - start_pos) <span class="kw">as </span>i32;
+        </span><span class="kw">let </span>metadata_len = (end_pos - start_pos) <span class="kw">as </span>u32;
 
         <span class="self">self</span>.buf.write_all(<span class="kw-2">&amp;</span>metadata_len.to_le_bytes())<span class="question-mark">?</span>;
         <span class="self">self</span>.buf.write_all(<span class="kw-2">&amp;</span>PARQUET_MAGIC)<span class="question-mark">?</span>;
@@ -2060,6 +2098,8 @@
     bloom_filters: Vec&lt;<span class="prelude-ty">Option</span>&lt;Sbbf&gt;&gt;,
     column_indexes: Vec&lt;<span class="prelude-ty">Option</span>&lt;ColumnIndex&gt;&gt;,
     offset_indexes: Vec&lt;<span class="prelude-ty">Option</span>&lt;OffsetIndex&gt;&gt;,
+    row_group_index: i16,
+    file_offset: i64,
     on_close: <span class="prelude-ty">Option</span>&lt;OnCloseRowGroup&lt;<span class="lifetime">&#39;a</span>&gt;&gt;,
 }
 
@@ -2069,16 +2109,22 @@
     /// - `schema_descr` - the schema to write
     /// - `properties` - writer properties
     /// - `buf` - the buffer to write data to
+    /// - `row_group_index` - row group index in this parquet file.
+    /// - `file_offset` - file offset of this row group in this parquet file.
     /// - `on_close` - an optional callback that will invoked on [`Self::close`]
     </span><span class="kw">pub fn </span>new(
         schema_descr: SchemaDescPtr,
         properties: WriterPropertiesPtr,
         buf: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>TrackedWrite&lt;W&gt;,
+        row_group_index: i16,
         on_close: <span class="prelude-ty">Option</span>&lt;OnCloseRowGroup&lt;<span class="lifetime">&#39;a</span>&gt;&gt;,
     ) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>num_columns = schema_descr.num_columns();
+        <span class="kw">let </span>file_offset = buf.bytes_written() <span class="kw">as </span>i64;
         <span class="self">Self </span>{
             buf,
+            row_group_index,
+            file_offset,
             on_close,
             total_rows_written: <span class="prelude-val">None</span>,
             descr: schema_descr,
@@ -2139,10 +2185,7 @@
 
     <span class="doccomment">/// Returns the next column writer, if available, using the factory function;
     /// otherwise returns `None`.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>next_column_with_factory&lt;<span class="lifetime">&#39;b</span>, F, C&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">&#39;b </span><span class="kw-2">mut </span><span class="self">self</span>,
-        factory: F,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;C&gt;&gt;
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>next_column_with_factory&lt;<span class="lifetime">&#39;b</span>, F, C&gt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;b </span><span class="kw-2">mut </span><span class="self">self</span>, factory: F) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;C&gt;&gt;
     <span class="kw">where
         </span>F: FnOnce(
             ColumnDescPtr,
@@ -2185,9 +2228,9 @@
         <span class="kw-2">mut </span>close: ColumnCloseResult,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="self">self</span>.assert_previous_writer_closed()<span class="question-mark">?</span>;
-        <span class="kw">let </span>desc = <span class="self">self</span>.next_column_desc().ok_or_else(|| {
-            <span class="macro">general_err!</span>(<span class="string">&quot;exhausted columns in SerializedRowGroupWriter&quot;</span>)
-        })<span class="question-mark">?</span>;
+        <span class="kw">let </span>desc = <span class="self">self
+            </span>.next_column_desc()
+            .ok_or_else(|| <span class="macro">general_err!</span>(<span class="string">&quot;exhausted columns in SerializedRowGroupWriter&quot;</span>))<span class="question-mark">?</span>;
 
         <span class="kw">let </span>metadata = close.metadata;
 
@@ -2254,6 +2297,8 @@
                 .set_total_byte_size(<span class="self">self</span>.total_uncompressed_bytes)
                 .set_num_rows(<span class="self">self</span>.total_rows_written.unwrap_or(<span class="number">0</span>) <span class="kw">as </span>i64)
                 .set_sorting_columns(<span class="self">self</span>.props.sorting_columns().cloned())
+                .set_ordinal(<span class="self">self</span>.row_group_index)
+                .set_file_offset(<span class="self">self</span>.file_offset)
                 .build()<span class="question-mark">?</span>;
 
             <span class="kw">let </span>metadata = Arc::new(row_group_metadata);
@@ -2292,10 +2337,7 @@
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; SerializedColumnWriter&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="doccomment">/// Create a new [`SerializedColumnWriter`] from a [`ColumnWriter`] and an
     /// optional callback to be invoked on [`Self::close`]
-    </span><span class="kw">pub fn </span>new(
-        inner: ColumnWriter&lt;<span class="lifetime">&#39;a</span>&gt;,
-        on_close: <span class="prelude-ty">Option</span>&lt;OnCloseColumnChunk&lt;<span class="lifetime">&#39;a</span>&gt;&gt;,
-    ) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub fn </span>new(inner: ColumnWriter&lt;<span class="lifetime">&#39;a</span>&gt;, on_close: <span class="prelude-ty">Option</span>&lt;OnCloseColumnChunk&lt;<span class="lifetime">&#39;a</span>&gt;&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{ inner, on_close }
     }
 
@@ -2393,6 +2435,8 @@
     <span class="kw">use </span><span class="kw">crate</span>::column::reader::get_typed_column_reader;
     <span class="kw">use </span><span class="kw">crate</span>::compression::{create_codec, Codec, CodecOptionsBuilder};
     <span class="kw">use </span><span class="kw">crate</span>::data_type::{BoolType, Int32Type};
+    <span class="kw">use </span><span class="kw">crate</span>::file::page_index::index::Index;
+    <span class="kw">use </span><span class="kw">crate</span>::file::properties::EnabledStatistics;
     <span class="kw">use </span><span class="kw">crate</span>::file::reader::ChunkReader;
     <span class="kw">use </span><span class="kw">crate</span>::file::serialized_reader::ReadOptionsBuilder;
     <span class="kw">use </span><span class="kw">crate</span>::file::{
@@ -2404,14 +2448,13 @@
     <span class="kw">use </span><span class="kw">crate</span>::record::{Row, RowAccessor};
     <span class="kw">use </span><span class="kw">crate</span>::schema::parser::parse_message_type;
     <span class="kw">use </span><span class="kw">crate</span>::schema::types::{ColumnDescriptor, ColumnPath};
-    <span class="kw">use </span><span class="kw">crate</span>::util::memory::ByteBufferPtr;
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_row_group_writer_error_not_all_columns_written() {
         <span class="kw">let </span>file = tempfile::tempfile().unwrap();
         <span class="kw">let </span>schema = Arc::new(
             types::Type::group_type_builder(<span class="string">&quot;schema&quot;</span>)
-                .with_fields(<span class="kw-2">&amp;mut </span><span class="macro">vec!</span>[Arc::new(
+                .with_fields(<span class="macro">vec!</span>[Arc::new(
                     types::Type::primitive_type_builder(<span class="string">&quot;col1&quot;</span>, Type::INT32)
                         .build()
                         .unwrap(),
@@ -2437,7 +2480,7 @@
         <span class="kw">let </span>file = tempfile::tempfile().unwrap();
         <span class="kw">let </span>schema = Arc::new(
             types::Type::group_type_builder(<span class="string">&quot;schema&quot;</span>)
-                .with_fields(<span class="kw-2">&amp;mut </span><span class="macro">vec!</span>[
+                .with_fields(<span class="macro">vec!</span>[
                     Arc::new(
                         types::Type::primitive_type_builder(<span class="string">&quot;col1&quot;</span>, Type::INT32)
                             .with_repetition(Repetition::REQUIRED)
@@ -2484,7 +2527,7 @@
 
         <span class="kw">let </span>schema = Arc::new(
             types::Type::group_type_builder(<span class="string">&quot;schema&quot;</span>)
-                .with_fields(<span class="kw-2">&amp;mut </span><span class="macro">vec!</span>[Arc::new(
+                .with_fields(<span class="macro">vec!</span>[Arc::new(
                     types::Type::primitive_type_builder(<span class="string">&quot;col1&quot;</span>, Type::INT32)
                         .build()
                         .unwrap(),
@@ -2493,8 +2536,7 @@
                 .unwrap(),
         );
         <span class="kw">let </span>props = Default::default();
-        <span class="kw">let </span>writer =
-            SerializedFileWriter::new(file.try_clone().unwrap(), schema, props).unwrap();
+        <span class="kw">let </span>writer = SerializedFileWriter::new(file.try_clone().unwrap(), schema, props).unwrap();
         writer.close().unwrap();
 
         <span class="kw">let </span>reader = SerializedFileReader::new(file).unwrap();
@@ -2507,7 +2549,7 @@
 
         <span class="kw">let </span>schema = Arc::new(
             types::Type::group_type_builder(<span class="string">&quot;schema&quot;</span>)
-                .with_fields(<span class="kw-2">&amp;mut </span><span class="macro">vec!</span>[Arc::new(
+                .with_fields(<span class="macro">vec!</span>[Arc::new(
                     types::Type::primitive_type_builder(<span class="string">&quot;col1&quot;</span>, Type::INT32)
                         .build()
                         .unwrap(),
@@ -2523,8 +2565,7 @@
                 )]))
                 .build(),
         );
-        <span class="kw">let </span>writer =
-            SerializedFileWriter::new(file.try_clone().unwrap(), schema, props).unwrap();
+        <span class="kw">let </span>writer = SerializedFileWriter::new(file.try_clone().unwrap(), schema, props).unwrap();
         writer.close().unwrap();
 
         <span class="kw">let </span>reader = SerializedFileReader::new(file).unwrap();
@@ -2556,7 +2597,7 @@
         );
         <span class="kw">let </span>schema = Arc::new(
             types::Type::group_type_builder(<span class="string">&quot;schema&quot;</span>)
-                .with_fields(<span class="kw-2">&amp;mut </span><span class="macro">vec!</span>[field.clone()])
+                .with_fields(<span class="macro">vec!</span>[field.clone()])
                 .build()
                 .unwrap(),
         );
@@ -2569,8 +2610,7 @@
                 .set_writer_version(WriterVersion::PARQUET_2_0)
                 .build(),
         );
-        <span class="kw">let </span>writer =
-            SerializedFileWriter::new(file.try_clone().unwrap(), schema, props).unwrap();
+        <span class="kw">let </span>writer = SerializedFileWriter::new(file.try_clone().unwrap(), schema, props).unwrap();
         writer.close().unwrap();
 
         <span class="kw">let </span>reader = SerializedFileReader::new(file).unwrap();
@@ -2599,7 +2639,7 @@
 
         <span class="kw">let </span>schema = Arc::new(
             types::Type::group_type_builder(<span class="string">&quot;schema&quot;</span>)
-                .with_fields(<span class="kw-2">&amp;mut </span><span class="macro">vec!</span>[
+                .with_fields(<span class="macro">vec!</span>[
                     Arc::new(
                         types::Type::primitive_type_builder(<span class="string">&quot;col1&quot;</span>, Type::INT32)
                             .build()
@@ -2691,7 +2731,7 @@
     </span><span class="kw">fn </span>test_page_writer_data_pages() {
         <span class="kw">let </span>pages = <span class="macro">vec!</span>[
             Page::DataPage {
-                buf: ByteBufferPtr::new(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>]),
+                buf: Bytes::from(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>]),
                 num_values: <span class="number">10</span>,
                 encoding: Encoding::DELTA_BINARY_PACKED,
                 def_level_encoding: Encoding::RLE,
@@ -2699,7 +2739,7 @@
                 statistics: <span class="prelude-val">Some</span>(Statistics::int32(<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="number">3</span>), <span class="prelude-val">None</span>, <span class="number">7</span>, <span class="bool-val">true</span>)),
             },
             Page::DataPageV2 {
-                buf: ByteBufferPtr::new(<span class="macro">vec!</span>[<span class="number">4</span>; <span class="number">128</span>]),
+                buf: Bytes::from(<span class="macro">vec!</span>[<span class="number">4</span>; <span class="number">128</span>]),
                 num_values: <span class="number">10</span>,
                 encoding: Encoding::DELTA_BINARY_PACKED,
                 num_nulls: <span class="number">2</span>,
@@ -2719,13 +2759,13 @@
     </span><span class="kw">fn </span>test_page_writer_dict_pages() {
         <span class="kw">let </span>pages = <span class="macro">vec!</span>[
             Page::DictionaryPage {
-                buf: ByteBufferPtr::new(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]),
+                buf: Bytes::from(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]),
                 num_values: <span class="number">5</span>,
                 encoding: Encoding::RLE_DICTIONARY,
                 is_sorted: <span class="bool-val">false</span>,
             },
             Page::DataPage {
-                buf: ByteBufferPtr::new(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>]),
+                buf: Bytes::from(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>]),
                 num_values: <span class="number">10</span>,
                 encoding: Encoding::DELTA_BINARY_PACKED,
                 def_level_encoding: Encoding::RLE,
@@ -2733,7 +2773,7 @@
                 statistics: <span class="prelude-val">Some</span>(Statistics::int32(<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="number">3</span>), <span class="prelude-val">None</span>, <span class="number">7</span>, <span class="bool-val">true</span>)),
             },
             Page::DataPageV2 {
-                buf: ByteBufferPtr::new(<span class="macro">vec!</span>[<span class="number">4</span>; <span class="number">128</span>]),
+                buf: Bytes::from(<span class="macro">vec!</span>[<span class="number">4</span>; <span class="number">128</span>]),
                 num_values: <span class="number">10</span>,
                 encoding: Encoding::DELTA_BINARY_PACKED,
                 num_nulls: <span class="number">2</span>,
@@ -2773,18 +2813,16 @@
                     <span class="kw-2">ref </span>statistics,
                 } =&gt; {
                     total_num_values += num_values <span class="kw">as </span>i64;
-                    <span class="kw">let </span>output_buf = compress_helper(compressor.as_mut(), buf.data());
+                    <span class="kw">let </span>output_buf = compress_helper(compressor.as_mut(), buf);
 
                     Page::DataPage {
-                        buf: ByteBufferPtr::new(output_buf),
+                        buf: Bytes::from(output_buf),
                         num_values,
                         encoding,
                         def_level_encoding,
                         rep_level_encoding,
-                        statistics: from_thrift(
-                            physical_type,
-                            to_thrift(statistics.as_ref()),
-                        ),
+                        statistics: from_thrift(physical_type, to_thrift(statistics.as_ref()))
+                            .unwrap(),
                     }
                 }
                 Page::DataPageV2 {
@@ -2800,13 +2838,12 @@
                 } =&gt; {
                     total_num_values += num_values <span class="kw">as </span>i64;
                     <span class="kw">let </span>offset = (def_levels_byte_len + rep_levels_byte_len) <span class="kw">as </span>usize;
-                    <span class="kw">let </span>cmp_buf =
-                        compress_helper(compressor.as_mut(), <span class="kw-2">&amp;</span>buf.data()[offset..]);
-                    <span class="kw">let </span><span class="kw-2">mut </span>output_buf = Vec::from(<span class="kw-2">&amp;</span>buf.data()[..offset]);
+                    <span class="kw">let </span>cmp_buf = compress_helper(compressor.as_mut(), <span class="kw-2">&amp;</span>buf[offset..]);
+                    <span class="kw">let </span><span class="kw-2">mut </span>output_buf = Vec::from(<span class="kw-2">&amp;</span>buf[..offset]);
                     output_buf.extend_from_slice(<span class="kw-2">&amp;</span>cmp_buf[..]);
 
                     Page::DataPageV2 {
-                        buf: ByteBufferPtr::new(output_buf),
+                        buf: Bytes::from(output_buf),
                         num_values,
                         encoding,
                         num_nulls,
@@ -2814,10 +2851,8 @@
                         def_levels_byte_len,
                         rep_levels_byte_len,
                         is_compressed: compressor.is_some(),
-                        statistics: from_thrift(
-                            physical_type,
-                            to_thrift(statistics.as_ref()),
-                        ),
+                        statistics: from_thrift(physical_type, to_thrift(statistics.as_ref()))
+                            .unwrap(),
                     }
                 }
                 Page::DictionaryPage {
@@ -2826,10 +2861,10 @@
                     encoding,
                     is_sorted,
                 } =&gt; {
-                    <span class="kw">let </span>output_buf = compress_helper(compressor.as_mut(), buf.data());
+                    <span class="kw">let </span>output_buf = compress_helper(compressor.as_mut(), buf);
 
                     Page::DictionaryPage {
-                        buf: ByteBufferPtr::new(output_buf),
+                        buf: Bytes::from(output_buf),
                         num_values,
                         encoding,
                         is_sorted,
@@ -2904,7 +2939,7 @@
     <span class="doccomment">/// Check if pages match.
     </span><span class="kw">fn </span>assert_page(left: <span class="kw-2">&amp;</span>Page, right: <span class="kw-2">&amp;</span>Page) {
         <span class="macro">assert_eq!</span>(left.page_type(), right.page_type());
-        <span class="macro">assert_eq!</span>(left.buffer().data(), right.buffer().data());
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>left.buffer(), <span class="kw-2">&amp;</span>right.buffer());
         <span class="macro">assert_eq!</span>(left.num_values(), right.num_values());
         <span class="macro">assert_eq!</span>(left.encoding(), right.encoding());
         <span class="macro">assert_eq!</span>(to_thrift(left.statistics()), to_thrift(right.statistics()));
@@ -2920,12 +2955,7 @@
         </span>W: Write + Send,
         R: ChunkReader + From&lt;W&gt; + <span class="lifetime">&#39;static</span>,
     {
-        test_roundtrip::&lt;W, R, Int32Type, <span class="kw">_</span>&gt;(
-            file,
-            data,
-            |r| r.get_int(<span class="number">0</span>).unwrap(),
-            compression,
-        )
+        test_roundtrip::&lt;W, R, Int32Type, <span class="kw">_</span>&gt;(file, data, |r| r.get_int(<span class="number">0</span>).unwrap(), compression)
     }
 
     <span class="doccomment">/// Tests roundtrip of data of type `D` written using `W` and read using `R`
@@ -2944,7 +2974,7 @@
     {
         <span class="kw">let </span>schema = Arc::new(
             types::Type::group_type_builder(<span class="string">&quot;schema&quot;</span>)
-                .with_fields(<span class="kw-2">&amp;mut </span><span class="macro">vec!</span>[Arc::new(
+                .with_fields(<span class="macro">vec!</span>[Arc::new(
                     types::Type::primitive_type_builder(<span class="string">&quot;col1&quot;</span>, D::get_physical_type())
                         .with_repetition(Repetition::REQUIRED)
                         .build()
@@ -2958,11 +2988,11 @@
                 .set_compression(compression)
                 .build(),
         );
-        <span class="kw">let </span><span class="kw-2">mut </span>file_writer =
-            SerializedFileWriter::new(<span class="kw-2">&amp;mut </span>file, schema, props).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>file_writer = SerializedFileWriter::new(<span class="kw-2">&amp;mut </span>file, schema, props).unwrap();
         <span class="kw">let </span><span class="kw-2">mut </span>rows: i64 = <span class="number">0</span>;
 
         <span class="kw">for </span>(idx, subset) <span class="kw">in </span>data.iter().enumerate() {
+            <span class="kw">let </span>row_group_file_offset = file_writer.buf.bytes_written();
             <span class="kw">let </span><span class="kw-2">mut </span>row_group_writer = file_writer.next_row_group().unwrap();
             <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>writer) = row_group_writer.next_column().unwrap() {
                 rows += writer
@@ -2974,6 +3004,8 @@
             <span class="kw">let </span>last_group = row_group_writer.close().unwrap();
             <span class="kw">let </span>flushed = file_writer.flushed_row_groups();
             <span class="macro">assert_eq!</span>(flushed.len(), idx + <span class="number">1</span>);
+            <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(idx <span class="kw">as </span>i16), last_group.ordinal());
+            <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(row_group_file_offset <span class="kw">as </span>i64), last_group.file_offset());
             <span class="macro">assert_eq!</span>(flushed[idx].as_ref(), last_group.as_ref());
         }
         <span class="kw">let </span>file_metadata = file_writer.close().unwrap();
@@ -3004,10 +3036,7 @@
 
     <span class="doccomment">/// File write-read roundtrip.
     /// `data` consists of arrays of values for each row group.
-    </span><span class="kw">fn </span>test_file_roundtrip(
-        file: File,
-        data: Vec&lt;Vec&lt;i32&gt;&gt;,
-    ) -&gt; <span class="kw">crate</span>::format::FileMetaData {
+    </span><span class="kw">fn </span>test_file_roundtrip(file: File, data: Vec&lt;Vec&lt;i32&gt;&gt;) -&gt; <span class="kw">crate</span>::format::FileMetaData {
         test_roundtrip_i32::&lt;File, File&gt;(file, data, Compression::UNCOMPRESSED)
     }
 
@@ -3093,13 +3122,10 @@
         });
     }
 
-    <span class="kw">fn </span>test_kv_metadata(
-        initial_kv: <span class="prelude-ty">Option</span>&lt;Vec&lt;KeyValue&gt;&gt;,
-        final_kv: <span class="prelude-ty">Option</span>&lt;Vec&lt;KeyValue&gt;&gt;,
-    ) {
+    <span class="kw">fn </span>test_kv_metadata(initial_kv: <span class="prelude-ty">Option</span>&lt;Vec&lt;KeyValue&gt;&gt;, final_kv: <span class="prelude-ty">Option</span>&lt;Vec&lt;KeyValue&gt;&gt;) {
         <span class="kw">let </span>schema = Arc::new(
             types::Type::group_type_builder(<span class="string">&quot;schema&quot;</span>)
-                .with_fields(<span class="kw-2">&amp;mut </span><span class="macro">vec!</span>[Arc::new(
+                .with_fields(<span class="macro">vec!</span>[Arc::new(
                     types::Type::primitive_type_builder(<span class="string">&quot;col1&quot;</span>, Type::INT32)
                         .with_repetition(Repetition::REQUIRED)
                         .build()
@@ -3225,8 +3251,7 @@
         <span class="kw">let </span>props = Arc::new(WriterProperties::builder().build());
 
         <span class="kw">let </span><span class="kw-2">mut </span>file = Vec::with_capacity(<span class="number">1024</span>);
-        <span class="kw">let </span><span class="kw-2">mut </span>file_writer =
-            SerializedFileWriter::new(<span class="kw-2">&amp;mut </span>file, schema, props.clone()).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>file_writer = SerializedFileWriter::new(<span class="kw-2">&amp;mut </span>file, schema, props.clone()).unwrap();
 
         <span class="kw">let </span>columns = file_writer.descr.columns();
         <span class="kw">let </span><span class="kw-2">mut </span>column_state: Vec&lt;(<span class="kw">_</span>, <span class="prelude-ty">Option</span>&lt;ColumnCloseResult&gt;)&gt; = columns
@@ -3298,6 +3323,63 @@
         <span class="kw">let </span>options = ReadOptionsBuilder::new().with_page_index().build();
         <span class="kw">let </span>reader = SerializedFileReader::new_with_options(file, options).unwrap();
         test_read(reader);
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_disabled_statistics() {
+        <span class="kw">let </span>message_type = <span class="string">&quot;
+            message test_schema {
+                REQUIRED INT32 a;
+                REQUIRED INT32 b;
+            }
+        &quot;</span>;
+        <span class="kw">let </span>schema = Arc::new(parse_message_type(message_type).unwrap());
+        <span class="kw">let </span>props = WriterProperties::builder()
+            .set_statistics_enabled(EnabledStatistics::None)
+            .set_column_statistics_enabled(<span class="string">&quot;a&quot;</span>.into(), EnabledStatistics::Page)
+            .build();
+        <span class="kw">let </span><span class="kw-2">mut </span>file = Vec::with_capacity(<span class="number">1024</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>file_writer =
+            SerializedFileWriter::new(<span class="kw-2">&amp;mut </span>file, schema, Arc::new(props)).unwrap();
+
+        <span class="kw">let </span><span class="kw-2">mut </span>row_group_writer = file_writer.next_row_group().unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>a_writer = row_group_writer.next_column().unwrap().unwrap();
+        <span class="kw">let </span>col_writer = a_writer.typed::&lt;Int32Type&gt;();
+        col_writer.write_batch(<span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], <span class="prelude-val">None</span>, <span class="prelude-val">None</span>).unwrap();
+        a_writer.close().unwrap();
+
+        <span class="kw">let </span><span class="kw-2">mut </span>b_writer = row_group_writer.next_column().unwrap().unwrap();
+        <span class="kw">let </span>col_writer = b_writer.typed::&lt;Int32Type&gt;();
+        col_writer.write_batch(<span class="kw-2">&amp;</span>[<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>], <span class="prelude-val">None</span>, <span class="prelude-val">None</span>).unwrap();
+        b_writer.close().unwrap();
+        row_group_writer.close().unwrap();
+
+        <span class="kw">let </span>metadata = file_writer.close().unwrap();
+        <span class="macro">assert_eq!</span>(metadata.row_groups.len(), <span class="number">1</span>);
+        <span class="kw">let </span>row_group = <span class="kw-2">&amp;</span>metadata.row_groups[<span class="number">0</span>];
+        <span class="macro">assert_eq!</span>(row_group.columns.len(), <span class="number">2</span>);
+        <span class="comment">// Column &quot;a&quot; has both offset and column index, as requested
+        </span><span class="macro">assert!</span>(row_group.columns[<span class="number">0</span>].offset_index_offset.is_some());
+        <span class="macro">assert!</span>(row_group.columns[<span class="number">0</span>].column_index_offset.is_some());
+        <span class="comment">// Column &quot;b&quot; should only have offset index
+        </span><span class="macro">assert!</span>(row_group.columns[<span class="number">1</span>].offset_index_offset.is_some());
+        <span class="macro">assert!</span>(row_group.columns[<span class="number">1</span>].column_index_offset.is_none());
+
+        <span class="kw">let </span>options = ReadOptionsBuilder::new().with_page_index().build();
+        <span class="kw">let </span>reader = SerializedFileReader::new_with_options(Bytes::from(file), options).unwrap();
+
+        <span class="kw">let </span>offset_index = reader.metadata().offset_index().unwrap();
+        <span class="macro">assert_eq!</span>(offset_index.len(), <span class="number">1</span>); <span class="comment">// 1 row group
+        </span><span class="macro">assert_eq!</span>(offset_index[<span class="number">0</span>].len(), <span class="number">2</span>); <span class="comment">// 2 columns
+
+        </span><span class="kw">let </span>column_index = reader.metadata().column_index().unwrap();
+        <span class="macro">assert_eq!</span>(column_index.len(), <span class="number">1</span>); <span class="comment">// 1 row group
+        </span><span class="macro">assert_eq!</span>(column_index[<span class="number">0</span>].len(), <span class="number">2</span>); <span class="comment">// 2 column
+
+        </span><span class="kw">let </span>a_idx = <span class="kw-2">&amp;</span>column_index[<span class="number">0</span>][<span class="number">0</span>];
+        <span class="macro">assert!</span>(<span class="macro">matches!</span>(a_idx, Index::INT32(<span class="kw">_</span>)), <span class="string">&quot;{a_idx:?}&quot;</span>);
+        <span class="kw">let </span>b_idx = <span class="kw-2">&amp;</span>column_index[<span class="number">0</span>][<span class="number">1</span>];
+        <span class="macro">assert!</span>(<span class="macro">matches!</span>(b_idx, Index::NONE), <span class="string">&quot;{b_idx:?}&quot;</span>);
     }
 }
 </code></pre></div></section></main></body></html>
