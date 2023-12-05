@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/file/writer.rs`."><title>writer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e6a78389201e676c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (87e1447aa 2023-11-30)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/file/writer.rs`."><title>writer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c67e44d78ab2db17.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (0e2dac837 2023-12-04)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1690,6 +1690,93 @@
 <a href="#1690" id="1690">1690</a>
 <a href="#1691" id="1691">1691</a>
 <a href="#1692" id="1692">1692</a>
+<a href="#1693" id="1693">1693</a>
+<a href="#1694" id="1694">1694</a>
+<a href="#1695" id="1695">1695</a>
+<a href="#1696" id="1696">1696</a>
+<a href="#1697" id="1697">1697</a>
+<a href="#1698" id="1698">1698</a>
+<a href="#1699" id="1699">1699</a>
+<a href="#1700" id="1700">1700</a>
+<a href="#1701" id="1701">1701</a>
+<a href="#1702" id="1702">1702</a>
+<a href="#1703" id="1703">1703</a>
+<a href="#1704" id="1704">1704</a>
+<a href="#1705" id="1705">1705</a>
+<a href="#1706" id="1706">1706</a>
+<a href="#1707" id="1707">1707</a>
+<a href="#1708" id="1708">1708</a>
+<a href="#1709" id="1709">1709</a>
+<a href="#1710" id="1710">1710</a>
+<a href="#1711" id="1711">1711</a>
+<a href="#1712" id="1712">1712</a>
+<a href="#1713" id="1713">1713</a>
+<a href="#1714" id="1714">1714</a>
+<a href="#1715" id="1715">1715</a>
+<a href="#1716" id="1716">1716</a>
+<a href="#1717" id="1717">1717</a>
+<a href="#1718" id="1718">1718</a>
+<a href="#1719" id="1719">1719</a>
+<a href="#1720" id="1720">1720</a>
+<a href="#1721" id="1721">1721</a>
+<a href="#1722" id="1722">1722</a>
+<a href="#1723" id="1723">1723</a>
+<a href="#1724" id="1724">1724</a>
+<a href="#1725" id="1725">1725</a>
+<a href="#1726" id="1726">1726</a>
+<a href="#1727" id="1727">1727</a>
+<a href="#1728" id="1728">1728</a>
+<a href="#1729" id="1729">1729</a>
+<a href="#1730" id="1730">1730</a>
+<a href="#1731" id="1731">1731</a>
+<a href="#1732" id="1732">1732</a>
+<a href="#1733" id="1733">1733</a>
+<a href="#1734" id="1734">1734</a>
+<a href="#1735" id="1735">1735</a>
+<a href="#1736" id="1736">1736</a>
+<a href="#1737" id="1737">1737</a>
+<a href="#1738" id="1738">1738</a>
+<a href="#1739" id="1739">1739</a>
+<a href="#1740" id="1740">1740</a>
+<a href="#1741" id="1741">1741</a>
+<a href="#1742" id="1742">1742</a>
+<a href="#1743" id="1743">1743</a>
+<a href="#1744" id="1744">1744</a>
+<a href="#1745" id="1745">1745</a>
+<a href="#1746" id="1746">1746</a>
+<a href="#1747" id="1747">1747</a>
+<a href="#1748" id="1748">1748</a>
+<a href="#1749" id="1749">1749</a>
+<a href="#1750" id="1750">1750</a>
+<a href="#1751" id="1751">1751</a>
+<a href="#1752" id="1752">1752</a>
+<a href="#1753" id="1753">1753</a>
+<a href="#1754" id="1754">1754</a>
+<a href="#1755" id="1755">1755</a>
+<a href="#1756" id="1756">1756</a>
+<a href="#1757" id="1757">1757</a>
+<a href="#1758" id="1758">1758</a>
+<a href="#1759" id="1759">1759</a>
+<a href="#1760" id="1760">1760</a>
+<a href="#1761" id="1761">1761</a>
+<a href="#1762" id="1762">1762</a>
+<a href="#1763" id="1763">1763</a>
+<a href="#1764" id="1764">1764</a>
+<a href="#1765" id="1765">1765</a>
+<a href="#1766" id="1766">1766</a>
+<a href="#1767" id="1767">1767</a>
+<a href="#1768" id="1768">1768</a>
+<a href="#1769" id="1769">1769</a>
+<a href="#1770" id="1770">1770</a>
+<a href="#1771" id="1771">1771</a>
+<a href="#1772" id="1772">1772</a>
+<a href="#1773" id="1773">1773</a>
+<a href="#1774" id="1774">1774</a>
+<a href="#1775" id="1775">1775</a>
+<a href="#1776" id="1776">1776</a>
+<a href="#1777" id="1777">1777</a>
+<a href="#1778" id="1778">1778</a>
+<a href="#1779" id="1779">1779</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -2015,6 +2102,19 @@
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Some</span>(<span class="self">self</span>.kv_metadatas.clone()),
         };
 
+        <span class="comment">// We only include ColumnOrder for leaf nodes.
+        // Currently only supported ColumnOrder is TypeDefinedOrder so we set this
+        // for all leaf nodes.
+        // Even if the column has an undefined sort order, such as INTERVAL, this
+        // is still technically the defined TYPEORDER so it should still be set.
+        </span><span class="kw">let </span>column_orders = (<span class="number">0</span>..<span class="self">self</span>.schema_descr().num_columns())
+            .map(|<span class="kw">_</span>| parquet::ColumnOrder::TYPEORDER(parquet::TypeDefinedOrder {}))
+            .collect();
+        <span class="comment">// This field is optional, perhaps in cases where no min/max fields are set
+        // in any Statistics or ColumnIndex object in the whole file.
+        // But for simplicity we always set this field.
+        </span><span class="kw">let </span>column_orders = <span class="prelude-val">Some</span>(column_orders);
+
         <span class="kw">let </span>file_metadata = parquet::FileMetaData {
             num_rows,
             row_groups,
@@ -2022,7 +2122,7 @@
             version: <span class="self">self</span>.props.writer_version().as_num(),
             schema: types::to_thrift(<span class="self">self</span>.schema.as_ref())<span class="question-mark">?</span>,
             created_by: <span class="prelude-val">Some</span>(<span class="self">self</span>.props.created_by().to_owned()),
-            column_orders: <span class="prelude-val">None</span>,
+            column_orders,
             encryption_algorithm: <span class="prelude-val">None</span>,
             footer_signing_key_metadata: <span class="prelude-val">None</span>,
         };
@@ -2430,7 +2530,9 @@
     <span class="kw">use </span>bytes::Bytes;
     <span class="kw">use </span>std::fs::File;
 
-    <span class="kw">use </span><span class="kw">crate</span>::basic::{Compression, Encoding, LogicalType, Repetition, Type};
+    <span class="kw">use </span><span class="kw">crate</span>::basic::{
+        ColumnOrder, Compression, ConvertedType, Encoding, LogicalType, Repetition, SortOrder, Type,
+    };
     <span class="kw">use </span><span class="kw">crate</span>::column::page::{Page, PageReader};
     <span class="kw">use </span><span class="kw">crate</span>::column::reader::get_typed_column_reader;
     <span class="kw">use </span><span class="kw">crate</span>::compression::{create_codec, Codec, CodecOptionsBuilder};
@@ -2541,6 +2643,78 @@
 
         <span class="kw">let </span>reader = SerializedFileReader::new(file).unwrap();
         <span class="macro">assert_eq!</span>(reader.get_row_iter(<span class="prelude-val">None</span>).unwrap().count(), <span class="number">0</span>);
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_file_writer_column_orders_populated() {
+        <span class="kw">let </span>file = tempfile::tempfile().unwrap();
+
+        <span class="kw">let </span>schema = Arc::new(
+            types::Type::group_type_builder(<span class="string">&quot;schema&quot;</span>)
+                .with_fields(<span class="macro">vec!</span>[
+                    Arc::new(
+                        types::Type::primitive_type_builder(<span class="string">&quot;col1&quot;</span>, Type::INT32)
+                            .build()
+                            .unwrap(),
+                    ),
+                    Arc::new(
+                        types::Type::primitive_type_builder(<span class="string">&quot;col2&quot;</span>, Type::FIXED_LEN_BYTE_ARRAY)
+                            .with_converted_type(ConvertedType::INTERVAL)
+                            .with_length(<span class="number">12</span>)
+                            .build()
+                            .unwrap(),
+                    ),
+                    Arc::new(
+                        types::Type::group_type_builder(<span class="string">&quot;nested&quot;</span>)
+                            .with_repetition(Repetition::REQUIRED)
+                            .with_fields(<span class="macro">vec!</span>[
+                                Arc::new(
+                                    types::Type::primitive_type_builder(
+                                        <span class="string">&quot;col3&quot;</span>,
+                                        Type::FIXED_LEN_BYTE_ARRAY,
+                                    )
+                                    .with_logical_type(<span class="prelude-val">Some</span>(LogicalType::Float16))
+                                    .with_length(<span class="number">2</span>)
+                                    .build()
+                                    .unwrap(),
+                                ),
+                                Arc::new(
+                                    types::Type::primitive_type_builder(<span class="string">&quot;col4&quot;</span>, Type::BYTE_ARRAY)
+                                        .with_logical_type(<span class="prelude-val">Some</span>(LogicalType::String))
+                                        .build()
+                                        .unwrap(),
+                                ),
+                            ])
+                            .build()
+                            .unwrap(),
+                    ),
+                ])
+                .build()
+                .unwrap(),
+        );
+
+        <span class="kw">let </span>props = Default::default();
+        <span class="kw">let </span>writer = SerializedFileWriter::new(file.try_clone().unwrap(), schema, props).unwrap();
+        writer.close().unwrap();
+
+        <span class="kw">let </span>reader = SerializedFileReader::new(file).unwrap();
+
+        <span class="comment">// only leaves
+        </span><span class="kw">let </span>expected = <span class="macro">vec!</span>[
+            <span class="comment">// INT32
+            </span>ColumnOrder::TYPE_DEFINED_ORDER(SortOrder::SIGNED),
+            <span class="comment">// INTERVAL
+            </span>ColumnOrder::TYPE_DEFINED_ORDER(SortOrder::UNDEFINED),
+            <span class="comment">// Float16
+            </span>ColumnOrder::TYPE_DEFINED_ORDER(SortOrder::SIGNED),
+            <span class="comment">// String
+            </span>ColumnOrder::TYPE_DEFINED_ORDER(SortOrder::UNSIGNED),
+        ];
+        <span class="kw">let </span>actual = reader.metadata().file_metadata().column_orders();
+
+        <span class="macro">assert!</span>(actual.is_some());
+        <span class="kw">let </span>actual = actual.unwrap();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">*</span>actual, expected);
     }
 
     <span class="attr">#[test]
