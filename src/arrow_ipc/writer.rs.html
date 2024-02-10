@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-ipc/src/writer.rs`."><title>writer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c67e44d78ab2db17.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_ipc" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (0e2dac837 2023-12-04)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-ipc/src/writer.rs`."><title>writer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_ipc" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (d44e3b95c 2024-02-09)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../arrow_ipc/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -2240,14 +2242,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -2313,7 +2315,7 @@
             &amp;&amp; <span class="self">self</span>.metadata_version &lt; <span class="kw">crate</span>::MetadataVersion::V5
         {
             <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::InvalidArgumentError(
-                <span class="string">&quot;Compression only supported in metadata v5 and above&quot;</span>.to_string(),
+                <span class="string">"Compression only supported in metadata v5 and above"</span>.to_string(),
             ));
         }
         <span class="prelude-val">Ok</span>(<span class="self">self</span>)
@@ -2326,14 +2328,14 @@
     ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ArrowError&gt; {
         <span class="kw">if </span>alignment == <span class="number">0 </span>|| alignment % <span class="number">8 </span>!= <span class="number">0 </span>{
             <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::InvalidArgumentError(
-                <span class="string">&quot;Alignment should be greater than 0 and be a multiple of 8&quot;</span>.to_string(),
+                <span class="string">"Alignment should be greater than 0 and be a multiple of 8"</span>.to_string(),
             ));
         }
         <span class="kw">match </span>metadata_version {
             <span class="kw">crate</span>::MetadataVersion::V1
             | <span class="kw">crate</span>::MetadataVersion::V2
             | <span class="kw">crate</span>::MetadataVersion::V3 =&gt; <span class="prelude-val">Err</span>(ArrowError::InvalidArgumentError(
-                <span class="string">&quot;Writing IPC metadata version 3 and lower not supported&quot;</span>.to_string(),
+                <span class="string">"Writing IPC metadata version 3 and lower not supported"</span>.to_string(),
             )),
             <span class="kw">crate</span>::MetadataVersion::V4 =&gt; <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
                 alignment,
@@ -2344,7 +2346,7 @@
             <span class="kw">crate</span>::MetadataVersion::V5 =&gt; {
                 <span class="kw">if </span>write_legacy_ipc_format {
                     <span class="prelude-val">Err</span>(ArrowError::InvalidArgumentError(
-                        <span class="string">&quot;Legacy IPC format only supported on metadata version 4&quot;</span>.to_string(),
+                        <span class="string">"Legacy IPC format only supported on metadata version 4"</span>.to_string(),
                     ))
                 } <span class="kw">else </span>{
                     <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
@@ -2356,7 +2358,7 @@
                 }
             }
             z =&gt; <span class="prelude-val">Err</span>(ArrowError::InvalidArgumentError(<span class="macro">format!</span>(
-                <span class="string">&quot;Unsupported crate::MetadataVersion {z:?}&quot;
+                <span class="string">"Unsupported crate::MetadataVersion {z:?}"
             </span>))),
         }
     }
@@ -2387,7 +2389,7 @@
 ///
 /// // Create a record batch
 /// let batch = RecordBatch::try_from_iter(vec![
-///  (&quot;col2&quot;, Arc::new(UInt64Array::from_iter([10, 23, 33])) as _)
+///  ("col2", Arc::new(UInt64Array::from_iter([10, 23, 33])) as _)
 /// ]).unwrap();
 ///
 /// // Error of dictionary ids are replaced.
@@ -2456,7 +2458,7 @@
                 <span class="kw">let </span>data = column.to_data();
                 <span class="kw">if </span>data.child_data().len() != <span class="number">2 </span>{
                     <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::InvalidArgumentError(<span class="macro">format!</span>(
-                        <span class="string">&quot;The run encoded array should have exactly two child arrays. Found {}&quot;</span>,
+                        <span class="string">"The run encoded array should have exactly two child arrays. Found {}"</span>,
                         data.child_data().len()
                     )));
                 }
@@ -2495,7 +2497,7 @@
                 <span class="kw">let </span>list = column
                     .as_any()
                     .downcast_ref::&lt;FixedSizeListArray&gt;()
-                    .expect(<span class="string">&quot;Unable to downcast to fixed size list array&quot;</span>);
+                    .expect(<span class="string">"Unable to downcast to fixed size list array"</span>);
                 <span class="self">self</span>.encode_dictionaries(
                     field,
                     list.values(),
@@ -2509,7 +2511,7 @@
 
                 <span class="kw">let </span>(keys, values) = <span class="kw">match </span>field.data_type() {
                     DataType::Struct(fields) <span class="kw">if </span>fields.len() == <span class="number">2 </span>=&gt; (<span class="kw-2">&amp;</span>fields[<span class="number">0</span>], <span class="kw-2">&amp;</span>fields[<span class="number">1</span>]),
-                    <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;Incorrect field data type {:?}&quot;</span>, field.data_type()),
+                    <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"Incorrect field data type {:?}"</span>, field.data_type()),
                 };
 
                 <span class="comment">// keys
@@ -2561,7 +2563,7 @@
             DataType::Dictionary(_key_type, _value_type) =&gt; {
                 <span class="kw">let </span>dict_id = field
                     .dict_id()
-                    .expect(<span class="string">&quot;All Dictionary types have `dict_id`&quot;</span>);
+                    .expect(<span class="string">"All Dictionary types have `dict_id`"</span>);
                 <span class="kw">let </span>dict_data = column.to_data();
                 <span class="kw">let </span>dict_values = <span class="kw-2">&amp;</span>dict_data.child_data()[<span class="number">0</span>];
 
@@ -2623,7 +2625,7 @@
     }
 
     <span class="doccomment">/// Write a `RecordBatch` into two sets of bytes, one for the header (crate::Message) and the
-    /// other for the batch&#39;s data
+    /// other for the batch's data
     </span><span class="kw">fn </span>record_batch_to_bytes(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         batch: <span class="kw-2">&amp;</span>RecordBatch,
@@ -2796,10 +2798,10 @@
             DataType::Int64 =&gt; {
                 <span class="prelude-val">Ok</span>(into_zero_offset_run_array(RunArray::&lt;Int64Type&gt;::from(arr))<span class="question-mark">?</span>.into_data())
             }
-            d =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;Unexpected data type {d}&quot;</span>),
+            d =&gt; <span class="macro">unreachable!</span>(<span class="string">"Unexpected data type {d}"</span>),
         },
         d =&gt; <span class="prelude-val">Err</span>(ArrowError::InvalidArgumentError(<span class="macro">format!</span>(
-            <span class="string">&quot;The given array is not a run array. Data type of given array: {d}&quot;
+            <span class="string">"The given array is not a run array. Data type of given array: {d}"
         </span>))),
     }
 }
@@ -2858,7 +2860,7 @@
 
 <span class="doccomment">/// Keeps track of dictionaries that have been written, to avoid emitting the same dictionary
 /// multiple times. Can optionally error if an update to an existing dictionary is attempted, which
-/// isn&#39;t allowed in the `FileWriter`.
+/// isn't allowed in the `FileWriter`.
 </span><span class="kw">pub struct </span>DictionaryTracker {
     written: HashMap&lt;i64, ArrayData&gt;,
     error_on_replacement: bool,
@@ -2878,7 +2880,7 @@
     <span class="doccomment">/// Keep track of the dictionary with the given ID and values. Behavior:
     ///
     /// * If this ID has been written already and has the same data, return `Ok(false)` to indicate
-    ///   that the dictionary was not actually inserted (because it&#39;s already been seen).
+    ///   that the dictionary was not actually inserted (because it's already been seen).
     /// * If this ID has been written already but with different data, and this tracker is
     ///   configured to return an error, return an error.
     /// * If the tracker has not been configured to error on replacement or this dictionary
@@ -2901,9 +2903,9 @@
                     </span><span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="bool-val">false</span>);
                 }
                 <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::InvalidArgumentError(
-                    <span class="string">&quot;Dictionary replacement detected when writing IPC file format. \
+                    <span class="string">"Dictionary replacement detected when writing IPC file format. \
                      Arrow IPC files only support a single dictionary for a given field \
-                     across all batches.&quot;
+                     across all batches."
                         </span>.to_string(),
                 ));
             }
@@ -2982,7 +2984,7 @@
     </span><span class="kw">pub fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, batch: <span class="kw-2">&amp;</span>RecordBatch) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt; {
         <span class="kw">if </span><span class="self">self</span>.finished {
             <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::IpcError(
-                <span class="string">&quot;Cannot write record batch to file writer as it is closed&quot;</span>.to_string(),
+                <span class="string">"Cannot write record batch to file writer as it is closed"</span>.to_string(),
             ));
         }
 
@@ -3017,7 +3019,7 @@
     </span><span class="kw">pub fn </span>finish(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt; {
         <span class="kw">if </span><span class="self">self</span>.finished {
             <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::IpcError(
-                <span class="string">&quot;Cannot write footer to file writer as it is closed&quot;</span>.to_string(),
+                <span class="string">"Cannot write footer to file writer as it is closed"</span>.to_string(),
             ));
         }
 
@@ -3137,14 +3139,14 @@
     </span><span class="kw">pub fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, batch: <span class="kw-2">&amp;</span>RecordBatch) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt; {
         <span class="kw">if </span><span class="self">self</span>.finished {
             <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::IpcError(
-                <span class="string">&quot;Cannot write record batch to stream writer as it is closed&quot;</span>.to_string(),
+                <span class="string">"Cannot write record batch to stream writer as it is closed"</span>.to_string(),
             ));
         }
 
         <span class="kw">let </span>(encoded_dictionaries, encoded_message) = <span class="self">self
             </span>.data_gen
             .encoded_batch(batch, <span class="kw-2">&amp;mut </span><span class="self">self</span>.dictionary_tracker, <span class="kw-2">&amp;</span><span class="self">self</span>.write_options)
-            .expect(<span class="string">&quot;StreamWriter is configured to not error on dictionary replacement&quot;</span>);
+            .expect(<span class="string">"StreamWriter is configured to not error on dictionary replacement"</span>);
 
         <span class="kw">for </span>encoded_dictionary <span class="kw">in </span>encoded_dictionaries {
             write_message(<span class="kw-2">&amp;mut </span><span class="self">self</span>.writer, encoded_dictionary, <span class="kw-2">&amp;</span><span class="self">self</span>.write_options)<span class="question-mark">?</span>;
@@ -3158,7 +3160,7 @@
     </span><span class="kw">pub fn </span>finish(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt; {
         <span class="kw">if </span><span class="self">self</span>.finished {
             <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::IpcError(
-                <span class="string">&quot;Cannot write footer to stream writer as it is closed&quot;</span>.to_string(),
+                <span class="string">"Cannot write footer to stream writer as it is closed"</span>.to_string(),
             ));
         }
 
@@ -3189,7 +3191,7 @@
     ///
     /// # Errors
     ///
-    /// An [&#39;Err&#39;] may be returned if an error occurs while finishing the StreamWriter
+    /// An ['Err'] may be returned if an error occurs while finishing the StreamWriter
     /// or while flushing the buffer.
     ///
     /// # Example
@@ -3245,7 +3247,7 @@
     <span class="doccomment">/// Arrow buffers to be written, should be an empty vec for schema messages
     </span><span class="kw">pub </span>arrow_data: Vec&lt;u8&gt;,
 }
-<span class="doccomment">/// Write a message&#39;s IPC data and buffers, returning metadata and buffer data lengths written
+<span class="doccomment">/// Write a message's IPC data and buffers, returning metadata and buffer data lengths written
 </span><span class="kw">pub fn </span>write_message&lt;W: Write&gt;(
     <span class="kw-2">mut </span>writer: W,
     encoded: EncodedData,
@@ -3254,7 +3256,7 @@
     <span class="kw">let </span>arrow_data_len = encoded.arrow_data.len();
     <span class="kw">if </span>arrow_data_len % <span class="number">8 </span>!= <span class="number">0 </span>{
         <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::MemoryError(
-            <span class="string">&quot;Arrow data not aligned&quot;</span>.to_string(),
+            <span class="string">"Arrow data not aligned"</span>.to_string(),
         ));
     }
 
@@ -3319,7 +3321,7 @@
     <span class="comment">// the version of the writer determines whether continuation markers should be added
     </span><span class="kw">match </span>write_options.metadata_version {
         <span class="kw">crate</span>::MetadataVersion::V1 | <span class="kw">crate</span>::MetadataVersion::V2 | <span class="kw">crate</span>::MetadataVersion::V3 =&gt; {
-            <span class="macro">unreachable!</span>(<span class="string">&quot;Options with the metadata version cannot be created&quot;</span>)
+            <span class="macro">unreachable!</span>(<span class="string">"Options with the metadata version cannot be created"</span>)
         }
         <span class="kw">crate</span>::MetadataVersion::V4 =&gt; {
             <span class="kw">if </span>!write_options.write_legacy_ipc_format {
@@ -3334,7 +3336,7 @@
             </span>writer.write_all(<span class="kw-2">&amp;</span>CONTINUATION_MARKER)<span class="question-mark">?</span>;
             writer.write_all(<span class="kw-2">&amp;</span>total_len.to_le_bytes()[..])<span class="question-mark">?</span>;
         }
-        z =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Unsupported crate::MetadataVersion {z:?}&quot;</span>),
+        z =&gt; <span class="macro">panic!</span>(<span class="string">"Unsupported crate::MetadataVersion {z:?}"</span>),
     };
 
     writer.flush()<span class="question-mark">?</span>;
@@ -3401,7 +3403,7 @@
 
 <span class="doccomment">/// Returns the values and offsets [`Buffer`] for a ByteArray with offset type `O`
 ///
-/// In particular, this handles re-encoding the offsets if they don&#39;t start at `0`,
+/// In particular, this handles re-encoding the offsets if they don't start at `0`,
 /// slicing the values buffer as appropriate. This helps reduce the encoded
 /// size of sliced arrays, as values that have been sliced away are not encoded
 </span><span class="kw">fn </span>get_byte_array_buffers&lt;O: OffsetSizeTrait&gt;(data: <span class="kw-2">&amp;</span>ArrayData) -&gt; (Buffer, Buffer) {
@@ -3446,7 +3448,7 @@
     <span class="kw">if </span>!<span class="macro">matches!</span>(array_data.data_type(), DataType::Null) {
         nodes.push(<span class="kw">crate</span>::FieldNode::new(num_rows <span class="kw">as </span>i64, null_count <span class="kw">as </span>i64));
     } <span class="kw">else </span>{
-        <span class="comment">// NullArray&#39;s null_count equals to len, but the `null_count` passed in is from ArrayData
+        <span class="comment">// NullArray's null_count equals to len, but the `null_count` passed in is from ArrayData
         // where null_count is always 0.
         </span>nodes.push(<span class="kw">crate</span>::FieldNode::new(num_rows <span class="kw">as </span>i64, num_rows <span class="kw">as </span>i64));
     }
@@ -3636,7 +3638,7 @@
     }
     .try_into()
     .map_err(|e| {
-        ArrowError::InvalidArgumentError(<span class="macro">format!</span>(<span class="string">&quot;Could not convert compressed size to i64: {e}&quot;</span>))
+        ArrowError::InvalidArgumentError(<span class="macro">format!</span>(<span class="string">"Could not convert compressed size to i64: {e}"</span>))
     })<span class="question-mark">?</span>;
 
     <span class="comment">// make new index entry
@@ -3697,9 +3699,9 @@
     }
 
     <span class="attr">#[test]
-    #[cfg(feature = <span class="string">&quot;lz4&quot;</span>)]
+    #[cfg(feature = <span class="string">"lz4"</span>)]
     </span><span class="kw">fn </span>test_write_empty_record_batch_lz4_compression() {
-        <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[Field::new(<span class="string">&quot;field1&quot;</span>, DataType::Int32, <span class="bool-val">true</span>)]);
+        <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[Field::new(<span class="string">"field1"</span>, DataType::Int32, <span class="bool-val">true</span>)]);
         <span class="kw">let </span>values: Vec&lt;<span class="prelude-ty">Option</span>&lt;i32&gt;&gt; = <span class="macro">vec!</span>[];
         <span class="kw">let </span>array = Int32Array::from(values);
         <span class="kw">let </span>record_batch =
@@ -3738,9 +3740,9 @@
     }
 
     <span class="attr">#[test]
-    #[cfg(feature = <span class="string">&quot;lz4&quot;</span>)]
+    #[cfg(feature = <span class="string">"lz4"</span>)]
     </span><span class="kw">fn </span>test_write_file_with_lz4_compression() {
-        <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[Field::new(<span class="string">&quot;field1&quot;</span>, DataType::Int32, <span class="bool-val">true</span>)]);
+        <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[Field::new(<span class="string">"field1"</span>, DataType::Int32, <span class="bool-val">true</span>)]);
         <span class="kw">let </span>values: Vec&lt;<span class="prelude-ty">Option</span>&lt;i32&gt;&gt; = <span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">12</span>), <span class="prelude-val">Some</span>(<span class="number">1</span>)];
         <span class="kw">let </span>array = Int32Array::from(values);
         <span class="kw">let </span>record_batch =
@@ -3778,9 +3780,9 @@
     }
 
     <span class="attr">#[test]
-    #[cfg(feature = <span class="string">&quot;zstd&quot;</span>)]
+    #[cfg(feature = <span class="string">"zstd"</span>)]
     </span><span class="kw">fn </span>test_write_file_with_zstd_compression() {
-        <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[Field::new(<span class="string">&quot;field1&quot;</span>, DataType::Int32, <span class="bool-val">true</span>)]);
+        <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[Field::new(<span class="string">"field1"</span>, DataType::Int32, <span class="bool-val">true</span>)]);
         <span class="kw">let </span>values: Vec&lt;<span class="prelude-ty">Option</span>&lt;i32&gt;&gt; = <span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">12</span>), <span class="prelude-val">Some</span>(<span class="number">1</span>)];
         <span class="kw">let </span>array = Int32Array::from(values);
         <span class="kw">let </span>record_batch =
@@ -3818,7 +3820,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_write_file() {
-        <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[Field::new(<span class="string">&quot;field1&quot;</span>, DataType::UInt32, <span class="bool-val">true</span>)]);
+        <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[Field::new(<span class="string">"field1"</span>, DataType::UInt32, <span class="bool-val">true</span>)]);
         <span class="kw">let </span>values: Vec&lt;<span class="prelude-ty">Option</span>&lt;u32&gt;&gt; = <span class="macro">vec!</span>[
             <span class="prelude-val">Some</span>(<span class="number">999</span>),
             <span class="prelude-val">None</span>,
@@ -3861,10 +3863,10 @@
 
     <span class="kw">fn </span>write_null_file(options: IpcWriteOptions) {
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[
-            Field::new(<span class="string">&quot;nulls&quot;</span>, DataType::Null, <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;int32s&quot;</span>, DataType::Int32, <span class="bool-val">false</span>),
-            Field::new(<span class="string">&quot;nulls2&quot;</span>, DataType::Null, <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;f64s&quot;</span>, DataType::Float64, <span class="bool-val">false</span>),
+            Field::new(<span class="string">"nulls"</span>, DataType::Null, <span class="bool-val">true</span>),
+            Field::new(<span class="string">"int32s"</span>, DataType::Int32, <span class="bool-val">false</span>),
+            Field::new(<span class="string">"nulls2"</span>, DataType::Null, <span class="bool-val">true</span>),
+            Field::new(<span class="string">"f64s"</span>, DataType::Float64, <span class="bool-val">false</span>),
         ]);
         <span class="kw">let </span>array1 = NullArray::new(<span class="number">32</span>);
         <span class="kw">let </span>array2 = Int32Array::from(<span class="macro">vec!</span>[<span class="number">1</span>; <span class="number">32</span>]);
@@ -3922,12 +3924,12 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>track_union_nested_dict() {
-        <span class="kw">let </span>inner: DictionaryArray&lt;Int32Type&gt; = <span class="macro">vec!</span>[<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;a&quot;</span>].into_iter().collect();
+        <span class="kw">let </span>inner: DictionaryArray&lt;Int32Type&gt; = <span class="macro">vec!</span>[<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"a"</span>].into_iter().collect();
 
         <span class="kw">let </span>array = Arc::new(inner) <span class="kw">as </span>ArrayRef;
 
         <span class="comment">// Dict field with id 2
-        </span><span class="kw">let </span>dctfield = Field::new_dict(<span class="string">&quot;dict&quot;</span>, array.data_type().clone(), <span class="bool-val">false</span>, <span class="number">2</span>, <span class="bool-val">false</span>);
+        </span><span class="kw">let </span>dctfield = Field::new_dict(<span class="string">"dict"</span>, array.data_type().clone(), <span class="bool-val">false</span>, <span class="number">2</span>, <span class="bool-val">false</span>);
 
         <span class="kw">let </span>types = Buffer::from_slice_ref([<span class="number">0_i8</span>, <span class="number">0</span>, <span class="number">0</span>]);
         <span class="kw">let </span>offsets = Buffer::from_slice_ref([<span class="number">0_i32</span>, <span class="number">1</span>, <span class="number">2</span>]);
@@ -3936,7 +3938,7 @@
             UnionArray::try_new(<span class="kw-2">&amp;</span>[<span class="number">0</span>], types, <span class="prelude-val">Some</span>(offsets), <span class="macro">vec!</span>[(dctfield, array)]).unwrap();
 
         <span class="kw">let </span>schema = Arc::new(Schema::new(<span class="macro">vec!</span>[Field::new(
-            <span class="string">&quot;union&quot;</span>,
+            <span class="string">"union"</span>,
             union.data_type().clone(),
             <span class="bool-val">false</span>,
         )]));
@@ -3954,13 +3956,13 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>track_struct_nested_dict() {
-        <span class="kw">let </span>inner: DictionaryArray&lt;Int32Type&gt; = <span class="macro">vec!</span>[<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;a&quot;</span>].into_iter().collect();
+        <span class="kw">let </span>inner: DictionaryArray&lt;Int32Type&gt; = <span class="macro">vec!</span>[<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"a"</span>].into_iter().collect();
 
         <span class="kw">let </span>array = Arc::new(inner) <span class="kw">as </span>ArrayRef;
 
         <span class="comment">// Dict field with id 2
         </span><span class="kw">let </span>dctfield = Arc::new(Field::new_dict(
-            <span class="string">&quot;dict&quot;</span>,
+            <span class="string">"dict"</span>,
             array.data_type().clone(),
             <span class="bool-val">false</span>,
             <span class="number">2</span>,
@@ -3971,7 +3973,7 @@
         <span class="kw">let </span>struct_array = Arc::new(s) <span class="kw">as </span>ArrayRef;
 
         <span class="kw">let </span>schema = Arc::new(Schema::new(<span class="macro">vec!</span>[Field::new(
-            <span class="string">&quot;struct&quot;</span>,
+            <span class="string">"struct"</span>,
             struct_array.data_type().clone(),
             <span class="bool-val">false</span>,
         )]));
@@ -3989,20 +3991,20 @@
 
     <span class="kw">fn </span>write_union_file(options: IpcWriteOptions) {
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[Field::new_union(
-            <span class="string">&quot;union&quot;</span>,
+            <span class="string">"union"</span>,
             <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">1</span>],
             <span class="macro">vec!</span>[
-                Field::new(<span class="string">&quot;a&quot;</span>, DataType::Int32, <span class="bool-val">false</span>),
-                Field::new(<span class="string">&quot;c&quot;</span>, DataType::Float64, <span class="bool-val">false</span>),
+                Field::new(<span class="string">"a"</span>, DataType::Int32, <span class="bool-val">false</span>),
+                Field::new(<span class="string">"c"</span>, DataType::Float64, <span class="bool-val">false</span>),
             ],
             UnionMode::Sparse,
         )]);
         <span class="kw">let </span><span class="kw-2">mut </span>builder = UnionBuilder::with_capacity_sparse(<span class="number">5</span>);
-        builder.append::&lt;Int32Type&gt;(<span class="string">&quot;a&quot;</span>, <span class="number">1</span>).unwrap();
-        builder.append_null::&lt;Int32Type&gt;(<span class="string">&quot;a&quot;</span>).unwrap();
-        builder.append::&lt;Float64Type&gt;(<span class="string">&quot;c&quot;</span>, <span class="number">3.0</span>).unwrap();
-        builder.append_null::&lt;Float64Type&gt;(<span class="string">&quot;c&quot;</span>).unwrap();
-        builder.append::&lt;Int32Type&gt;(<span class="string">&quot;a&quot;</span>, <span class="number">4</span>).unwrap();
+        builder.append::&lt;Int32Type&gt;(<span class="string">"a"</span>, <span class="number">1</span>).unwrap();
+        builder.append_null::&lt;Int32Type&gt;(<span class="string">"a"</span>).unwrap();
+        builder.append::&lt;Float64Type&gt;(<span class="string">"c"</span>, <span class="number">3.0</span>).unwrap();
+        builder.append_null::&lt;Float64Type&gt;(<span class="string">"c"</span>).unwrap();
+        builder.append::&lt;Int32Type&gt;(<span class="string">"a"</span>, <span class="number">4</span>).unwrap();
         <span class="kw">let </span>union = builder.build().unwrap();
 
         <span class="kw">let </span>batch =
@@ -4045,8 +4047,8 @@
     </span><span class="kw">fn </span>truncate_ipc_record_batch() {
         <span class="kw">fn </span>create_batch(rows: usize) -&gt; RecordBatch {
             <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[
-                Field::new(<span class="string">&quot;a&quot;</span>, DataType::Int32, <span class="bool-val">false</span>),
-                Field::new(<span class="string">&quot;b&quot;</span>, DataType::Utf8, <span class="bool-val">false</span>),
+                Field::new(<span class="string">"a"</span>, DataType::Int32, <span class="bool-val">false</span>),
+                Field::new(<span class="string">"b"</span>, DataType::Utf8, <span class="bool-val">false</span>),
             ]);
 
             <span class="kw">let </span>a = Int32Array::from_iter_values(<span class="number">0</span>..rows <span class="kw">as </span>i32);
@@ -4080,12 +4082,12 @@
     </span><span class="kw">fn </span>truncate_ipc_record_batch_with_nulls() {
         <span class="kw">fn </span>create_batch() -&gt; RecordBatch {
             <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[
-                Field::new(<span class="string">&quot;a&quot;</span>, DataType::Int32, <span class="bool-val">true</span>),
-                Field::new(<span class="string">&quot;b&quot;</span>, DataType::Utf8, <span class="bool-val">true</span>),
+                Field::new(<span class="string">"a"</span>, DataType::Int32, <span class="bool-val">true</span>),
+                Field::new(<span class="string">"b"</span>, DataType::Utf8, <span class="bool-val">true</span>),
             ]);
 
             <span class="kw">let </span>a = Int32Array::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">1</span>)]);
-            <span class="kw">let </span>b = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>)]);
+            <span class="kw">let </span>b = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">"a"</span>), <span class="prelude-val">Some</span>(<span class="string">"a"</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">"a"</span>)]);
 
             RecordBatch::try_new(Arc::new(schema), <span class="macro">vec!</span>[Arc::new(a), Arc::new(b)]).unwrap()
         }
@@ -4109,14 +4111,14 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>truncate_ipc_dictionary_array() {
         <span class="kw">fn </span>create_batch() -&gt; RecordBatch {
-            <span class="kw">let </span>values: StringArray = [<span class="prelude-val">Some</span>(<span class="string">&quot;foo&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;bar&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;baz&quot;</span>)]
+            <span class="kw">let </span>values: StringArray = [<span class="prelude-val">Some</span>(<span class="string">"foo"</span>), <span class="prelude-val">Some</span>(<span class="string">"bar"</span>), <span class="prelude-val">Some</span>(<span class="string">"baz"</span>)]
                 .into_iter()
                 .collect();
             <span class="kw">let </span>keys: Int32Array = [<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">2</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">1</span>)].into_iter().collect();
 
             <span class="kw">let </span>array = DictionaryArray::new(keys, Arc::new(values));
 
-            <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[Field::new(<span class="string">&quot;dict&quot;</span>, array.data_type().clone(), <span class="bool-val">true</span>)]);
+            <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[Field::new(<span class="string">"dict"</span>, array.data_type().clone(), <span class="bool-val">true</span>)]);
 
             RecordBatch::try_new(Arc::new(schema), <span class="macro">vec!</span>[Arc::new(array)]).unwrap()
         }
@@ -4138,24 +4140,24 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>truncate_ipc_struct_array() {
         <span class="kw">fn </span>create_batch() -&gt; RecordBatch {
-            <span class="kw">let </span>strings: StringArray = [<span class="prelude-val">Some</span>(<span class="string">&quot;foo&quot;</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;bar&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;baz&quot;</span>)]
+            <span class="kw">let </span>strings: StringArray = [<span class="prelude-val">Some</span>(<span class="string">"foo"</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">"bar"</span>), <span class="prelude-val">Some</span>(<span class="string">"baz"</span>)]
                 .into_iter()
                 .collect();
             <span class="kw">let </span>ints: Int32Array = [<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">2</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">1</span>)].into_iter().collect();
 
             <span class="kw">let </span>struct_array = StructArray::from(<span class="macro">vec!</span>[
                 (
-                    Arc::new(Field::new(<span class="string">&quot;s&quot;</span>, DataType::Utf8, <span class="bool-val">true</span>)),
+                    Arc::new(Field::new(<span class="string">"s"</span>, DataType::Utf8, <span class="bool-val">true</span>)),
                     Arc::new(strings) <span class="kw">as </span>ArrayRef,
                 ),
                 (
-                    Arc::new(Field::new(<span class="string">&quot;c&quot;</span>, DataType::Int32, <span class="bool-val">true</span>)),
+                    Arc::new(Field::new(<span class="string">"c"</span>, DataType::Int32, <span class="bool-val">true</span>)),
                     Arc::new(ints) <span class="kw">as </span>ArrayRef,
                 ),
             ]);
 
             <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[Field::new(
-                <span class="string">&quot;struct_array&quot;</span>,
+                <span class="string">"struct_array"</span>,
                 struct_array.data_type().clone(),
                 <span class="bool-val">true</span>,
             )]);
@@ -4187,8 +4189,8 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>truncate_ipc_string_array_with_all_empty_string() {
         <span class="kw">fn </span>create_batch() -&gt; RecordBatch {
-            <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[Field::new(<span class="string">&quot;a&quot;</span>, DataType::Utf8, <span class="bool-val">true</span>)]);
-            <span class="kw">let </span>a = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;&quot;</span>)]);
+            <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[Field::new(<span class="string">"a"</span>, DataType::Utf8, <span class="bool-val">true</span>)]);
+            <span class="kw">let </span>a = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">""</span>), <span class="prelude-val">Some</span>(<span class="string">""</span>), <span class="prelude-val">Some</span>(<span class="string">""</span>), <span class="prelude-val">Some</span>(<span class="string">""</span>), <span class="prelude-val">Some</span>(<span class="string">""</span>)]);
             RecordBatch::try_new(Arc::new(schema), <span class="macro">vec!</span>[Arc::new(a)]).unwrap()
         }
 
@@ -4214,17 +4216,17 @@
         <span class="macro">assert_eq!</span>(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">2</span>), <span class="prelude-val">Some</span>(<span class="number">3</span>)], sliced.iter().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;());
 
         <span class="kw">let </span>batch = RecordBatch::try_new(
-            Arc::new(Schema::new(<span class="macro">vec!</span>[Field::new(<span class="string">&quot;a&quot;</span>, DataType::UInt32, <span class="bool-val">true</span>)])),
+            Arc::new(Schema::new(<span class="macro">vec!</span>[Field::new(<span class="string">"a"</span>, DataType::UInt32, <span class="bool-val">true</span>)])),
             <span class="macro">vec!</span>[Arc::new(sliced)],
         )
-        .expect(<span class="string">&quot;new batch&quot;</span>);
+        .expect(<span class="string">"new batch"</span>);
 
-        <span class="kw">let </span><span class="kw-2">mut </span>writer = StreamWriter::try_new(<span class="macro">vec!</span>[], <span class="kw-2">&amp;</span>batch.schema()).expect(<span class="string">&quot;new writer&quot;</span>);
-        writer.write(<span class="kw-2">&amp;</span>batch).expect(<span class="string">&quot;write&quot;</span>);
-        <span class="kw">let </span>outbuf = writer.into_inner().expect(<span class="string">&quot;inner&quot;</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>writer = StreamWriter::try_new(<span class="macro">vec!</span>[], <span class="kw-2">&amp;</span>batch.schema()).expect(<span class="string">"new writer"</span>);
+        writer.write(<span class="kw-2">&amp;</span>batch).expect(<span class="string">"write"</span>);
+        <span class="kw">let </span>outbuf = writer.into_inner().expect(<span class="string">"inner"</span>);
 
-        <span class="kw">let </span><span class="kw-2">mut </span>reader = StreamReader::try_new(<span class="kw-2">&amp;</span>outbuf[..], <span class="prelude-val">None</span>).expect(<span class="string">&quot;new reader&quot;</span>);
-        <span class="kw">let </span>read_batch = reader.next().unwrap().expect(<span class="string">&quot;read batch&quot;</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>reader = StreamReader::try_new(<span class="kw-2">&amp;</span>outbuf[..], <span class="prelude-val">None</span>).expect(<span class="string">"new reader"</span>);
+        <span class="kw">let </span>read_batch = reader.next().unwrap().expect(<span class="string">"read batch"</span>);
 
         <span class="kw">let </span>read_array: <span class="kw-2">&amp;</span>UInt32Array = read_batch.column(<span class="number">0</span>).as_primitive();
         <span class="macro">assert_eq!</span>(
@@ -4270,7 +4272,7 @@
     }
 
     <span class="kw">fn </span>assert_bool_roundtrip&lt;<span class="kw">const </span>N: usize&gt;(bools: [bool; N], offset: usize, length: usize) {
-        <span class="kw">let </span>val_bool_field = Field::new(<span class="string">&quot;val&quot;</span>, DataType::Boolean, <span class="bool-val">false</span>);
+        <span class="kw">let </span>val_bool_field = Field::new(<span class="string">"val"</span>, DataType::Boolean, <span class="bool-val">false</span>);
 
         <span class="kw">let </span>schema = Arc::new(Schema::new(<span class="macro">vec!</span>[val_bool_field]));
 
@@ -4407,8 +4409,8 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>encode_lists() {
-        <span class="kw">let </span>val_inner = Field::new(<span class="string">&quot;item&quot;</span>, DataType::UInt32, <span class="bool-val">true</span>);
-        <span class="kw">let </span>val_list_field = Field::new(<span class="string">&quot;val&quot;</span>, DataType::List(Arc::new(val_inner)), <span class="bool-val">false</span>);
+        <span class="kw">let </span>val_inner = Field::new(<span class="string">"item"</span>, DataType::UInt32, <span class="bool-val">true</span>);
+        <span class="kw">let </span>val_list_field = Field::new(<span class="string">"val"</span>, DataType::List(Arc::new(val_inner)), <span class="bool-val">false</span>);
         <span class="kw">let </span>schema = Arc::new(Schema::new(<span class="macro">vec!</span>[val_list_field]));
 
         <span class="kw">let </span>values = Arc::new(generate_list_data::&lt;i32&gt;());
@@ -4419,8 +4421,8 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>encode_empty_list() {
-        <span class="kw">let </span>val_inner = Field::new(<span class="string">&quot;item&quot;</span>, DataType::UInt32, <span class="bool-val">true</span>);
-        <span class="kw">let </span>val_list_field = Field::new(<span class="string">&quot;val&quot;</span>, DataType::List(Arc::new(val_inner)), <span class="bool-val">false</span>);
+        <span class="kw">let </span>val_inner = Field::new(<span class="string">"item"</span>, DataType::UInt32, <span class="bool-val">true</span>);
+        <span class="kw">let </span>val_list_field = Field::new(<span class="string">"val"</span>, DataType::List(Arc::new(val_inner)), <span class="bool-val">false</span>);
         <span class="kw">let </span>schema = Arc::new(Schema::new(<span class="macro">vec!</span>[val_list_field]));
 
         <span class="kw">let </span>values = Arc::new(generate_list_data::&lt;i32&gt;());
@@ -4434,8 +4436,8 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>encode_large_lists() {
-        <span class="kw">let </span>val_inner = Field::new(<span class="string">&quot;item&quot;</span>, DataType::UInt32, <span class="bool-val">true</span>);
-        <span class="kw">let </span>val_list_field = Field::new(<span class="string">&quot;val&quot;</span>, DataType::LargeList(Arc::new(val_inner)), <span class="bool-val">false</span>);
+        <span class="kw">let </span>val_inner = Field::new(<span class="string">"item"</span>, DataType::UInt32, <span class="bool-val">true</span>);
+        <span class="kw">let </span>val_list_field = Field::new(<span class="string">"val"</span>, DataType::LargeList(Arc::new(val_inner)), <span class="bool-val">false</span>);
         <span class="kw">let </span>schema = Arc::new(Schema::new(<span class="macro">vec!</span>[val_list_field]));
 
         <span class="kw">let </span>values = Arc::new(generate_list_data::&lt;i64&gt;());
@@ -4448,9 +4450,9 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>encode_nested_lists() {
-        <span class="kw">let </span>inner_int = Arc::new(Field::new(<span class="string">&quot;item&quot;</span>, DataType::UInt32, <span class="bool-val">true</span>));
-        <span class="kw">let </span>inner_list_field = Arc::new(Field::new(<span class="string">&quot;item&quot;</span>, DataType::List(inner_int), <span class="bool-val">true</span>));
-        <span class="kw">let </span>list_field = Field::new(<span class="string">&quot;val&quot;</span>, DataType::List(inner_list_field), <span class="bool-val">true</span>);
+        <span class="kw">let </span>inner_int = Arc::new(Field::new(<span class="string">"item"</span>, DataType::UInt32, <span class="bool-val">true</span>));
+        <span class="kw">let </span>inner_list_field = Arc::new(Field::new(<span class="string">"item"</span>, DataType::List(inner_int), <span class="bool-val">true</span>));
+        <span class="kw">let </span>list_field = Field::new(<span class="string">"val"</span>, DataType::List(inner_list_field), <span class="bool-val">true</span>);
         <span class="kw">let </span>schema = Arc::new(Schema::new(<span class="macro">vec!</span>[list_field]));
 
         <span class="kw">let </span>values = Arc::new(generate_nested_list_data::&lt;i32&gt;());
@@ -4461,9 +4463,9 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>encode_map_array() {
-        <span class="kw">let </span>keys = Arc::new(Field::new(<span class="string">&quot;keys&quot;</span>, DataType::UInt32, <span class="bool-val">false</span>));
-        <span class="kw">let </span>values = Arc::new(Field::new(<span class="string">&quot;values&quot;</span>, DataType::UInt32, <span class="bool-val">true</span>));
-        <span class="kw">let </span>map_field = Field::new_map(<span class="string">&quot;map&quot;</span>, <span class="string">&quot;entries&quot;</span>, keys, values, <span class="bool-val">false</span>, <span class="bool-val">true</span>);
+        <span class="kw">let </span>keys = Arc::new(Field::new(<span class="string">"keys"</span>, DataType::UInt32, <span class="bool-val">false</span>));
+        <span class="kw">let </span>values = Arc::new(Field::new(<span class="string">"values"</span>, DataType::UInt32, <span class="bool-val">true</span>));
+        <span class="kw">let </span>map_field = Field::new_map(<span class="string">"map"</span>, <span class="string">"entries"</span>, keys, values, <span class="bool-val">false</span>, <span class="bool-val">true</span>);
         <span class="kw">let </span>schema = Arc::new(Schema::new(<span class="macro">vec!</span>[map_field]));
 
         <span class="kw">let </span>values = Arc::new(generate_map_array_data());

@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/record/reader.rs`."><title>reader.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c67e44d78ab2db17.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (0e2dac837 2023-12-04)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/record/reader.rs`."><title>reader.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (d44e3b95c 2024-02-09)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../parquet/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1692,27 +1694,19 @@
 <a href="#1692" id="1692">1692</a>
 <a href="#1693" id="1693">1693</a>
 <a href="#1694" id="1694">1694</a>
-<a href="#1695" id="1695">1695</a>
-<a href="#1696" id="1696">1696</a>
-<a href="#1697" id="1697">1697</a>
-<a href="#1698" id="1698">1698</a>
-<a href="#1699" id="1699">1699</a>
-<a href="#1700" id="1700">1700</a>
-<a href="#1701" id="1701">1701</a>
-<a href="#1702" id="1702">1702</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -1801,10 +1795,7 @@
         row_group_reader: <span class="kw-2">&amp;</span><span class="kw">dyn </span>RowGroupReader,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;ReaderIter&gt; {
         <span class="kw">let </span>num_records = row_group_reader.metadata().num_rows() <span class="kw">as </span>usize;
-        <span class="prelude-val">Ok</span>(ReaderIter::new(
-            <span class="self">self</span>.build(descr, row_group_reader)<span class="question-mark">?</span>,
-            num_records,
-        ))
+        ReaderIter::new(<span class="self">self</span>.build(descr, row_group_reader)<span class="question-mark">?</span>, num_records)
     }
 
     <span class="doccomment">/// Builds tree of readers for the current schema recursively.
@@ -1836,7 +1827,7 @@
             <span class="kw">let </span>col_path = ColumnPath::new(path.to_vec());
             <span class="kw">let </span>orig_index = <span class="kw-2">*</span>paths
                 .get(<span class="kw-2">&amp;</span>col_path)
-                .ok_or(<span class="macro">general_err!</span>(<span class="string">&quot;Path {:?} not found&quot;</span>, col_path))<span class="question-mark">?</span>;
+                .ok_or(<span class="macro">general_err!</span>(<span class="string">"Path {:?} not found"</span>, col_path))<span class="question-mark">?</span>;
             <span class="kw">let </span>col_descr = row_group_reader
                 .metadata()
                 .column(orig_index)
@@ -1848,13 +1839,13 @@
             <span class="kw">match </span>field.get_basic_info().converted_type() {
                 <span class="comment">// List types
                 </span>ConvertedType::LIST =&gt; {
-                    <span class="macro">assert_eq!</span>(field.get_fields().len(), <span class="number">1</span>, <span class="string">&quot;Invalid list type {field:?}&quot;</span>);
+                    <span class="macro">assert_eq!</span>(field.get_fields().len(), <span class="number">1</span>, <span class="string">"Invalid list type {field:?}"</span>);
 
                     <span class="kw">let </span>repeated_field = field.get_fields()[<span class="number">0</span>].clone();
                     <span class="macro">assert_eq!</span>(
                         repeated_field.get_basic_info().repetition(),
                         Repetition::REPEATED,
-                        <span class="string">&quot;Invalid list type {field:?}&quot;
+                        <span class="string">"Invalid list type {field:?}"
                     </span>);
 
                     <span class="kw">if </span>Reader::is_element_type(<span class="kw-2">&amp;</span>repeated_field) {
@@ -1900,22 +1891,22 @@
                 }
                 <span class="comment">// Map types (key-value pairs)
                 </span>ConvertedType::MAP | ConvertedType::MAP_KEY_VALUE =&gt; {
-                    <span class="macro">assert_eq!</span>(field.get_fields().len(), <span class="number">1</span>, <span class="string">&quot;Invalid map type: {field:?}&quot;</span>);
+                    <span class="macro">assert_eq!</span>(field.get_fields().len(), <span class="number">1</span>, <span class="string">"Invalid map type: {field:?}"</span>);
                     <span class="macro">assert!</span>(
                         !field.get_fields()[<span class="number">0</span>].is_primitive(),
-                        <span class="string">&quot;Invalid map type: {field:?}&quot;
+                        <span class="string">"Invalid map type: {field:?}"
                     </span>);
 
                     <span class="kw">let </span>key_value_type = field.get_fields()[<span class="number">0</span>].clone();
                     <span class="macro">assert_eq!</span>(
                         key_value_type.get_basic_info().repetition(),
                         Repetition::REPEATED,
-                        <span class="string">&quot;Invalid map type: {field:?}&quot;
+                        <span class="string">"Invalid map type: {field:?}"
                     </span>);
                     <span class="macro">assert_eq!</span>(
                         key_value_type.get_fields().len(),
                         <span class="number">2</span>,
-                        <span class="string">&quot;Invalid map type: {field:?}&quot;
+                        <span class="string">"Invalid map type: {field:?}"
                     </span>);
 
                     path.push(String::from(key_value_type.name()));
@@ -1923,7 +1914,7 @@
                     <span class="kw">let </span>key_type = <span class="kw-2">&amp;</span>key_value_type.get_fields()[<span class="number">0</span>];
                     <span class="macro">assert!</span>(
                         key_type.is_primitive(),
-                        <span class="string">&quot;Map key type is expected to be a primitive type, but found {key_type:?}&quot;
+                        <span class="string">"Map key type is expected to be a primitive type, but found {key_type:?}"
                     </span>);
                     <span class="kw">let </span>key_reader = <span class="self">self</span>.reader_tree(
                         key_type.clone(),
@@ -2070,7 +2061,7 @@
     //      };
     //    }
     //
-    </span>repeated_type.name() == <span class="string">&quot;array&quot; </span>||
+    </span>repeated_type.name() == <span class="string">"array" </span>||
     <span class="comment">// For Parquet data generated by parquet-thrift, e.g.:
     //
     //    // ARRAY&lt;STRUCT&lt;str: STRING&gt;&gt; (nullable list, non-null elements)
@@ -2080,7 +2071,7 @@
     //      };
     //    }
     //
-    </span>repeated_type.name().ends_with(<span class="string">&quot;_tuple&quot;</span>)
+    </span>repeated_type.name().ends_with(<span class="string">"_tuple"</span>)
     }
 
     <span class="doccomment">/// Reads current record as `Row` from the reader tree.
@@ -2096,7 +2087,7 @@
                 }
                 <span class="prelude-val">Ok</span>(make_row(fields))
             }
-            <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;Cannot call read() on {self}&quot;</span>),
+            <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"Cannot call read() on {self}"</span>),
         }
     }
 
@@ -2113,7 +2104,7 @@
                 <span class="kw">if </span>reader.current_def_level() &gt; def_level {
                     reader.read_field()<span class="question-mark">?
                 </span>} <span class="kw">else </span>{
-                    reader.advance_columns();
+                    reader.advance_columns()<span class="question-mark">?</span>;
                     Field::Null
                 }
             }
@@ -2125,7 +2116,7 @@
                     {
                         fields.push((String::from(reader.field_name()), reader.read_field()<span class="question-mark">?</span>));
                     } <span class="kw">else </span>{
-                        reader.advance_columns();
+                        reader.advance_columns()<span class="question-mark">?</span>;
                         fields.push((String::from(reader.field_name()), Field::Null));
                     }
                 }
@@ -2138,7 +2129,7 @@
                     <span class="kw">if </span>reader.current_def_level() &gt; def_level {
                         elements.push(reader.read_field()<span class="question-mark">?</span>);
                     } <span class="kw">else </span>{
-                        reader.advance_columns();
+                        reader.advance_columns()<span class="question-mark">?</span>;
                         <span class="comment">// If the current definition level is equal to the definition
                         // level of this repeated type, then the
                         // result is an empty list and the repetition level
@@ -2161,8 +2152,8 @@
                     <span class="kw">if </span>keys.current_def_level() &gt; def_level {
                         pairs.push((keys.read_field()<span class="question-mark">?</span>, values.read_field()<span class="question-mark">?</span>));
                     } <span class="kw">else </span>{
-                        keys.advance_columns();
-                        values.advance_columns();
+                        keys.advance_columns()<span class="question-mark">?</span>;
+                        values.advance_columns()<span class="question-mark">?</span>;
                         <span class="comment">// If the current definition level is equal to the definition
                         // level of this repeated type, then the
                         // result is an empty list and the repetition level
@@ -2191,7 +2182,7 @@
             Reader::OptionReader(<span class="kw">_</span>, <span class="kw-2">ref </span>reader) =&gt; reader.field_name(),
             Reader::GroupReader(<span class="kw-2">ref </span>opt, ..) =&gt; <span class="kw">match </span>opt {
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>field) =&gt; field.name(),
-                <span class="prelude-val">None </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;Field is None for group reader&quot;</span>),
+                <span class="prelude-val">None </span>=&gt; <span class="macro">panic!</span>(<span class="string">"Field is None for group reader"</span>),
             },
             Reader::RepeatedReader(<span class="kw-2">ref </span>field, ..) =&gt; field.name(),
             Reader::KeyValueReader(<span class="kw-2">ref </span>field, ..) =&gt; field.name(),
@@ -2205,7 +2196,7 @@
             Reader::OptionReader(<span class="kw">_</span>, <span class="kw-2">ref </span>reader) =&gt; reader.repetition(),
             Reader::GroupReader(<span class="kw-2">ref </span>opt, ..) =&gt; <span class="kw">match </span>opt {
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>field) =&gt; field.get_basic_info().repetition(),
-                <span class="prelude-val">None </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;Field is None for group reader&quot;</span>),
+                <span class="prelude-val">None </span>=&gt; <span class="macro">panic!</span>(<span class="string">"Field is None for group reader"</span>),
             },
             Reader::RepeatedReader(<span class="kw-2">ref </span>field, ..) =&gt; field.get_basic_info().repetition(),
             Reader::KeyValueReader(<span class="kw-2">ref </span>field, ..) =&gt; field.get_basic_info().repetition(),
@@ -2232,7 +2223,7 @@
             Reader::OptionReader(<span class="kw">_</span>, <span class="kw-2">ref </span>reader) =&gt; reader.current_def_level(),
             Reader::GroupReader(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw-2">ref </span>readers) =&gt; <span class="kw">match </span>readers.first() {
                 <span class="prelude-val">Some</span>(reader) =&gt; reader.current_def_level(),
-                <span class="prelude-val">None </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;Current definition level: empty group reader&quot;</span>),
+                <span class="prelude-val">None </span>=&gt; <span class="macro">panic!</span>(<span class="string">"Current definition level: empty group reader"</span>),
             },
             Reader::RepeatedReader(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw-2">ref </span>reader) =&gt; reader.current_def_level(),
             Reader::KeyValueReader(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw-2">ref </span>keys, <span class="kw">_</span>) =&gt; keys.current_def_level(),
@@ -2247,7 +2238,7 @@
             Reader::OptionReader(<span class="kw">_</span>, <span class="kw-2">ref </span>reader) =&gt; reader.current_rep_level(),
             Reader::GroupReader(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw-2">ref </span>readers) =&gt; <span class="kw">match </span>readers.first() {
                 <span class="prelude-val">Some</span>(reader) =&gt; reader.current_rep_level(),
-                <span class="prelude-val">None </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;Current repetition level: empty group reader&quot;</span>),
+                <span class="prelude-val">None </span>=&gt; <span class="macro">panic!</span>(<span class="string">"Current repetition level: empty group reader"</span>),
             },
             Reader::RepeatedReader(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw-2">ref </span>reader) =&gt; reader.current_rep_level(),
             Reader::KeyValueReader(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw-2">ref </span>keys, <span class="kw">_</span>) =&gt; keys.current_rep_level(),
@@ -2255,25 +2246,20 @@
     }
 
     <span class="doccomment">/// Advances leaf columns for the current reader.
-    </span><span class="kw">fn </span>advance_columns(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+    </span><span class="kw">fn </span>advance_columns(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{
-            Reader::PrimitiveReader(<span class="kw">_</span>, <span class="kw-2">ref mut </span>column) =&gt; {
-                column.read_next().unwrap();
-            }
-            Reader::OptionReader(<span class="kw">_</span>, <span class="kw-2">ref mut </span>reader) =&gt; {
-                reader.advance_columns();
-            }
+            Reader::PrimitiveReader(<span class="kw">_</span>, <span class="kw-2">ref mut </span>column) =&gt; column.read_next().map(|<span class="kw">_</span>| ()),
+            Reader::OptionReader(<span class="kw">_</span>, <span class="kw-2">ref mut </span>reader) =&gt; reader.advance_columns(),
             Reader::GroupReader(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw-2">ref mut </span>readers) =&gt; {
                 <span class="kw">for </span>reader <span class="kw">in </span>readers {
-                    reader.advance_columns();
+                    reader.advance_columns()<span class="question-mark">?</span>;
                 }
+                <span class="prelude-val">Ok</span>(())
             }
-            Reader::RepeatedReader(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw-2">ref mut </span>reader) =&gt; {
-                reader.advance_columns();
-            }
+            Reader::RepeatedReader(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw-2">ref mut </span>reader) =&gt; reader.advance_columns(),
             Reader::KeyValueReader(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw-2">ref mut </span>keys, <span class="kw-2">ref mut </span>values) =&gt; {
-                keys.advance_columns();
-                values.advance_columns();
+                keys.advance_columns()<span class="question-mark">?</span>;
+                values.advance_columns()
             }
         }
     }
@@ -2282,13 +2268,13 @@
 <span class="kw">impl </span>fmt::Display <span class="kw">for </span>Reader {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
         <span class="kw">let </span>s = <span class="kw">match </span><span class="self">self </span>{
-            Reader::PrimitiveReader(..) =&gt; <span class="string">&quot;PrimitiveReader&quot;</span>,
-            Reader::OptionReader(..) =&gt; <span class="string">&quot;OptionReader&quot;</span>,
-            Reader::GroupReader(..) =&gt; <span class="string">&quot;GroupReader&quot;</span>,
-            Reader::RepeatedReader(..) =&gt; <span class="string">&quot;RepeatedReader&quot;</span>,
-            Reader::KeyValueReader(..) =&gt; <span class="string">&quot;KeyValueReader&quot;</span>,
+            Reader::PrimitiveReader(..) =&gt; <span class="string">"PrimitiveReader"</span>,
+            Reader::OptionReader(..) =&gt; <span class="string">"OptionReader"</span>,
+            Reader::GroupReader(..) =&gt; <span class="string">"GroupReader"</span>,
+            Reader::RepeatedReader(..) =&gt; <span class="string">"RepeatedReader"</span>,
+            Reader::KeyValueReader(..) =&gt; <span class="string">"KeyValueReader"</span>,
         };
-        <span class="macro">write!</span>(f, <span class="string">&quot;{s}&quot;</span>)
+        <span class="macro">write!</span>(f, <span class="string">"{s}"</span>)
     }
 }
 
@@ -2297,12 +2283,12 @@
 
 </span><span class="doccomment">/// The enum Either with variants That represents a reference and a box of
 /// [`FileReader`].
-</span><span class="kw">enum </span>Either&lt;<span class="lifetime">&#39;a</span>&gt; {
-    Left(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw">dyn </span>FileReader),
+</span><span class="kw">enum </span>Either&lt;<span class="lifetime">'a</span>&gt; {
+    Left(<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw">dyn </span>FileReader),
     Right(Box&lt;<span class="kw">dyn </span>FileReader&gt;),
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Either&lt;<span class="lifetime">&#39;a</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Either&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">fn </span>reader(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="kw">dyn </span>FileReader {
         <span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{
             Either::Left(r) =&gt; r,
@@ -2325,19 +2311,19 @@
 /// [#2394]: https://github.com/apache/arrow-rs/issues/2394
 /// [ColumnReader]: crate::file::reader::RowGroupReader::get_column_reader
 /// [Dremel]: https://research.google/pubs/pub36632/
-</span><span class="kw">pub struct </span>RowIter&lt;<span class="lifetime">&#39;a</span>&gt; {
+</span><span class="kw">pub struct </span>RowIter&lt;<span class="lifetime">'a</span>&gt; {
     descr: SchemaDescPtr,
     tree_builder: TreeBuilder,
-    file_reader: <span class="prelude-ty">Option</span>&lt;Either&lt;<span class="lifetime">&#39;a</span>&gt;&gt;,
+    file_reader: <span class="prelude-ty">Option</span>&lt;Either&lt;<span class="lifetime">'a</span>&gt;&gt;,
     current_row_group: usize,
     num_row_groups: usize,
     row_iter: <span class="prelude-ty">Option</span>&lt;ReaderIter&gt;,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; RowIter&lt;<span class="lifetime">&#39;a</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; RowIter&lt;<span class="lifetime">'a</span>&gt; {
     <span class="doccomment">/// Creates a new iterator of [`Row`]s.
     </span><span class="kw">fn </span>new(
-        file_reader: <span class="prelude-ty">Option</span>&lt;Either&lt;<span class="lifetime">&#39;a</span>&gt;&gt;,
+        file_reader: <span class="prelude-ty">Option</span>&lt;Either&lt;<span class="lifetime">'a</span>&gt;&gt;,
         row_iter: <span class="prelude-ty">Option</span>&lt;ReaderIter&gt;,
         descr: SchemaDescPtr,
     ) -&gt; <span class="self">Self </span>{
@@ -2359,7 +2345,7 @@
 
     <span class="doccomment">/// Creates iterator of [`Row`]s for all row groups in a
     /// file.
-    </span><span class="kw">pub fn </span>from_file(proj: <span class="prelude-ty">Option</span>&lt;Type&gt;, reader: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw">dyn </span>FileReader) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+    </span><span class="kw">pub fn </span>from_file(proj: <span class="prelude-ty">Option</span>&lt;Type&gt;, reader: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw">dyn </span>FileReader) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>either = Either::Left(reader);
         <span class="kw">let </span>descr =
             <span class="self">Self</span>::get_proj_descr(proj, reader.metadata().file_metadata().schema_descr_ptr())<span class="question-mark">?</span>;
@@ -2368,13 +2354,13 @@
     }
 
     <span class="doccomment">/// Creates iterator of [`Row`]s for a specific row group.
-    </span><span class="kw">pub fn </span>from_row_group(proj: <span class="prelude-ty">Option</span>&lt;Type&gt;, reader: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw">dyn </span>RowGroupReader) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+    </span><span class="kw">pub fn </span>from_row_group(proj: <span class="prelude-ty">Option</span>&lt;Type&gt;, reader: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw">dyn </span>RowGroupReader) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>descr = <span class="self">Self</span>::get_proj_descr(proj, reader.metadata().schema_descr_ptr())<span class="question-mark">?</span>;
         <span class="kw">let </span>tree_builder = <span class="self">Self</span>::tree_builder();
         <span class="kw">let </span>row_iter = tree_builder.as_iter(descr.clone(), reader)<span class="question-mark">?</span>;
 
         <span class="comment">// For row group we need to set `current_row_group` &gt;= `num_row_groups`, because
-        // we only have one row group and can&#39;t buffer more.
+        // we only have one row group and can't buffer more.
         </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>::new(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(row_iter), descr))
     }
 
@@ -2407,7 +2393,7 @@
 
                 <span class="prelude-val">Ok</span>(<span class="self">Self</span>::new(<span class="self">self</span>.file_reader, <span class="prelude-val">None</span>, descr))
             }
-            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">general_err!</span>(<span class="string">&quot;File reader is required to use projections&quot;</span>)),
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">general_err!</span>(<span class="string">"File reader is required to use projections"</span>)),
         }
     }
 
@@ -2420,7 +2406,7 @@
                 <span class="comment">// check if projection is part of file schema
                 </span><span class="kw">let </span>root_schema = root_descr.root_schema();
                 <span class="kw">if </span>!root_schema.check_contains(<span class="kw-2">&amp;</span>projection) {
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">general_err!</span>(<span class="string">&quot;Root schema does not contain projection&quot;</span>));
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">general_err!</span>(<span class="string">"Root schema does not contain projection"</span>));
                 }
                 <span class="prelude-val">Ok</span>(Arc::new(SchemaDescriptor::new(Arc::new(projection))))
             }
@@ -2442,7 +2428,7 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Iterator <span class="kw">for </span>RowIter&lt;<span class="lifetime">&#39;a</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Iterator <span class="kw">for </span>RowIter&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">type </span>Item = <span class="prelude-ty">Result</span>&lt;Row&gt;;
 
     <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Row&gt;&gt; {
@@ -2458,7 +2444,7 @@
                 <span class="kw">let </span>file_reader = either.reader();
                 <span class="kw">let </span>row_group_reader = <span class="kw-2">&amp;*</span>file_reader
                     .get_row_group(<span class="self">self</span>.current_row_group)
-                    .expect(<span class="string">&quot;Row group is required to advance&quot;</span>);
+                    .expect(<span class="string">"Row group is required to advance"</span>);
 
                 <span class="kw">match </span><span class="self">self
                     </span>.tree_builder
@@ -2486,13 +2472,13 @@
 }
 
 <span class="kw">impl </span>ReaderIter {
-    <span class="kw">fn </span>new(<span class="kw-2">mut </span>root_reader: Reader, num_records: usize) -&gt; <span class="self">Self </span>{
+    <span class="kw">fn </span>new(<span class="kw-2">mut </span>root_reader: Reader, num_records: usize) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="comment">// Prepare root reader by advancing all column vectors
-        </span>root_reader.advance_columns();
-        <span class="self">Self </span>{
+        </span>root_reader.advance_columns()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
             root_reader,
             records_left: num_records,
-        }
+        })
     }
 }
 
@@ -2559,39 +2545,39 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_file_reader_rows_nulls() {
-        <span class="kw">let </span>rows = test_file_reader_rows(<span class="string">&quot;nulls.snappy.parquet&quot;</span>, <span class="prelude-val">None</span>).unwrap();
+        <span class="kw">let </span>rows = test_file_reader_rows(<span class="string">"nulls.snappy.parquet"</span>, <span class="prelude-val">None</span>).unwrap();
         <span class="kw">let </span>expected_rows = <span class="macro">vec!</span>[
             <span class="macro">row!</span>[(
-                <span class="string">&quot;b_struct&quot;</span>.to_string(),
-                <span class="macro">group!</span>[(<span class="string">&quot;b_c_int&quot;</span>.to_string(), Field::Null)]
+                <span class="string">"b_struct"</span>.to_string(),
+                <span class="macro">group!</span>[(<span class="string">"b_c_int"</span>.to_string(), Field::Null)]
             )],
             <span class="macro">row!</span>[(
-                <span class="string">&quot;b_struct&quot;</span>.to_string(),
-                <span class="macro">group!</span>[(<span class="string">&quot;b_c_int&quot;</span>.to_string(), Field::Null)]
+                <span class="string">"b_struct"</span>.to_string(),
+                <span class="macro">group!</span>[(<span class="string">"b_c_int"</span>.to_string(), Field::Null)]
             )],
             <span class="macro">row!</span>[(
-                <span class="string">&quot;b_struct&quot;</span>.to_string(),
-                <span class="macro">group!</span>[(<span class="string">&quot;b_c_int&quot;</span>.to_string(), Field::Null)]
+                <span class="string">"b_struct"</span>.to_string(),
+                <span class="macro">group!</span>[(<span class="string">"b_c_int"</span>.to_string(), Field::Null)]
             )],
             <span class="macro">row!</span>[(
-                <span class="string">&quot;b_struct&quot;</span>.to_string(),
-                <span class="macro">group!</span>[(<span class="string">&quot;b_c_int&quot;</span>.to_string(), Field::Null)]
+                <span class="string">"b_struct"</span>.to_string(),
+                <span class="macro">group!</span>[(<span class="string">"b_c_int"</span>.to_string(), Field::Null)]
             )],
             <span class="macro">row!</span>[(
-                <span class="string">&quot;b_struct&quot;</span>.to_string(),
-                <span class="macro">group!</span>[(<span class="string">&quot;b_c_int&quot;</span>.to_string(), Field::Null)]
+                <span class="string">"b_struct"</span>.to_string(),
+                <span class="macro">group!</span>[(<span class="string">"b_c_int"</span>.to_string(), Field::Null)]
             )],
             <span class="macro">row!</span>[(
-                <span class="string">&quot;b_struct&quot;</span>.to_string(),
-                <span class="macro">group!</span>[(<span class="string">&quot;b_c_int&quot;</span>.to_string(), Field::Null)]
+                <span class="string">"b_struct"</span>.to_string(),
+                <span class="macro">group!</span>[(<span class="string">"b_c_int"</span>.to_string(), Field::Null)]
             )],
             <span class="macro">row!</span>[(
-                <span class="string">&quot;b_struct&quot;</span>.to_string(),
-                <span class="macro">group!</span>[(<span class="string">&quot;b_c_int&quot;</span>.to_string(), Field::Null)]
+                <span class="string">"b_struct"</span>.to_string(),
+                <span class="macro">group!</span>[(<span class="string">"b_c_int"</span>.to_string(), Field::Null)]
             )],
             <span class="macro">row!</span>[(
-                <span class="string">&quot;b_struct&quot;</span>.to_string(),
-                <span class="macro">group!</span>[(<span class="string">&quot;b_c_int&quot;</span>.to_string(), Field::Null)]
+                <span class="string">"b_struct"</span>.to_string(),
+                <span class="macro">group!</span>[(<span class="string">"b_c_int"</span>.to_string(), Field::Null)]
             )],
         ];
         <span class="macro">assert_eq!</span>(rows, expected_rows);
@@ -2599,43 +2585,43 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_file_reader_rows_nonnullable() {
-        <span class="kw">let </span>rows = test_file_reader_rows(<span class="string">&quot;nonnullable.impala.parquet&quot;</span>, <span class="prelude-val">None</span>).unwrap();
+        <span class="kw">let </span>rows = test_file_reader_rows(<span class="string">"nonnullable.impala.parquet"</span>, <span class="prelude-val">None</span>).unwrap();
         <span class="kw">let </span>expected_rows = <span class="macro">vec!</span>[<span class="macro">row!</span>[
-            (<span class="string">&quot;ID&quot;</span>.to_string(), Field::Long(<span class="number">8</span>)),
-            (<span class="string">&quot;Int_Array&quot;</span>.to_string(), <span class="macro">list!</span>[Field::Int(-<span class="number">1</span>)]),
+            (<span class="string">"ID"</span>.to_string(), Field::Long(<span class="number">8</span>)),
+            (<span class="string">"Int_Array"</span>.to_string(), <span class="macro">list!</span>[Field::Int(-<span class="number">1</span>)]),
             (
-                <span class="string">&quot;int_array_array&quot;</span>.to_string(),
+                <span class="string">"int_array_array"</span>.to_string(),
                 <span class="macro">list!</span>[<span class="macro">list!</span>[Field::Int(-<span class="number">1</span>), Field::Int(-<span class="number">2</span>)], <span class="macro">list!</span>[]]
             ),
             (
-                <span class="string">&quot;Int_Map&quot;</span>.to_string(),
-                <span class="macro">map!</span>[(Field::Str(<span class="string">&quot;k1&quot;</span>.to_string()), Field::Int(-<span class="number">1</span>))]
+                <span class="string">"Int_Map"</span>.to_string(),
+                <span class="macro">map!</span>[(Field::Str(<span class="string">"k1"</span>.to_string()), Field::Int(-<span class="number">1</span>))]
             ),
             (
-                <span class="string">&quot;int_map_array&quot;</span>.to_string(),
+                <span class="string">"int_map_array"</span>.to_string(),
                 <span class="macro">list!</span>[
                     <span class="macro">map!</span>[],
-                    <span class="macro">map!</span>[(Field::Str(<span class="string">&quot;k1&quot;</span>.to_string()), Field::Int(<span class="number">1</span>))],
+                    <span class="macro">map!</span>[(Field::Str(<span class="string">"k1"</span>.to_string()), Field::Int(<span class="number">1</span>))],
                     <span class="macro">map!</span>[],
                     <span class="macro">map!</span>[]
                 ]
             ),
             (
-                <span class="string">&quot;nested_Struct&quot;</span>.to_string(),
+                <span class="string">"nested_Struct"</span>.to_string(),
                 <span class="macro">group!</span>[
-                    (<span class="string">&quot;a&quot;</span>.to_string(), Field::Int(-<span class="number">1</span>)),
-                    (<span class="string">&quot;B&quot;</span>.to_string(), <span class="macro">list!</span>[Field::Int(-<span class="number">1</span>)]),
+                    (<span class="string">"a"</span>.to_string(), Field::Int(-<span class="number">1</span>)),
+                    (<span class="string">"B"</span>.to_string(), <span class="macro">list!</span>[Field::Int(-<span class="number">1</span>)]),
                     (
-                        <span class="string">&quot;c&quot;</span>.to_string(),
+                        <span class="string">"c"</span>.to_string(),
                         <span class="macro">group!</span>[(
-                            <span class="string">&quot;D&quot;</span>.to_string(),
+                            <span class="string">"D"</span>.to_string(),
                             <span class="macro">list!</span>[<span class="macro">list!</span>[<span class="macro">group!</span>[
-                                (<span class="string">&quot;e&quot;</span>.to_string(), Field::Int(-<span class="number">1</span>)),
-                                (<span class="string">&quot;f&quot;</span>.to_string(), Field::Str(<span class="string">&quot;nonnullable&quot;</span>.to_string()))
+                                (<span class="string">"e"</span>.to_string(), Field::Int(-<span class="number">1</span>)),
+                                (<span class="string">"f"</span>.to_string(), Field::Str(<span class="string">"nonnullable"</span>.to_string()))
                             ]]]
                         )]
                     ),
-                    (<span class="string">&quot;G&quot;</span>.to_string(), <span class="macro">map!</span>[])
+                    (<span class="string">"G"</span>.to_string(), <span class="macro">map!</span>[])
                 ]
             )
         ]];
@@ -2644,66 +2630,66 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_file_reader_rows_nullable() {
-        <span class="kw">let </span>rows = test_file_reader_rows(<span class="string">&quot;nullable.impala.parquet&quot;</span>, <span class="prelude-val">None</span>).unwrap();
+        <span class="kw">let </span>rows = test_file_reader_rows(<span class="string">"nullable.impala.parquet"</span>, <span class="prelude-val">None</span>).unwrap();
         <span class="kw">let </span>expected_rows = <span class="macro">vec!</span>[
             <span class="macro">row!</span>[
-                (<span class="string">&quot;id&quot;</span>.to_string(), Field::Long(<span class="number">1</span>)),
+                (<span class="string">"id"</span>.to_string(), Field::Long(<span class="number">1</span>)),
                 (
-                    <span class="string">&quot;int_array&quot;</span>.to_string(),
+                    <span class="string">"int_array"</span>.to_string(),
                     <span class="macro">list!</span>[Field::Int(<span class="number">1</span>), Field::Int(<span class="number">2</span>), Field::Int(<span class="number">3</span>)]
                 ),
                 (
-                    <span class="string">&quot;int_array_Array&quot;</span>.to_string(),
+                    <span class="string">"int_array_Array"</span>.to_string(),
                     <span class="macro">list!</span>[
                         <span class="macro">list!</span>[Field::Int(<span class="number">1</span>), Field::Int(<span class="number">2</span>)],
                         <span class="macro">list!</span>[Field::Int(<span class="number">3</span>), Field::Int(<span class="number">4</span>)]
                     ]
                 ),
                 (
-                    <span class="string">&quot;int_map&quot;</span>.to_string(),
+                    <span class="string">"int_map"</span>.to_string(),
                     <span class="macro">map!</span>[
-                        (Field::Str(<span class="string">&quot;k1&quot;</span>.to_string()), Field::Int(<span class="number">1</span>)),
-                        (Field::Str(<span class="string">&quot;k2&quot;</span>.to_string()), Field::Int(<span class="number">100</span>))
+                        (Field::Str(<span class="string">"k1"</span>.to_string()), Field::Int(<span class="number">1</span>)),
+                        (Field::Str(<span class="string">"k2"</span>.to_string()), Field::Int(<span class="number">100</span>))
                     ]
                 ),
                 (
-                    <span class="string">&quot;int_Map_Array&quot;</span>.to_string(),
-                    <span class="macro">list!</span>[<span class="macro">map!</span>[(Field::Str(<span class="string">&quot;k1&quot;</span>.to_string()), Field::Int(<span class="number">1</span>))]]
+                    <span class="string">"int_Map_Array"</span>.to_string(),
+                    <span class="macro">list!</span>[<span class="macro">map!</span>[(Field::Str(<span class="string">"k1"</span>.to_string()), Field::Int(<span class="number">1</span>))]]
                 ),
                 (
-                    <span class="string">&quot;nested_struct&quot;</span>.to_string(),
+                    <span class="string">"nested_struct"</span>.to_string(),
                     <span class="macro">group!</span>[
-                        (<span class="string">&quot;A&quot;</span>.to_string(), Field::Int(<span class="number">1</span>)),
-                        (<span class="string">&quot;b&quot;</span>.to_string(), <span class="macro">list!</span>[Field::Int(<span class="number">1</span>)]),
+                        (<span class="string">"A"</span>.to_string(), Field::Int(<span class="number">1</span>)),
+                        (<span class="string">"b"</span>.to_string(), <span class="macro">list!</span>[Field::Int(<span class="number">1</span>)]),
                         (
-                            <span class="string">&quot;C&quot;</span>.to_string(),
+                            <span class="string">"C"</span>.to_string(),
                             <span class="macro">group!</span>[(
-                                <span class="string">&quot;d&quot;</span>.to_string(),
+                                <span class="string">"d"</span>.to_string(),
                                 <span class="macro">list!</span>[
                                     <span class="macro">list!</span>[
                                         <span class="macro">group!</span>[
-                                            (<span class="string">&quot;E&quot;</span>.to_string(), Field::Int(<span class="number">10</span>)),
-                                            (<span class="string">&quot;F&quot;</span>.to_string(), Field::Str(<span class="string">&quot;aaa&quot;</span>.to_string()))
+                                            (<span class="string">"E"</span>.to_string(), Field::Int(<span class="number">10</span>)),
+                                            (<span class="string">"F"</span>.to_string(), Field::Str(<span class="string">"aaa"</span>.to_string()))
                                         ],
                                         <span class="macro">group!</span>[
-                                            (<span class="string">&quot;E&quot;</span>.to_string(), Field::Int(-<span class="number">10</span>)),
-                                            (<span class="string">&quot;F&quot;</span>.to_string(), Field::Str(<span class="string">&quot;bbb&quot;</span>.to_string()))
+                                            (<span class="string">"E"</span>.to_string(), Field::Int(-<span class="number">10</span>)),
+                                            (<span class="string">"F"</span>.to_string(), Field::Str(<span class="string">"bbb"</span>.to_string()))
                                         ]
                                     ],
                                     <span class="macro">list!</span>[<span class="macro">group!</span>[
-                                        (<span class="string">&quot;E&quot;</span>.to_string(), Field::Int(<span class="number">11</span>)),
-                                        (<span class="string">&quot;F&quot;</span>.to_string(), Field::Str(<span class="string">&quot;c&quot;</span>.to_string()))
+                                        (<span class="string">"E"</span>.to_string(), Field::Int(<span class="number">11</span>)),
+                                        (<span class="string">"F"</span>.to_string(), Field::Str(<span class="string">"c"</span>.to_string()))
                                     ]]
                                 ]
                             )]
                         ),
                         (
-                            <span class="string">&quot;g&quot;</span>.to_string(),
+                            <span class="string">"g"</span>.to_string(),
                             <span class="macro">map!</span>[(
-                                Field::Str(<span class="string">&quot;foo&quot;</span>.to_string()),
+                                Field::Str(<span class="string">"foo"</span>.to_string()),
                                 <span class="macro">group!</span>[(
-                                    <span class="string">&quot;H&quot;</span>.to_string(),
-                                    <span class="macro">group!</span>[(<span class="string">&quot;i&quot;</span>.to_string(), <span class="macro">list!</span>[Field::Double(<span class="number">1.1</span>)])]
+                                    <span class="string">"H"</span>.to_string(),
+                                    <span class="macro">group!</span>[(<span class="string">"i"</span>.to_string(), <span class="macro">list!</span>[Field::Double(<span class="number">1.1</span>)])]
                                 )]
                             )]
                         )
@@ -2711,9 +2697,9 @@
                 )
             ],
             <span class="macro">row!</span>[
-                (<span class="string">&quot;id&quot;</span>.to_string(), Field::Long(<span class="number">2</span>)),
+                (<span class="string">"id"</span>.to_string(), Field::Long(<span class="number">2</span>)),
                 (
-                    <span class="string">&quot;int_array&quot;</span>.to_string(),
+                    <span class="string">"int_array"</span>.to_string(),
                     <span class="macro">list!</span>[
                         Field::Null,
                         Field::Int(<span class="number">1</span>),
@@ -2724,7 +2710,7 @@
                     ]
                 ),
                 (
-                    <span class="string">&quot;int_array_Array&quot;</span>.to_string(),
+                    <span class="string">"int_array_Array"</span>.to_string(),
                     <span class="macro">list!</span>[
                         <span class="macro">list!</span>[Field::Null, Field::Int(<span class="number">1</span>), Field::Int(<span class="number">2</span>), Field::Null],
                         <span class="macro">list!</span>[Field::Int(<span class="number">3</span>), Field::Null, Field::Int(<span class="number">4</span>)],
@@ -2733,59 +2719,59 @@
                     ]
                 ),
                 (
-                    <span class="string">&quot;int_map&quot;</span>.to_string(),
+                    <span class="string">"int_map"</span>.to_string(),
                     <span class="macro">map!</span>[
-                        (Field::Str(<span class="string">&quot;k1&quot;</span>.to_string()), Field::Int(<span class="number">2</span>)),
-                        (Field::Str(<span class="string">&quot;k2&quot;</span>.to_string()), Field::Null)
+                        (Field::Str(<span class="string">"k1"</span>.to_string()), Field::Int(<span class="number">2</span>)),
+                        (Field::Str(<span class="string">"k2"</span>.to_string()), Field::Null)
                     ]
                 ),
                 (
-                    <span class="string">&quot;int_Map_Array&quot;</span>.to_string(),
+                    <span class="string">"int_Map_Array"</span>.to_string(),
                     <span class="macro">list!</span>[
                         <span class="macro">map!</span>[
-                            (Field::Str(<span class="string">&quot;k3&quot;</span>.to_string()), Field::Null),
-                            (Field::Str(<span class="string">&quot;k1&quot;</span>.to_string()), Field::Int(<span class="number">1</span>))
+                            (Field::Str(<span class="string">"k3"</span>.to_string()), Field::Null),
+                            (Field::Str(<span class="string">"k1"</span>.to_string()), Field::Int(<span class="number">1</span>))
                         ],
                         Field::Null,
                         <span class="macro">map!</span>[]
                     ]
                 ),
                 (
-                    <span class="string">&quot;nested_struct&quot;</span>.to_string(),
+                    <span class="string">"nested_struct"</span>.to_string(),
                     <span class="macro">group!</span>[
-                        (<span class="string">&quot;A&quot;</span>.to_string(), Field::Null),
-                        (<span class="string">&quot;b&quot;</span>.to_string(), <span class="macro">list!</span>[Field::Null]),
+                        (<span class="string">"A"</span>.to_string(), Field::Null),
+                        (<span class="string">"b"</span>.to_string(), <span class="macro">list!</span>[Field::Null]),
                         (
-                            <span class="string">&quot;C&quot;</span>.to_string(),
+                            <span class="string">"C"</span>.to_string(),
                             <span class="macro">group!</span>[(
-                                <span class="string">&quot;d&quot;</span>.to_string(),
+                                <span class="string">"d"</span>.to_string(),
                                 <span class="macro">list!</span>[
                                     <span class="macro">list!</span>[
                                         <span class="macro">group!</span>[
-                                            (<span class="string">&quot;E&quot;</span>.to_string(), Field::Null),
-                                            (<span class="string">&quot;F&quot;</span>.to_string(), Field::Null)
+                                            (<span class="string">"E"</span>.to_string(), Field::Null),
+                                            (<span class="string">"F"</span>.to_string(), Field::Null)
                                         ],
                                         <span class="macro">group!</span>[
-                                            (<span class="string">&quot;E&quot;</span>.to_string(), Field::Int(<span class="number">10</span>)),
-                                            (<span class="string">&quot;F&quot;</span>.to_string(), Field::Str(<span class="string">&quot;aaa&quot;</span>.to_string()))
+                                            (<span class="string">"E"</span>.to_string(), Field::Int(<span class="number">10</span>)),
+                                            (<span class="string">"F"</span>.to_string(), Field::Str(<span class="string">"aaa"</span>.to_string()))
                                         ],
                                         <span class="macro">group!</span>[
-                                            (<span class="string">&quot;E&quot;</span>.to_string(), Field::Null),
-                                            (<span class="string">&quot;F&quot;</span>.to_string(), Field::Null)
+                                            (<span class="string">"E"</span>.to_string(), Field::Null),
+                                            (<span class="string">"F"</span>.to_string(), Field::Null)
                                         ],
                                         <span class="macro">group!</span>[
-                                            (<span class="string">&quot;E&quot;</span>.to_string(), Field::Int(-<span class="number">10</span>)),
-                                            (<span class="string">&quot;F&quot;</span>.to_string(), Field::Str(<span class="string">&quot;bbb&quot;</span>.to_string()))
+                                            (<span class="string">"E"</span>.to_string(), Field::Int(-<span class="number">10</span>)),
+                                            (<span class="string">"F"</span>.to_string(), Field::Str(<span class="string">"bbb"</span>.to_string()))
                                         ],
                                         <span class="macro">group!</span>[
-                                            (<span class="string">&quot;E&quot;</span>.to_string(), Field::Null),
-                                            (<span class="string">&quot;F&quot;</span>.to_string(), Field::Null)
+                                            (<span class="string">"E"</span>.to_string(), Field::Null),
+                                            (<span class="string">"F"</span>.to_string(), Field::Null)
                                         ]
                                     ],
                                     <span class="macro">list!</span>[
                                         <span class="macro">group!</span>[
-                                            (<span class="string">&quot;E&quot;</span>.to_string(), Field::Int(<span class="number">11</span>)),
-                                            (<span class="string">&quot;F&quot;</span>.to_string(), Field::Str(<span class="string">&quot;c&quot;</span>.to_string()))
+                                            (<span class="string">"E"</span>.to_string(), Field::Int(<span class="number">11</span>)),
+                                            (<span class="string">"F"</span>.to_string(), Field::Str(<span class="string">"c"</span>.to_string()))
                                         ],
                                         Field::Null
                                     ],
@@ -2795,33 +2781,33 @@
                             )]
                         ),
                         (
-                            <span class="string">&quot;g&quot;</span>.to_string(),
+                            <span class="string">"g"</span>.to_string(),
                             <span class="macro">map!</span>[
                                 (
-                                    Field::Str(<span class="string">&quot;g1&quot;</span>.to_string()),
+                                    Field::Str(<span class="string">"g1"</span>.to_string()),
                                     <span class="macro">group!</span>[(
-                                        <span class="string">&quot;H&quot;</span>.to_string(),
+                                        <span class="string">"H"</span>.to_string(),
                                         <span class="macro">group!</span>[(
-                                            <span class="string">&quot;i&quot;</span>.to_string(),
+                                            <span class="string">"i"</span>.to_string(),
                                             <span class="macro">list!</span>[Field::Double(<span class="number">2.2</span>), Field::Null]
                                         )]
                                     )]
                                 ),
                                 (
-                                    Field::Str(<span class="string">&quot;g2&quot;</span>.to_string()),
-                                    <span class="macro">group!</span>[(<span class="string">&quot;H&quot;</span>.to_string(), <span class="macro">group!</span>[(<span class="string">&quot;i&quot;</span>.to_string(), <span class="macro">list!</span>[])])]
+                                    Field::Str(<span class="string">"g2"</span>.to_string()),
+                                    <span class="macro">group!</span>[(<span class="string">"H"</span>.to_string(), <span class="macro">group!</span>[(<span class="string">"i"</span>.to_string(), <span class="macro">list!</span>[])])]
                                 ),
-                                (Field::Str(<span class="string">&quot;g3&quot;</span>.to_string()), Field::Null),
+                                (Field::Str(<span class="string">"g3"</span>.to_string()), Field::Null),
                                 (
-                                    Field::Str(<span class="string">&quot;g4&quot;</span>.to_string()),
+                                    Field::Str(<span class="string">"g4"</span>.to_string()),
                                     <span class="macro">group!</span>[(
-                                        <span class="string">&quot;H&quot;</span>.to_string(),
-                                        <span class="macro">group!</span>[(<span class="string">&quot;i&quot;</span>.to_string(), Field::Null)]
+                                        <span class="string">"H"</span>.to_string(),
+                                        <span class="macro">group!</span>[(<span class="string">"i"</span>.to_string(), Field::Null)]
                                     )]
                                 ),
                                 (
-                                    Field::Str(<span class="string">&quot;g5&quot;</span>.to_string()),
-                                    <span class="macro">group!</span>[(<span class="string">&quot;H&quot;</span>.to_string(), Field::Null)]
+                                    Field::Str(<span class="string">"g5"</span>.to_string()),
+                                    <span class="macro">group!</span>[(<span class="string">"H"</span>.to_string(), Field::Null)]
                                 )
                             ]
                         )
@@ -2829,57 +2815,57 @@
                 )
             ],
             <span class="macro">row!</span>[
-                (<span class="string">&quot;id&quot;</span>.to_string(), Field::Long(<span class="number">3</span>)),
-                (<span class="string">&quot;int_array&quot;</span>.to_string(), <span class="macro">list!</span>[]),
-                (<span class="string">&quot;int_array_Array&quot;</span>.to_string(), <span class="macro">list!</span>[Field::Null]),
-                (<span class="string">&quot;int_map&quot;</span>.to_string(), <span class="macro">map!</span>[]),
-                (<span class="string">&quot;int_Map_Array&quot;</span>.to_string(), <span class="macro">list!</span>[Field::Null, Field::Null]),
+                (<span class="string">"id"</span>.to_string(), Field::Long(<span class="number">3</span>)),
+                (<span class="string">"int_array"</span>.to_string(), <span class="macro">list!</span>[]),
+                (<span class="string">"int_array_Array"</span>.to_string(), <span class="macro">list!</span>[Field::Null]),
+                (<span class="string">"int_map"</span>.to_string(), <span class="macro">map!</span>[]),
+                (<span class="string">"int_Map_Array"</span>.to_string(), <span class="macro">list!</span>[Field::Null, Field::Null]),
                 (
-                    <span class="string">&quot;nested_struct&quot;</span>.to_string(),
+                    <span class="string">"nested_struct"</span>.to_string(),
                     <span class="macro">group!</span>[
-                        (<span class="string">&quot;A&quot;</span>.to_string(), Field::Null),
-                        (<span class="string">&quot;b&quot;</span>.to_string(), Field::Null),
-                        (<span class="string">&quot;C&quot;</span>.to_string(), <span class="macro">group!</span>[(<span class="string">&quot;d&quot;</span>.to_string(), <span class="macro">list!</span>[])]),
-                        (<span class="string">&quot;g&quot;</span>.to_string(), <span class="macro">map!</span>[])
+                        (<span class="string">"A"</span>.to_string(), Field::Null),
+                        (<span class="string">"b"</span>.to_string(), Field::Null),
+                        (<span class="string">"C"</span>.to_string(), <span class="macro">group!</span>[(<span class="string">"d"</span>.to_string(), <span class="macro">list!</span>[])]),
+                        (<span class="string">"g"</span>.to_string(), <span class="macro">map!</span>[])
                     ]
                 )
             ],
             <span class="macro">row!</span>[
-                (<span class="string">&quot;id&quot;</span>.to_string(), Field::Long(<span class="number">4</span>)),
-                (<span class="string">&quot;int_array&quot;</span>.to_string(), Field::Null),
-                (<span class="string">&quot;int_array_Array&quot;</span>.to_string(), <span class="macro">list!</span>[]),
-                (<span class="string">&quot;int_map&quot;</span>.to_string(), <span class="macro">map!</span>[]),
-                (<span class="string">&quot;int_Map_Array&quot;</span>.to_string(), <span class="macro">list!</span>[]),
+                (<span class="string">"id"</span>.to_string(), Field::Long(<span class="number">4</span>)),
+                (<span class="string">"int_array"</span>.to_string(), Field::Null),
+                (<span class="string">"int_array_Array"</span>.to_string(), <span class="macro">list!</span>[]),
+                (<span class="string">"int_map"</span>.to_string(), <span class="macro">map!</span>[]),
+                (<span class="string">"int_Map_Array"</span>.to_string(), <span class="macro">list!</span>[]),
                 (
-                    <span class="string">&quot;nested_struct&quot;</span>.to_string(),
+                    <span class="string">"nested_struct"</span>.to_string(),
                     <span class="macro">group!</span>[
-                        (<span class="string">&quot;A&quot;</span>.to_string(), Field::Null),
-                        (<span class="string">&quot;b&quot;</span>.to_string(), Field::Null),
-                        (<span class="string">&quot;C&quot;</span>.to_string(), <span class="macro">group!</span>[(<span class="string">&quot;d&quot;</span>.to_string(), Field::Null)]),
-                        (<span class="string">&quot;g&quot;</span>.to_string(), Field::Null)
+                        (<span class="string">"A"</span>.to_string(), Field::Null),
+                        (<span class="string">"b"</span>.to_string(), Field::Null),
+                        (<span class="string">"C"</span>.to_string(), <span class="macro">group!</span>[(<span class="string">"d"</span>.to_string(), Field::Null)]),
+                        (<span class="string">"g"</span>.to_string(), Field::Null)
                     ]
                 )
             ],
             <span class="macro">row!</span>[
-                (<span class="string">&quot;id&quot;</span>.to_string(), Field::Long(<span class="number">5</span>)),
-                (<span class="string">&quot;int_array&quot;</span>.to_string(), Field::Null),
-                (<span class="string">&quot;int_array_Array&quot;</span>.to_string(), Field::Null),
-                (<span class="string">&quot;int_map&quot;</span>.to_string(), <span class="macro">map!</span>[]),
-                (<span class="string">&quot;int_Map_Array&quot;</span>.to_string(), Field::Null),
+                (<span class="string">"id"</span>.to_string(), Field::Long(<span class="number">5</span>)),
+                (<span class="string">"int_array"</span>.to_string(), Field::Null),
+                (<span class="string">"int_array_Array"</span>.to_string(), Field::Null),
+                (<span class="string">"int_map"</span>.to_string(), <span class="macro">map!</span>[]),
+                (<span class="string">"int_Map_Array"</span>.to_string(), Field::Null),
                 (
-                    <span class="string">&quot;nested_struct&quot;</span>.to_string(),
+                    <span class="string">"nested_struct"</span>.to_string(),
                     <span class="macro">group!</span>[
-                        (<span class="string">&quot;A&quot;</span>.to_string(), Field::Null),
-                        (<span class="string">&quot;b&quot;</span>.to_string(), Field::Null),
-                        (<span class="string">&quot;C&quot;</span>.to_string(), Field::Null),
+                        (<span class="string">"A"</span>.to_string(), Field::Null),
+                        (<span class="string">"b"</span>.to_string(), Field::Null),
+                        (<span class="string">"C"</span>.to_string(), Field::Null),
                         (
-                            <span class="string">&quot;g&quot;</span>.to_string(),
+                            <span class="string">"g"</span>.to_string(),
                             <span class="macro">map!</span>[(
-                                Field::Str(<span class="string">&quot;foo&quot;</span>.to_string()),
+                                Field::Str(<span class="string">"foo"</span>.to_string()),
                                 <span class="macro">group!</span>[(
-                                    <span class="string">&quot;H&quot;</span>.to_string(),
+                                    <span class="string">"H"</span>.to_string(),
                                     <span class="macro">group!</span>[(
-                                        <span class="string">&quot;i&quot;</span>.to_string(),
+                                        <span class="string">"i"</span>.to_string(),
                                         <span class="macro">list!</span>[Field::Double(<span class="number">2.2</span>), Field::Double(<span class="number">3.3</span>)]
                                     )]
                                 )]
@@ -2889,44 +2875,44 @@
                 )
             ],
             <span class="macro">row!</span>[
-                (<span class="string">&quot;id&quot;</span>.to_string(), Field::Long(<span class="number">6</span>)),
-                (<span class="string">&quot;int_array&quot;</span>.to_string(), Field::Null),
-                (<span class="string">&quot;int_array_Array&quot;</span>.to_string(), Field::Null),
-                (<span class="string">&quot;int_map&quot;</span>.to_string(), Field::Null),
-                (<span class="string">&quot;int_Map_Array&quot;</span>.to_string(), Field::Null),
-                (<span class="string">&quot;nested_struct&quot;</span>.to_string(), Field::Null)
+                (<span class="string">"id"</span>.to_string(), Field::Long(<span class="number">6</span>)),
+                (<span class="string">"int_array"</span>.to_string(), Field::Null),
+                (<span class="string">"int_array_Array"</span>.to_string(), Field::Null),
+                (<span class="string">"int_map"</span>.to_string(), Field::Null),
+                (<span class="string">"int_Map_Array"</span>.to_string(), Field::Null),
+                (<span class="string">"nested_struct"</span>.to_string(), Field::Null)
             ],
             <span class="macro">row!</span>[
-                (<span class="string">&quot;id&quot;</span>.to_string(), Field::Long(<span class="number">7</span>)),
-                (<span class="string">&quot;int_array&quot;</span>.to_string(), Field::Null),
+                (<span class="string">"id"</span>.to_string(), Field::Long(<span class="number">7</span>)),
+                (<span class="string">"int_array"</span>.to_string(), Field::Null),
                 (
-                    <span class="string">&quot;int_array_Array&quot;</span>.to_string(),
+                    <span class="string">"int_array_Array"</span>.to_string(),
                     <span class="macro">list!</span>[Field::Null, <span class="macro">list!</span>[Field::Int(<span class="number">5</span>), Field::Int(<span class="number">6</span>)]]
                 ),
                 (
-                    <span class="string">&quot;int_map&quot;</span>.to_string(),
+                    <span class="string">"int_map"</span>.to_string(),
                     <span class="macro">map!</span>[
-                        (Field::Str(<span class="string">&quot;k1&quot;</span>.to_string()), Field::Null),
-                        (Field::Str(<span class="string">&quot;k3&quot;</span>.to_string()), Field::Null)
+                        (Field::Str(<span class="string">"k1"</span>.to_string()), Field::Null),
+                        (Field::Str(<span class="string">"k3"</span>.to_string()), Field::Null)
                     ]
                 ),
-                (<span class="string">&quot;int_Map_Array&quot;</span>.to_string(), Field::Null),
+                (<span class="string">"int_Map_Array"</span>.to_string(), Field::Null),
                 (
-                    <span class="string">&quot;nested_struct&quot;</span>.to_string(),
+                    <span class="string">"nested_struct"</span>.to_string(),
                     <span class="macro">group!</span>[
-                        (<span class="string">&quot;A&quot;</span>.to_string(), Field::Int(<span class="number">7</span>)),
+                        (<span class="string">"A"</span>.to_string(), Field::Int(<span class="number">7</span>)),
                         (
-                            <span class="string">&quot;b&quot;</span>.to_string(),
+                            <span class="string">"b"</span>.to_string(),
                             <span class="macro">list!</span>[Field::Int(<span class="number">2</span>), Field::Int(<span class="number">3</span>), Field::Null]
                         ),
                         (
-                            <span class="string">&quot;C&quot;</span>.to_string(),
+                            <span class="string">"C"</span>.to_string(),
                             <span class="macro">group!</span>[(
-                                <span class="string">&quot;d&quot;</span>.to_string(),
+                                <span class="string">"d"</span>.to_string(),
                                 <span class="macro">list!</span>[<span class="macro">list!</span>[], <span class="macro">list!</span>[Field::Null], Field::Null]
                             )]
                         ),
-                        (<span class="string">&quot;g&quot;</span>.to_string(), Field::Null)
+                        (<span class="string">"g"</span>.to_string(), Field::Null)
                     ]
                 )
             ],
@@ -2936,38 +2922,38 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_file_reader_rows_projection() {
-        <span class="kw">let </span>schema = <span class="string">&quot;
+        <span class="kw">let </span>schema = <span class="string">"
       message spark_schema {
         REQUIRED DOUBLE c;
         REQUIRED INT32 b;
       }
-    &quot;</span>;
+    "</span>;
         <span class="kw">let </span>schema = parse_message_type(schema).unwrap();
-        <span class="kw">let </span>rows = test_file_reader_rows(<span class="string">&quot;nested_maps.snappy.parquet&quot;</span>, <span class="prelude-val">Some</span>(schema)).unwrap();
+        <span class="kw">let </span>rows = test_file_reader_rows(<span class="string">"nested_maps.snappy.parquet"</span>, <span class="prelude-val">Some</span>(schema)).unwrap();
         <span class="kw">let </span>expected_rows = <span class="macro">vec!</span>[
             <span class="macro">row!</span>[
-                (<span class="string">&quot;c&quot;</span>.to_string(), Field::Double(<span class="number">1.0</span>)),
-                (<span class="string">&quot;b&quot;</span>.to_string(), Field::Int(<span class="number">1</span>))
+                (<span class="string">"c"</span>.to_string(), Field::Double(<span class="number">1.0</span>)),
+                (<span class="string">"b"</span>.to_string(), Field::Int(<span class="number">1</span>))
             ],
             <span class="macro">row!</span>[
-                (<span class="string">&quot;c&quot;</span>.to_string(), Field::Double(<span class="number">1.0</span>)),
-                (<span class="string">&quot;b&quot;</span>.to_string(), Field::Int(<span class="number">1</span>))
+                (<span class="string">"c"</span>.to_string(), Field::Double(<span class="number">1.0</span>)),
+                (<span class="string">"b"</span>.to_string(), Field::Int(<span class="number">1</span>))
             ],
             <span class="macro">row!</span>[
-                (<span class="string">&quot;c&quot;</span>.to_string(), Field::Double(<span class="number">1.0</span>)),
-                (<span class="string">&quot;b&quot;</span>.to_string(), Field::Int(<span class="number">1</span>))
+                (<span class="string">"c"</span>.to_string(), Field::Double(<span class="number">1.0</span>)),
+                (<span class="string">"b"</span>.to_string(), Field::Int(<span class="number">1</span>))
             ],
             <span class="macro">row!</span>[
-                (<span class="string">&quot;c&quot;</span>.to_string(), Field::Double(<span class="number">1.0</span>)),
-                (<span class="string">&quot;b&quot;</span>.to_string(), Field::Int(<span class="number">1</span>))
+                (<span class="string">"c"</span>.to_string(), Field::Double(<span class="number">1.0</span>)),
+                (<span class="string">"b"</span>.to_string(), Field::Int(<span class="number">1</span>))
             ],
             <span class="macro">row!</span>[
-                (<span class="string">&quot;c&quot;</span>.to_string(), Field::Double(<span class="number">1.0</span>)),
-                (<span class="string">&quot;b&quot;</span>.to_string(), Field::Int(<span class="number">1</span>))
+                (<span class="string">"c"</span>.to_string(), Field::Double(<span class="number">1.0</span>)),
+                (<span class="string">"b"</span>.to_string(), Field::Int(<span class="number">1</span>))
             ],
             <span class="macro">row!</span>[
-                (<span class="string">&quot;c&quot;</span>.to_string(), Field::Double(<span class="number">1.0</span>)),
-                (<span class="string">&quot;b&quot;</span>.to_string(), Field::Int(<span class="number">1</span>))
+                (<span class="string">"c"</span>.to_string(), Field::Double(<span class="number">1.0</span>)),
+                (<span class="string">"b"</span>.to_string(), Field::Int(<span class="number">1</span>))
             ],
         ];
         <span class="macro">assert_eq!</span>(rows, expected_rows);
@@ -2976,8 +2962,8 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_iter_columns_in_row() {
         <span class="kw">let </span>r = <span class="macro">row!</span>[
-            (<span class="string">&quot;c&quot;</span>.to_string(), Field::Double(<span class="number">1.0</span>)),
-            (<span class="string">&quot;b&quot;</span>.to_string(), Field::Int(<span class="number">1</span>))
+            (<span class="string">"c"</span>.to_string(), Field::Double(<span class="number">1.0</span>)),
+            (<span class="string">"b"</span>.to_string(), Field::Int(<span class="number">1</span>))
         ];
         <span class="kw">let </span><span class="kw-2">mut </span>result = Vec::new();
         <span class="kw">for </span>(name, record) <span class="kw">in </span>r.get_column_iter() {
@@ -2985,8 +2971,8 @@
         }
         <span class="macro">assert_eq!</span>(
             <span class="macro">vec!</span>[
-                (<span class="kw-2">&amp;</span><span class="string">&quot;c&quot;</span>.to_string(), <span class="kw-2">&amp;</span>Field::Double(<span class="number">1.0</span>)),
-                (<span class="kw-2">&amp;</span><span class="string">&quot;b&quot;</span>.to_string(), <span class="kw-2">&amp;</span>Field::Int(<span class="number">1</span>))
+                (<span class="kw-2">&amp;</span><span class="string">"c"</span>.to_string(), <span class="kw-2">&amp;</span>Field::Double(<span class="number">1.0</span>)),
+                (<span class="kw-2">&amp;</span><span class="string">"b"</span>.to_string(), <span class="kw-2">&amp;</span>Field::Int(<span class="number">1</span>))
             ],
             result
         );
@@ -2994,7 +2980,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_file_reader_rows_projection_map() {
-        <span class="kw">let </span>schema = <span class="string">&quot;
+        <span class="kw">let </span>schema = <span class="string">"
       message spark_schema {
         OPTIONAL group a (MAP) {
           REPEATED group key_value {
@@ -3008,14 +2994,14 @@
           }
         }
       }
-    &quot;</span>;
+    "</span>;
         <span class="kw">let </span>schema = parse_message_type(schema).unwrap();
-        <span class="kw">let </span>rows = test_file_reader_rows(<span class="string">&quot;nested_maps.snappy.parquet&quot;</span>, <span class="prelude-val">Some</span>(schema)).unwrap();
+        <span class="kw">let </span>rows = test_file_reader_rows(<span class="string">"nested_maps.snappy.parquet"</span>, <span class="prelude-val">Some</span>(schema)).unwrap();
         <span class="kw">let </span>expected_rows = <span class="macro">vec!</span>[
             <span class="macro">row!</span>[(
-                <span class="string">&quot;a&quot;</span>.to_string(),
+                <span class="string">"a"</span>.to_string(),
                 <span class="macro">map!</span>[(
-                    Field::Str(<span class="string">&quot;a&quot;</span>.to_string()),
+                    Field::Str(<span class="string">"a"</span>.to_string()),
                     <span class="macro">map!</span>[
                         (Field::Int(<span class="number">1</span>), Field::Bool(<span class="bool-val">true</span>)),
                         (Field::Int(<span class="number">2</span>), Field::Bool(<span class="bool-val">false</span>))
@@ -3023,28 +3009,28 @@
                 )]
             )],
             <span class="macro">row!</span>[(
-                <span class="string">&quot;a&quot;</span>.to_string(),
+                <span class="string">"a"</span>.to_string(),
                 <span class="macro">map!</span>[(
-                    Field::Str(<span class="string">&quot;b&quot;</span>.to_string()),
+                    Field::Str(<span class="string">"b"</span>.to_string()),
                     <span class="macro">map!</span>[(Field::Int(<span class="number">1</span>), Field::Bool(<span class="bool-val">true</span>))]
                 )]
             )],
             <span class="macro">row!</span>[(
-                <span class="string">&quot;a&quot;</span>.to_string(),
-                <span class="macro">map!</span>[(Field::Str(<span class="string">&quot;c&quot;</span>.to_string()), Field::Null)]
+                <span class="string">"a"</span>.to_string(),
+                <span class="macro">map!</span>[(Field::Str(<span class="string">"c"</span>.to_string()), Field::Null)]
             )],
-            <span class="macro">row!</span>[(<span class="string">&quot;a&quot;</span>.to_string(), <span class="macro">map!</span>[(Field::Str(<span class="string">&quot;d&quot;</span>.to_string()), <span class="macro">map!</span>[])])],
+            <span class="macro">row!</span>[(<span class="string">"a"</span>.to_string(), <span class="macro">map!</span>[(Field::Str(<span class="string">"d"</span>.to_string()), <span class="macro">map!</span>[])])],
             <span class="macro">row!</span>[(
-                <span class="string">&quot;a&quot;</span>.to_string(),
+                <span class="string">"a"</span>.to_string(),
                 <span class="macro">map!</span>[(
-                    Field::Str(<span class="string">&quot;e&quot;</span>.to_string()),
+                    Field::Str(<span class="string">"e"</span>.to_string()),
                     <span class="macro">map!</span>[(Field::Int(<span class="number">1</span>), Field::Bool(<span class="bool-val">true</span>))]
                 )]
             )],
             <span class="macro">row!</span>[(
-                <span class="string">&quot;a&quot;</span>.to_string(),
+                <span class="string">"a"</span>.to_string(),
                 <span class="macro">map!</span>[(
-                    Field::Str(<span class="string">&quot;f&quot;</span>.to_string()),
+                    Field::Str(<span class="string">"f"</span>.to_string()),
                     <span class="macro">map!</span>[
                         (Field::Int(<span class="number">3</span>), Field::Bool(<span class="bool-val">true</span>)),
                         (Field::Int(<span class="number">4</span>), Field::Bool(<span class="bool-val">false</span>)),
@@ -3058,7 +3044,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_file_reader_rows_projection_list() {
-        <span class="kw">let </span>schema = <span class="string">&quot;
+        <span class="kw">let </span>schema = <span class="string">"
       message spark_schema {
         OPTIONAL group a (LIST) {
           REPEATED group list {
@@ -3074,39 +3060,39 @@
           }
         }
       }
-    &quot;</span>;
+    "</span>;
         <span class="kw">let </span>schema = parse_message_type(schema).unwrap();
-        <span class="kw">let </span>rows = test_file_reader_rows(<span class="string">&quot;nested_lists.snappy.parquet&quot;</span>, <span class="prelude-val">Some</span>(schema)).unwrap();
+        <span class="kw">let </span>rows = test_file_reader_rows(<span class="string">"nested_lists.snappy.parquet"</span>, <span class="prelude-val">Some</span>(schema)).unwrap();
         <span class="kw">let </span>expected_rows = <span class="macro">vec!</span>[
             <span class="macro">row!</span>[(
-                <span class="string">&quot;a&quot;</span>.to_string(),
+                <span class="string">"a"</span>.to_string(),
                 <span class="macro">list!</span>[
                     <span class="macro">list!</span>[
-                        <span class="macro">list!</span>[Field::Str(<span class="string">&quot;a&quot;</span>.to_string()), Field::Str(<span class="string">&quot;b&quot;</span>.to_string())],
-                        <span class="macro">list!</span>[Field::Str(<span class="string">&quot;c&quot;</span>.to_string())]
+                        <span class="macro">list!</span>[Field::Str(<span class="string">"a"</span>.to_string()), Field::Str(<span class="string">"b"</span>.to_string())],
+                        <span class="macro">list!</span>[Field::Str(<span class="string">"c"</span>.to_string())]
                     ],
-                    <span class="macro">list!</span>[Field::Null, <span class="macro">list!</span>[Field::Str(<span class="string">&quot;d&quot;</span>.to_string())]]
+                    <span class="macro">list!</span>[Field::Null, <span class="macro">list!</span>[Field::Str(<span class="string">"d"</span>.to_string())]]
                 ]
             )],
             <span class="macro">row!</span>[(
-                <span class="string">&quot;a&quot;</span>.to_string(),
+                <span class="string">"a"</span>.to_string(),
                 <span class="macro">list!</span>[
                     <span class="macro">list!</span>[
-                        <span class="macro">list!</span>[Field::Str(<span class="string">&quot;a&quot;</span>.to_string()), Field::Str(<span class="string">&quot;b&quot;</span>.to_string())],
-                        <span class="macro">list!</span>[Field::Str(<span class="string">&quot;c&quot;</span>.to_string()), Field::Str(<span class="string">&quot;d&quot;</span>.to_string())]
+                        <span class="macro">list!</span>[Field::Str(<span class="string">"a"</span>.to_string()), Field::Str(<span class="string">"b"</span>.to_string())],
+                        <span class="macro">list!</span>[Field::Str(<span class="string">"c"</span>.to_string()), Field::Str(<span class="string">"d"</span>.to_string())]
                     ],
-                    <span class="macro">list!</span>[Field::Null, <span class="macro">list!</span>[Field::Str(<span class="string">&quot;e&quot;</span>.to_string())]]
+                    <span class="macro">list!</span>[Field::Null, <span class="macro">list!</span>[Field::Str(<span class="string">"e"</span>.to_string())]]
                 ]
             )],
             <span class="macro">row!</span>[(
-                <span class="string">&quot;a&quot;</span>.to_string(),
+                <span class="string">"a"</span>.to_string(),
                 <span class="macro">list!</span>[
                     <span class="macro">list!</span>[
-                        <span class="macro">list!</span>[Field::Str(<span class="string">&quot;a&quot;</span>.to_string()), Field::Str(<span class="string">&quot;b&quot;</span>.to_string())],
-                        <span class="macro">list!</span>[Field::Str(<span class="string">&quot;c&quot;</span>.to_string()), Field::Str(<span class="string">&quot;d&quot;</span>.to_string())],
-                        <span class="macro">list!</span>[Field::Str(<span class="string">&quot;e&quot;</span>.to_string())]
+                        <span class="macro">list!</span>[Field::Str(<span class="string">"a"</span>.to_string()), Field::Str(<span class="string">"b"</span>.to_string())],
+                        <span class="macro">list!</span>[Field::Str(<span class="string">"c"</span>.to_string()), Field::Str(<span class="string">"d"</span>.to_string())],
+                        <span class="macro">list!</span>[Field::Str(<span class="string">"e"</span>.to_string())]
                     ],
-                    <span class="macro">list!</span>[Field::Null, <span class="macro">list!</span>[Field::Str(<span class="string">&quot;f&quot;</span>.to_string())]]
+                    <span class="macro">list!</span>[Field::Null, <span class="macro">list!</span>[Field::Str(<span class="string">"f"</span>.to_string())]]
                 ]
             )],
         ];
@@ -3115,40 +3101,40 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_file_reader_rows_invalid_projection() {
-        <span class="kw">let </span>schema = <span class="string">&quot;
+        <span class="kw">let </span>schema = <span class="string">"
       message spark_schema {
         REQUIRED INT32 key;
         REQUIRED BOOLEAN value;
       }
-    &quot;</span>;
+    "</span>;
         <span class="kw">let </span>schema = parse_message_type(schema).unwrap();
-        <span class="kw">let </span>res = test_file_reader_rows(<span class="string">&quot;nested_maps.snappy.parquet&quot;</span>, <span class="prelude-val">Some</span>(schema));
+        <span class="kw">let </span>res = test_file_reader_rows(<span class="string">"nested_maps.snappy.parquet"</span>, <span class="prelude-val">Some</span>(schema));
         <span class="macro">assert_eq!</span>(
             res.unwrap_err().to_string(),
-            <span class="string">&quot;Parquet error: Root schema does not contain projection&quot;
+            <span class="string">"Parquet error: Root schema does not contain projection"
         </span>);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_row_group_rows_invalid_projection() {
-        <span class="kw">let </span>schema = <span class="string">&quot;
+        <span class="kw">let </span>schema = <span class="string">"
       message spark_schema {
         REQUIRED INT32 key;
         REQUIRED BOOLEAN value;
       }
-    &quot;</span>;
+    "</span>;
         <span class="kw">let </span>schema = parse_message_type(schema).unwrap();
-        <span class="kw">let </span>res = test_row_group_rows(<span class="string">&quot;nested_maps.snappy.parquet&quot;</span>, <span class="prelude-val">Some</span>(schema));
+        <span class="kw">let </span>res = test_row_group_rows(<span class="string">"nested_maps.snappy.parquet"</span>, <span class="prelude-val">Some</span>(schema));
         <span class="macro">assert_eq!</span>(
             res.unwrap_err().to_string(),
-            <span class="string">&quot;Parquet error: Root schema does not contain projection&quot;
+            <span class="string">"Parquet error: Root schema does not contain projection"
         </span>);
     }
 
     <span class="attr">#[test]
-    #[should_panic(expected = <span class="string">&quot;Invalid map type&quot;</span>)]
+    #[should_panic(expected = <span class="string">"Invalid map type"</span>)]
     </span><span class="kw">fn </span>test_file_reader_rows_invalid_map_type() {
-        <span class="kw">let </span>schema = <span class="string">&quot;
+        <span class="kw">let </span>schema = <span class="string">"
       message spark_schema {
         OPTIONAL group a (MAP) {
           REPEATED group key_value {
@@ -3161,14 +3147,14 @@
           }
         }
       }
-    &quot;</span>;
+    "</span>;
         <span class="kw">let </span>schema = parse_message_type(schema).unwrap();
-        test_file_reader_rows(<span class="string">&quot;nested_maps.snappy.parquet&quot;</span>, <span class="prelude-val">Some</span>(schema)).unwrap();
+        test_file_reader_rows(<span class="string">"nested_maps.snappy.parquet"</span>, <span class="prelude-val">Some</span>(schema)).unwrap();
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_file_reader_iter() {
-        <span class="kw">let </span>path = get_test_path(<span class="string">&quot;alltypes_plain.parquet&quot;</span>);
+        <span class="kw">let </span>path = get_test_path(<span class="string">"alltypes_plain.parquet"</span>);
         <span class="kw">let </span>reader = SerializedFileReader::try_from(path.as_path()).unwrap();
         <span class="kw">let </span>iter = RowIter::from_file_into(Box::new(reader));
 
@@ -3178,9 +3164,9 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_file_reader_iter_projection() {
-        <span class="kw">let </span>path = get_test_path(<span class="string">&quot;alltypes_plain.parquet&quot;</span>);
+        <span class="kw">let </span>path = get_test_path(<span class="string">"alltypes_plain.parquet"</span>);
         <span class="kw">let </span>reader = SerializedFileReader::try_from(path.as_path()).unwrap();
-        <span class="kw">let </span>schema = <span class="string">&quot;message schema { OPTIONAL INT32 id; }&quot;</span>;
+        <span class="kw">let </span>schema = <span class="string">"message schema { OPTIONAL INT32 id; }"</span>;
         <span class="kw">let </span>proj = parse_message_type(schema).ok();
 
         <span class="kw">let </span>iter = RowIter::from_file_into(Box::new(reader))
@@ -3193,20 +3179,20 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_file_reader_iter_projection_err() {
-        <span class="kw">let </span>schema = <span class="string">&quot;
+        <span class="kw">let </span>schema = <span class="string">"
       message spark_schema {
         REQUIRED INT32 key;
         REQUIRED BOOLEAN value;
       }
-    &quot;</span>;
+    "</span>;
         <span class="kw">let </span>proj = parse_message_type(schema).ok();
-        <span class="kw">let </span>path = get_test_path(<span class="string">&quot;nested_maps.snappy.parquet&quot;</span>);
+        <span class="kw">let </span>path = get_test_path(<span class="string">"nested_maps.snappy.parquet"</span>);
         <span class="kw">let </span>reader = SerializedFileReader::try_from(path.as_path()).unwrap();
         <span class="kw">let </span>res = RowIter::from_file_into(Box::new(reader)).project(proj);
 
         <span class="macro">assert_eq!</span>(
             res.err().unwrap().to_string(),
-            <span class="string">&quot;Parquet error: Root schema does not contain projection&quot;
+            <span class="string">"Parquet error: Root schema does not contain projection"
         </span>);
     }
 
@@ -3214,67 +3200,67 @@
     </span><span class="kw">fn </span>test_tree_reader_handle_repeated_fields_with_no_annotation() {
         <span class="comment">// Array field `phoneNumbers` does not contain LIST annotation.
         // We parse it as struct with `phone` repeated field as array.
-        </span><span class="kw">let </span>rows = test_file_reader_rows(<span class="string">&quot;repeated_no_annotation.parquet&quot;</span>, <span class="prelude-val">None</span>).unwrap();
+        </span><span class="kw">let </span>rows = test_file_reader_rows(<span class="string">"repeated_no_annotation.parquet"</span>, <span class="prelude-val">None</span>).unwrap();
         <span class="kw">let </span>expected_rows = <span class="macro">vec!</span>[
             <span class="macro">row!</span>[
-                (<span class="string">&quot;id&quot;</span>.to_string(), Field::Int(<span class="number">1</span>)),
-                (<span class="string">&quot;phoneNumbers&quot;</span>.to_string(), Field::Null)
+                (<span class="string">"id"</span>.to_string(), Field::Int(<span class="number">1</span>)),
+                (<span class="string">"phoneNumbers"</span>.to_string(), Field::Null)
             ],
             <span class="macro">row!</span>[
-                (<span class="string">&quot;id&quot;</span>.to_string(), Field::Int(<span class="number">2</span>)),
-                (<span class="string">&quot;phoneNumbers&quot;</span>.to_string(), Field::Null)
+                (<span class="string">"id"</span>.to_string(), Field::Int(<span class="number">2</span>)),
+                (<span class="string">"phoneNumbers"</span>.to_string(), Field::Null)
             ],
             <span class="macro">row!</span>[
-                (<span class="string">&quot;id&quot;</span>.to_string(), Field::Int(<span class="number">3</span>)),
+                (<span class="string">"id"</span>.to_string(), Field::Int(<span class="number">3</span>)),
                 (
-                    <span class="string">&quot;phoneNumbers&quot;</span>.to_string(),
-                    <span class="macro">group!</span>[(<span class="string">&quot;phone&quot;</span>.to_string(), <span class="macro">list!</span>[])]
+                    <span class="string">"phoneNumbers"</span>.to_string(),
+                    <span class="macro">group!</span>[(<span class="string">"phone"</span>.to_string(), <span class="macro">list!</span>[])]
                 )
             ],
             <span class="macro">row!</span>[
-                (<span class="string">&quot;id&quot;</span>.to_string(), Field::Int(<span class="number">4</span>)),
+                (<span class="string">"id"</span>.to_string(), Field::Int(<span class="number">4</span>)),
                 (
-                    <span class="string">&quot;phoneNumbers&quot;</span>.to_string(),
+                    <span class="string">"phoneNumbers"</span>.to_string(),
                     <span class="macro">group!</span>[(
-                        <span class="string">&quot;phone&quot;</span>.to_string(),
+                        <span class="string">"phone"</span>.to_string(),
                         <span class="macro">list!</span>[<span class="macro">group!</span>[
-                            (<span class="string">&quot;number&quot;</span>.to_string(), Field::Long(<span class="number">5555555555</span>)),
-                            (<span class="string">&quot;kind&quot;</span>.to_string(), Field::Null)
+                            (<span class="string">"number"</span>.to_string(), Field::Long(<span class="number">5555555555</span>)),
+                            (<span class="string">"kind"</span>.to_string(), Field::Null)
                         ]]
                     )]
                 )
             ],
             <span class="macro">row!</span>[
-                (<span class="string">&quot;id&quot;</span>.to_string(), Field::Int(<span class="number">5</span>)),
+                (<span class="string">"id"</span>.to_string(), Field::Int(<span class="number">5</span>)),
                 (
-                    <span class="string">&quot;phoneNumbers&quot;</span>.to_string(),
+                    <span class="string">"phoneNumbers"</span>.to_string(),
                     <span class="macro">group!</span>[(
-                        <span class="string">&quot;phone&quot;</span>.to_string(),
+                        <span class="string">"phone"</span>.to_string(),
                         <span class="macro">list!</span>[<span class="macro">group!</span>[
-                            (<span class="string">&quot;number&quot;</span>.to_string(), Field::Long(<span class="number">1111111111</span>)),
-                            (<span class="string">&quot;kind&quot;</span>.to_string(), Field::Str(<span class="string">&quot;home&quot;</span>.to_string()))
+                            (<span class="string">"number"</span>.to_string(), Field::Long(<span class="number">1111111111</span>)),
+                            (<span class="string">"kind"</span>.to_string(), Field::Str(<span class="string">"home"</span>.to_string()))
                         ]]
                     )]
                 )
             ],
             <span class="macro">row!</span>[
-                (<span class="string">&quot;id&quot;</span>.to_string(), Field::Int(<span class="number">6</span>)),
+                (<span class="string">"id"</span>.to_string(), Field::Int(<span class="number">6</span>)),
                 (
-                    <span class="string">&quot;phoneNumbers&quot;</span>.to_string(),
+                    <span class="string">"phoneNumbers"</span>.to_string(),
                     <span class="macro">group!</span>[(
-                        <span class="string">&quot;phone&quot;</span>.to_string(),
+                        <span class="string">"phone"</span>.to_string(),
                         <span class="macro">list!</span>[
                             <span class="macro">group!</span>[
-                                (<span class="string">&quot;number&quot;</span>.to_string(), Field::Long(<span class="number">1111111111</span>)),
-                                (<span class="string">&quot;kind&quot;</span>.to_string(), Field::Str(<span class="string">&quot;home&quot;</span>.to_string()))
+                                (<span class="string">"number"</span>.to_string(), Field::Long(<span class="number">1111111111</span>)),
+                                (<span class="string">"kind"</span>.to_string(), Field::Str(<span class="string">"home"</span>.to_string()))
                             ],
                             <span class="macro">group!</span>[
-                                (<span class="string">&quot;number&quot;</span>.to_string(), Field::Long(<span class="number">2222222222</span>)),
-                                (<span class="string">&quot;kind&quot;</span>.to_string(), Field::Null)
+                                (<span class="string">"number"</span>.to_string(), Field::Long(<span class="number">2222222222</span>)),
+                                (<span class="string">"kind"</span>.to_string(), Field::Null)
                             ],
                             <span class="macro">group!</span>[
-                                (<span class="string">&quot;number&quot;</span>.to_string(), Field::Long(<span class="number">3333333333</span>)),
-                                (<span class="string">&quot;kind&quot;</span>.to_string(), Field::Str(<span class="string">&quot;mobile&quot;</span>.to_string()))
+                                (<span class="string">"number"</span>.to_string(), Field::Long(<span class="number">3333333333</span>)),
+                                (<span class="string">"kind"</span>.to_string(), Field::Str(<span class="string">"mobile"</span>.to_string()))
                             ]
                         ]
                     )]
@@ -3290,7 +3276,7 @@
         <span class="comment">// Create schema
         </span><span class="kw">let </span>schema = Arc::new(
             parse_message_type(
-                <span class="string">&quot;
+                <span class="string">"
             message schema {
                 REPEATED group level1 {
                     REPEATED group level2 {
@@ -3300,7 +3286,7 @@
                     }
                     REQUIRED INT64 value1;
                 }
-            }&quot;</span>,
+            }"</span>,
             )
             .unwrap(),
         );
@@ -3330,7 +3316,7 @@
         <span class="comment">// Finalize Parquet file
         </span>row_group_writer.close().unwrap();
         file_writer.close().unwrap();
-        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>buffer[<span class="number">0</span>..<span class="number">4</span>], <span class="string">b&quot;PAR1&quot;</span>);
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>buffer[<span class="number">0</span>..<span class="number">4</span>], <span class="string">b"PAR1"</span>);
 
         <span class="comment">// Read Parquet file from buffer
         </span><span class="kw">let </span>file_reader = SerializedFileReader::new(Bytes::from(buffer)).unwrap();
@@ -3342,42 +3328,42 @@
 
         <span class="kw">let </span>expected_rows = <span class="macro">vec!</span>[
             <span class="macro">row!</span>[(
-                <span class="string">&quot;level1&quot;</span>.to_string(),
+                <span class="string">"level1"</span>.to_string(),
                 <span class="macro">list!</span>[<span class="macro">group!</span>[
                     (
-                        <span class="string">&quot;level2&quot;</span>.to_string(),
+                        <span class="string">"level2"</span>.to_string(),
                         <span class="macro">list!</span>[<span class="macro">group!</span>[(
-                            <span class="string">&quot;level3&quot;</span>.to_string(),
-                            <span class="macro">group!</span>[(<span class="string">&quot;value3&quot;</span>.to_string(), Field::Long(<span class="number">30</span>))]
+                            <span class="string">"level3"</span>.to_string(),
+                            <span class="macro">group!</span>[(<span class="string">"value3"</span>.to_string(), Field::Long(<span class="number">30</span>))]
                         )]]
                     ),
-                    (<span class="string">&quot;value1&quot;</span>.to_string(), Field::Long(<span class="number">10</span>))
+                    (<span class="string">"value1"</span>.to_string(), Field::Long(<span class="number">10</span>))
                 ]]
             )],
             <span class="macro">row!</span>[(
-                <span class="string">&quot;level1&quot;</span>.to_string(),
+                <span class="string">"level1"</span>.to_string(),
                 <span class="macro">list!</span>[<span class="macro">group!</span>[
                     (
-                        <span class="string">&quot;level2&quot;</span>.to_string(),
+                        <span class="string">"level2"</span>.to_string(),
                         <span class="macro">list!</span>[<span class="macro">group!</span>[(
-                            <span class="string">&quot;level3&quot;</span>.to_string(),
-                            <span class="macro">group!</span>[(<span class="string">&quot;value3&quot;</span>.to_string(), Field::Long(<span class="number">31</span>))]
+                            <span class="string">"level3"</span>.to_string(),
+                            <span class="macro">group!</span>[(<span class="string">"value3"</span>.to_string(), Field::Long(<span class="number">31</span>))]
                         )]]
                     ),
-                    (<span class="string">&quot;value1&quot;</span>.to_string(), Field::Long(<span class="number">11</span>))
+                    (<span class="string">"value1"</span>.to_string(), Field::Long(<span class="number">11</span>))
                 ]]
             )],
             <span class="macro">row!</span>[(
-                <span class="string">&quot;level1&quot;</span>.to_string(),
+                <span class="string">"level1"</span>.to_string(),
                 <span class="macro">list!</span>[<span class="macro">group!</span>[
                     (
-                        <span class="string">&quot;level2&quot;</span>.to_string(),
+                        <span class="string">"level2"</span>.to_string(),
                         <span class="macro">list!</span>[<span class="macro">group!</span>[(
-                            <span class="string">&quot;level3&quot;</span>.to_string(),
-                            <span class="macro">group!</span>[(<span class="string">&quot;value3&quot;</span>.to_string(), Field::Long(<span class="number">32</span>))]
+                            <span class="string">"level3"</span>.to_string(),
+                            <span class="macro">group!</span>[(<span class="string">"value3"</span>.to_string(), Field::Long(<span class="number">32</span>))]
                         )]]
                     ),
-                    (<span class="string">&quot;value1&quot;</span>.to_string(), Field::Long(<span class="number">12</span>))
+                    (<span class="string">"value1"</span>.to_string(), Field::Long(<span class="number">12</span>))
                 ]]
             )],
         ];

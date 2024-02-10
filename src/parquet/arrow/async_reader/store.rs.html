@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/arrow/async_reader/store.rs`."><title>store.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c67e44d78ab2db17.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (0e2dac837 2023-12-04)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/arrow/async_reader/store.rs`."><title>store.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (d44e3b95c 2024-02-09)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../parquet/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -197,14 +199,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -236,9 +238,9 @@
 /// # async fn run() {
 /// // Populate configuration from environment
 /// let storage_container = Arc::new(MicrosoftAzureBuilder::from_env().build().unwrap());
-/// let location = Path::from(&quot;path/to/blob.parquet&quot;);
+/// let location = Path::from("path/to/blob.parquet");
 /// let meta = storage_container.head(&amp;location).await.unwrap();
-/// println!(&quot;Found Blob with {}B at {}&quot;, meta.size, meta.location);
+/// println!("Found Blob with {}B at {}", meta.size, meta.location);
 ///
 /// // Show Parquet metadata
 /// let reader = ParquetObjectReader::new(storage_container, meta);
@@ -269,7 +271,7 @@
         }
     }
 
-    <span class="doccomment">/// Provide a hint as to the size of the parquet file&#39;s footer,
+    <span class="doccomment">/// Provide a hint as to the size of the parquet file's footer,
     /// see [fetch_parquet_metadata](crate::arrow::async_reader::fetch_parquet_metadata)
     </span><span class="kw">pub fn </span>with_footer_size_hint(<span class="self">self</span>, hint: usize) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
@@ -296,14 +298,14 @@
 }
 
 <span class="kw">impl </span>AsyncFileReader <span class="kw">for </span>ParquetObjectReader {
-    <span class="kw">fn </span>get_bytes(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: Range&lt;usize&gt;) -&gt; BoxFuture&lt;<span class="lifetime">&#39;_</span>, <span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt; {
+    <span class="kw">fn </span>get_bytes(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: Range&lt;usize&gt;) -&gt; BoxFuture&lt;<span class="lifetime">'_</span>, <span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt; {
         <span class="self">self</span>.store
             .get_range(<span class="kw-2">&amp;</span><span class="self">self</span>.meta.location, range)
-            .map_err(|e| ParquetError::General(<span class="macro">format!</span>(<span class="string">&quot;AsyncChunkReader::get_bytes error: {e}&quot;</span>)))
+            .map_err(|e| ParquetError::General(<span class="macro">format!</span>(<span class="string">"AsyncChunkReader::get_bytes error: {e}"</span>)))
             .boxed()
     }
 
-    <span class="kw">fn </span>get_byte_ranges(<span class="kw-2">&amp;mut </span><span class="self">self</span>, ranges: Vec&lt;Range&lt;usize&gt;&gt;) -&gt; BoxFuture&lt;<span class="lifetime">&#39;_</span>, <span class="prelude-ty">Result</span>&lt;Vec&lt;Bytes&gt;&gt;&gt;
+    <span class="kw">fn </span>get_byte_ranges(<span class="kw-2">&amp;mut </span><span class="self">self</span>, ranges: Vec&lt;Range&lt;usize&gt;&gt;) -&gt; BoxFuture&lt;<span class="lifetime">'_</span>, <span class="prelude-ty">Result</span>&lt;Vec&lt;Bytes&gt;&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Send,
     {
@@ -313,14 +315,14 @@
                 .<span class="kw">await
                 </span>.map_err(|e| {
                     ParquetError::General(<span class="macro">format!</span>(
-                        <span class="string">&quot;ParquetObjectReader::get_byte_ranges error: {e}&quot;
+                        <span class="string">"ParquetObjectReader::get_byte_ranges error: {e}"
                     </span>))
                 })
         }
         .boxed()
     }
 
-    <span class="kw">fn </span>get_metadata(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; BoxFuture&lt;<span class="lifetime">&#39;_</span>, <span class="prelude-ty">Result</span>&lt;Arc&lt;ParquetMetaData&gt;&gt;&gt; {
+    <span class="kw">fn </span>get_metadata(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; BoxFuture&lt;<span class="lifetime">'_</span>, <span class="prelude-ty">Result</span>&lt;Arc&lt;ParquetMetaData&gt;&gt;&gt; {
         Box::pin(<span class="kw">async move </span>{
             <span class="kw">let </span>preload_column_index = <span class="self">self</span>.preload_column_index;
             <span class="kw">let </span>preload_offset_index = <span class="self">self</span>.preload_offset_index;
@@ -355,7 +357,7 @@
         <span class="kw">let </span>store = LocalFileSystem::new_with_prefix(res).unwrap();
 
         <span class="kw">let </span><span class="kw-2">mut </span>meta = store
-            .head(<span class="kw-2">&amp;</span>Path::from(<span class="string">&quot;alltypes_plain.parquet&quot;</span>))
+            .head(<span class="kw-2">&amp;</span>Path::from(<span class="string">"alltypes_plain.parquet"</span>))
             .<span class="kw">await
             </span>.unwrap();
 
@@ -369,17 +371,17 @@
         <span class="macro">assert_eq!</span>(batches.len(), <span class="number">1</span>);
         <span class="macro">assert_eq!</span>(batches[<span class="number">0</span>].num_rows(), <span class="number">8</span>);
 
-        meta.location = Path::from(<span class="string">&quot;I don&#39;t exist.parquet&quot;</span>);
+        meta.location = Path::from(<span class="string">"I don't exist.parquet"</span>);
 
         <span class="kw">let </span>object_reader = ParquetObjectReader::new(store, meta);
         <span class="comment">// Cannot use unwrap_err as ParquetRecordBatchStreamBuilder: !Debug
         </span><span class="kw">match </span>ParquetRecordBatchStreamBuilder::new(object_reader).<span class="kw">await </span>{
-            <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="macro">panic!</span>(<span class="string">&quot;expected failure&quot;</span>),
+            <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="macro">panic!</span>(<span class="string">"expected failure"</span>),
             <span class="prelude-val">Err</span>(e) =&gt; {
                 <span class="kw">let </span>err = e.to_string();
                 <span class="macro">assert!</span>(
-                    err.contains(<span class="string">&quot;not found: No such file or directory (os error 2)&quot;</span>),
-                    <span class="string">&quot;{}&quot;</span>,
+                    err.contains(<span class="string">"not found: No such file or directory (os error 2)"</span>),
+                    <span class="string">"{}"</span>,
                     err
                 );
             }

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["compression","reader","schema"]};
+window.SIDEBAR_ITEMS = {"mod":["codec","compression","reader","schema"]};

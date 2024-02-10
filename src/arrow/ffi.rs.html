@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow/src/ffi.rs`."><title>ffi.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c67e44d78ab2db17.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (0e2dac837 2023-12-04)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow/src/ffi.rs`."><title>ffi.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (d44e3b95c 2024-02-09)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../arrow/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1189,14 +1191,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -1309,11 +1311,11 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
     <span class="kw">if let </span><span class="prelude-val">Some</span>(primitive) = data_type.primitive_width() {
         <span class="kw">return match </span>i {
             <span class="number">0 </span>=&gt; <span class="prelude-val">Err</span>(ArrowError::CDataInterface(<span class="macro">format!</span>(
-                <span class="string">&quot;The datatype \&quot;{data_type:?}\&quot; doesn&#39;t expect buffer at index 0. Please verify that the C data interface is correctly implemented.&quot;
+                <span class="string">"The datatype \"{data_type:?}\" doesn't expect buffer at index 0. Please verify that the C data interface is correctly implemented."
             </span>))),
             <span class="number">1 </span>=&gt; <span class="prelude-val">Ok</span>(primitive * <span class="number">8</span>),
             i =&gt; <span class="prelude-val">Err</span>(ArrowError::CDataInterface(<span class="macro">format!</span>(
-                <span class="string">&quot;The datatype \&quot;{data_type:?}\&quot; expects 2 buffers, but requested {i}. Please verify that the C data interface is correctly implemented.&quot;
+                <span class="string">"The datatype \"{data_type:?}\" expects 2 buffers, but requested {i}. Please verify that the C data interface is correctly implemented."
             </span>))),
         };
     }
@@ -1322,7 +1324,7 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
         (DataType::Boolean, <span class="number">1</span>) =&gt; <span class="number">1</span>,
         (DataType::Boolean, <span class="kw">_</span>) =&gt; {
             <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::CDataInterface(<span class="macro">format!</span>(
-                <span class="string">&quot;The datatype \&quot;{data_type:?}\&quot; expects 2 buffers, but requested {i}. Please verify that the C data interface is correctly implemented.&quot;
+                <span class="string">"The datatype \"{data_type:?}\" expects 2 buffers, but requested {i}. Please verify that the C data interface is correctly implemented."
             </span>)))
         }
         (DataType::FixedSizeBinary(num_bytes), <span class="number">1</span>) =&gt; <span class="kw-2">*</span>num_bytes <span class="kw">as </span>usize * u8::BITS <span class="kw">as </span>usize,
@@ -1332,22 +1334,22 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
         },
         (DataType::FixedSizeBinary(<span class="kw">_</span>), <span class="kw">_</span>) | (DataType::FixedSizeList(<span class="kw">_</span>, <span class="kw">_</span>), <span class="kw">_</span>) =&gt; {
             <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::CDataInterface(<span class="macro">format!</span>(
-                <span class="string">&quot;The datatype \&quot;{data_type:?}\&quot; expects 2 buffers, but requested {i}. Please verify that the C data interface is correctly implemented.&quot;
+                <span class="string">"The datatype \"{data_type:?}\" expects 2 buffers, but requested {i}. Please verify that the C data interface is correctly implemented."
             </span>)))
         },
         <span class="comment">// Variable-size list and map have one i32 buffer.
         // Variable-sized binaries: have two buffers.
-        // &quot;small&quot;: first buffer is i32, second is in bytes
+        // "small": first buffer is i32, second is in bytes
         </span>(DataType::Utf8, <span class="number">1</span>) | (DataType::Binary, <span class="number">1</span>) | (DataType::List(<span class="kw">_</span>), <span class="number">1</span>) | (DataType::Map(<span class="kw">_</span>, <span class="kw">_</span>), <span class="number">1</span>) =&gt; i32::BITS <span class="kw">as _</span>,
         (DataType::Utf8, <span class="number">2</span>) | (DataType::Binary, <span class="number">2</span>) =&gt; u8::BITS <span class="kw">as _</span>,
         (DataType::List(<span class="kw">_</span>), <span class="kw">_</span>) | (DataType::Map(<span class="kw">_</span>, <span class="kw">_</span>), <span class="kw">_</span>) =&gt; {
             <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::CDataInterface(<span class="macro">format!</span>(
-                <span class="string">&quot;The datatype \&quot;{data_type:?}\&quot; expects 2 buffers, but requested {i}. Please verify that the C data interface is correctly implemented.&quot;
+                <span class="string">"The datatype \"{data_type:?}\" expects 2 buffers, but requested {i}. Please verify that the C data interface is correctly implemented."
             </span>)))
         }
         (DataType::Utf8, <span class="kw">_</span>) | (DataType::Binary, <span class="kw">_</span>) =&gt; {
             <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::CDataInterface(<span class="macro">format!</span>(
-                <span class="string">&quot;The datatype \&quot;{data_type:?}\&quot; expects 3 buffers, but requested {i}. Please verify that the C data interface is correctly implemented.&quot;
+                <span class="string">"The datatype \"{data_type:?}\" expects 3 buffers, but requested {i}. Please verify that the C data interface is correctly implemented."
             </span>)))
         }
         <span class="comment">// Variable-sized binaries: have two buffers.
@@ -1356,33 +1358,33 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
         (DataType::LargeUtf8, <span class="number">2</span>) | (DataType::LargeBinary, <span class="number">2</span>) | (DataType::LargeList(<span class="kw">_</span>), <span class="number">2</span>)=&gt; u8::BITS <span class="kw">as _</span>,
         (DataType::LargeUtf8, <span class="kw">_</span>) | (DataType::LargeBinary, <span class="kw">_</span>) | (DataType::LargeList(<span class="kw">_</span>), <span class="kw">_</span>)=&gt; {
             <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::CDataInterface(<span class="macro">format!</span>(
-                <span class="string">&quot;The datatype \&quot;{data_type:?}\&quot; expects 3 buffers, but requested {i}. Please verify that the C data interface is correctly implemented.&quot;
+                <span class="string">"The datatype \"{data_type:?}\" expects 3 buffers, but requested {i}. Please verify that the C data interface is correctly implemented."
             </span>)))
         }
-        <span class="comment">// type ids. UnionArray doesn&#39;t have null bitmap so buffer index begins with 0.
+        <span class="comment">// type ids. UnionArray doesn't have null bitmap so buffer index begins with 0.
         </span>(DataType::Union(<span class="kw">_</span>, <span class="kw">_</span>), <span class="number">0</span>) =&gt; i8::BITS <span class="kw">as _</span>,
         <span class="comment">// Only DenseUnion has 2nd buffer
         </span>(DataType::Union(<span class="kw">_</span>, UnionMode::Dense), <span class="number">1</span>) =&gt; i32::BITS <span class="kw">as _</span>,
         (DataType::Union(<span class="kw">_</span>, UnionMode::Sparse), <span class="kw">_</span>) =&gt; {
             <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::CDataInterface(<span class="macro">format!</span>(
-                <span class="string">&quot;The datatype \&quot;{data_type:?}\&quot; expects 1 buffer, but requested {i}. Please verify that the C data interface is correctly implemented.&quot;
+                <span class="string">"The datatype \"{data_type:?}\" expects 1 buffer, but requested {i}. Please verify that the C data interface is correctly implemented."
             </span>)))
         }
         (DataType::Union(<span class="kw">_</span>, UnionMode::Dense), <span class="kw">_</span>) =&gt; {
             <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::CDataInterface(<span class="macro">format!</span>(
-                <span class="string">&quot;The datatype \&quot;{data_type:?}\&quot; expects 2 buffer, but requested {i}. Please verify that the C data interface is correctly implemented.&quot;
+                <span class="string">"The datatype \"{data_type:?}\" expects 2 buffer, but requested {i}. Please verify that the C data interface is correctly implemented."
             </span>)))
         }
         (<span class="kw">_</span>, <span class="number">0</span>) =&gt; {
-            <span class="comment">// We don&#39;t call this `bit_width` to compute buffer length for null buffer. If any types that don&#39;t have null buffer like
+            <span class="comment">// We don't call this `bit_width` to compute buffer length for null buffer. If any types that don't have null buffer like
             // UnionArray, they should be handled above.
             </span><span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::CDataInterface(<span class="macro">format!</span>(
-                <span class="string">&quot;The datatype \&quot;{data_type:?}\&quot; doesn&#39;t expect buffer at index 0. Please verify that the C data interface is correctly implemented.&quot;
+                <span class="string">"The datatype \"{data_type:?}\" doesn't expect buffer at index 0. Please verify that the C data interface is correctly implemented."
             </span>)))
         }
         <span class="kw">_ </span>=&gt; {
             <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::CDataInterface(<span class="macro">format!</span>(
-                <span class="string">&quot;The datatype \&quot;{data_type:?}\&quot; is still not supported in Rust implementation&quot;
+                <span class="string">"The datatype \"{data_type:?}\" is still not supported in Rust implementation"
             </span>)))
         }
     })
@@ -1450,13 +1452,13 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
 }
 
 <span class="attr">#[derive(Debug)]
-</span><span class="kw">struct </span>ImportedArrowArray&lt;<span class="lifetime">&#39;a</span>&gt; {
-    array: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>FFI_ArrowArray,
+</span><span class="kw">struct </span>ImportedArrowArray&lt;<span class="lifetime">'a</span>&gt; {
+    array: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>FFI_ArrowArray,
     data_type: DataType,
-    owner: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Arc&lt;FFI_ArrowArray&gt;,
+    owner: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Arc&lt;FFI_ArrowArray&gt;,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; ImportedArrowArray&lt;<span class="lifetime">&#39;a</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; ImportedArrowArray&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">fn </span>consume(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;ArrayData&gt; {
         <span class="kw">let </span>len = <span class="self">self</span>.array.len();
         <span class="kw">let </span>offset = <span class="self">self</span>.array.offset();
@@ -1477,7 +1479,7 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
         <span class="kw">let </span><span class="kw-2">mut </span>child_data = <span class="self">self</span>.consume_children()<span class="question-mark">?</span>;
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(d) = <span class="self">self</span>.dictionary()<span class="question-mark">? </span>{
-            <span class="comment">// For dictionary type there should only be a single child, so we don&#39;t need to worry if
+            <span class="comment">// For dictionary type there should only be a single child, so we don't need to worry if
             // there are other children added above.
             </span><span class="macro">assert!</span>(child_data.is_empty());
             child_data.push(d.consume()<span class="question-mark">?</span>);
@@ -1532,7 +1534,7 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
         .consume()
     }
 
-    <span class="doccomment">/// returns all buffers, as organized by Rust (i.e. null buffer is skipped if it&#39;s present
+    <span class="doccomment">/// returns all buffers, as organized by Rust (i.e. null buffer is skipped if it's present
     /// in the spec of the type)
     </span><span class="kw">fn </span>buffers(<span class="kw-2">&amp;</span><span class="self">self</span>, can_contain_null_mask: bool) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Buffer&gt;&gt; {
         <span class="comment">// + 1: skip null buffer
@@ -1544,12 +1546,12 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
                 <span class="kw">match unsafe </span>{ create_buffer(<span class="self">self</span>.owner.clone(), <span class="self">self</span>.array, index, len) } {
                     <span class="prelude-val">Some</span>(buf) =&gt; <span class="prelude-val">Ok</span>(buf),
                     <span class="prelude-val">None </span><span class="kw">if </span>len == <span class="number">0 </span>=&gt; {
-                        <span class="comment">// Null data buffer, which Rust doesn&#39;t allow. So create
+                        <span class="comment">// Null data buffer, which Rust doesn't allow. So create
                         // an empty buffer.
                         </span><span class="prelude-val">Ok</span>(MutableBuffer::new(<span class="number">0</span>).into())
                     }
                     <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(ArrowError::CDataInterface(<span class="macro">format!</span>(
-                        <span class="string">&quot;The external buffer at position {index} is null.&quot;
+                        <span class="string">"The external buffer at position {index} is null."
                     </span>))),
                 }
             })
@@ -1559,7 +1561,7 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
     <span class="doccomment">/// Returns the length, in bytes, of the buffer `i` (indexed according to the C data interface)
     /// Rust implementation uses fixed-sized buffers, which require knowledge of their `len`.
     /// for variable-sized buffers, such as the second buffer of a stringArray, we need
-    /// to fetch offset buffer&#39;s len to build the second buffer.
+    /// to fetch offset buffer's len to build the second buffer.
     </span><span class="kw">fn </span>buffer_len(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize, dt: <span class="kw-2">&amp;</span>DataType) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
         <span class="comment">// Special handling for dictionary type as we only care about the key type in the case.
         </span><span class="kw">let </span>data_type = <span class="kw">match </span>dt {
@@ -1615,7 +1617,7 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
 
     <span class="doccomment">/// returns the null bit buffer.
     /// Rust implementation uses a buffer that is not part of the array of buffers.
-    /// The C Data interface&#39;s null buffer is part of the array of buffers.
+    /// The C Data interface's null buffer is part of the array of buffers.
     </span><span class="kw">fn </span>null_bit_buffer(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Buffer&gt; {
         <span class="comment">// similar to `self.buffer_len(0)`, but without `Result`.
         // `ffi::ArrowArray` records array offset, we need to add it back to the
@@ -1634,10 +1636,10 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
                 owner: <span class="self">self</span>.owner,
             })),
             (<span class="prelude-val">Some</span>(<span class="kw">_</span>), <span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(ArrowError::CDataInterface(
-                <span class="string">&quot;Got dictionary in FFI_ArrowArray for non-dictionary data type&quot;</span>.to_string(),
+                <span class="string">"Got dictionary in FFI_ArrowArray for non-dictionary data type"</span>.to_string(),
             )),
             (<span class="prelude-val">None</span>, DataType::Dictionary(<span class="kw">_</span>, <span class="kw">_</span>)) =&gt; <span class="prelude-val">Err</span>(ArrowError::CDataInterface(
-                <span class="string">&quot;Missing dictionary in FFI_ArrowArray for dictionary data type&quot;</span>.to_string(),
+                <span class="string">"Missing dictionary in FFI_ArrowArray for dictionary data type"</span>.to_string(),
             )),
             (<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
         }
@@ -1654,13 +1656,13 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
     <span class="kw">use </span>arrow_array::builder::UnionBuilder;
     <span class="kw">use </span>arrow_array::cast::AsArray;
     <span class="kw">use </span>arrow_array::types::{Float64Type, Int32Type};
-    <span class="kw">use </span>arrow_array::{StructArray, UnionArray};
+    <span class="kw">use </span>arrow_array::<span class="kw-2">*</span>;
 
     <span class="kw">use </span><span class="kw">crate</span>::array::{
-        make_array, Array, ArrayData, BooleanArray, Decimal128Array, DictionaryArray,
-        DurationSecondArray, FixedSizeBinaryArray, FixedSizeListArray, GenericBinaryArray,
-        GenericListArray, GenericStringArray, Int32Array, MapArray, OffsetSizeTrait,
-        Time32MillisecondArray, TimestampMillisecondArray, UInt32Array,
+        make_array, Array, ArrayData, BooleanArray, DictionaryArray, DurationSecondArray,
+        FixedSizeBinaryArray, FixedSizeListArray, GenericBinaryArray, GenericListArray,
+        GenericStringArray, Int32Array, MapArray, OffsetSizeTrait, Time32MillisecondArray,
+        TimestampMillisecondArray, UInt32Array,
     };
     <span class="kw">use </span><span class="kw">crate</span>::compute::kernels;
     <span class="kw">use </span><span class="kw">crate</span>::datatypes::{Field, Int8Type};
@@ -1737,7 +1739,7 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
     }
 
     <span class="attr">#[test]
-    #[cfg(not(feature = <span class="string">&quot;force_validate&quot;</span>))]
+    #[cfg(not(feature = <span class="string">"force_validate"</span>))]
     </span><span class="kw">fn </span>test_decimal_round_trip() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="comment">// create an array natively
         </span><span class="kw">let </span>original_array = [<span class="prelude-val">Some</span>(<span class="number">12345_i128</span>), <span class="prelude-val">Some</span>(-<span class="number">12345_i128</span>), <span class="prelude-val">None</span>]
@@ -1766,7 +1768,7 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
 
     </span><span class="kw">fn </span>test_generic_string&lt;Offset: OffsetSizeTrait&gt;() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="comment">// create an array natively
-        </span><span class="kw">let </span>array = GenericStringArray::&lt;Offset&gt;::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;aaa&quot;</span>)]);
+        </span><span class="kw">let </span>array = GenericStringArray::&lt;Offset&gt;::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"a"</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">"aaa"</span>)]);
 
         <span class="comment">// export it
         </span><span class="kw">let </span>(array, schema) = to_ffi(<span class="kw-2">&amp;</span>array.to_data())<span class="question-mark">?</span>;
@@ -1784,12 +1786,12 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
 
         <span class="comment">// verify
         </span><span class="kw">let </span>expected = GenericStringArray::&lt;Offset&gt;::from(<span class="macro">vec!</span>[
-            <span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="string">"a"</span>),
             <span class="prelude-val">None</span>,
-            <span class="prelude-val">Some</span>(<span class="string">&quot;aaa&quot;</span>),
-            <span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="string">"aaa"</span>),
+            <span class="prelude-val">Some</span>(<span class="string">"a"</span>),
             <span class="prelude-val">None</span>,
-            <span class="prelude-val">Some</span>(<span class="string">&quot;aaa&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="string">"aaa"</span>),
         ]);
         <span class="macro">assert_eq!</span>(array, <span class="kw-2">&amp;</span>expected);
 
@@ -1824,7 +1826,7 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
 
         <span class="comment">// Construct a list array from the above two
         </span><span class="kw">let </span>list_data_type = GenericListArray::&lt;Offset&gt;::DATA_TYPE_CONSTRUCTOR(Arc::new(
-            Field::new(<span class="string">&quot;item&quot;</span>, DataType::Int32, <span class="bool-val">false</span>),
+            Field::new(<span class="string">"item"</span>, DataType::Int32, <span class="bool-val">false</span>),
         ));
 
         <span class="kw">let </span>list_data = ArrayData::builder(list_data_type)
@@ -1872,7 +1874,7 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
 
     <span class="kw">fn </span>test_generic_binary&lt;Offset: OffsetSizeTrait&gt;() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="comment">// create an array natively
-        </span><span class="kw">let </span>array: Vec&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>[u8]&gt;&gt; = <span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">b&quot;a&quot;</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">b&quot;aaa&quot;</span>)];
+        </span><span class="kw">let </span>array: Vec&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>[u8]&gt;&gt; = <span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">b"a"</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">b"aaa"</span>)];
         <span class="kw">let </span>array = GenericBinaryArray::&lt;Offset&gt;::from(array);
 
         <span class="comment">// export it
@@ -1891,12 +1893,12 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
 
         <span class="comment">// verify
         </span><span class="kw">let </span>expected: Vec&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>[u8]&gt;&gt; = <span class="macro">vec!</span>[
-            <span class="prelude-val">Some</span>(<span class="string">b&quot;a&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="string">b"a"</span>),
             <span class="prelude-val">None</span>,
-            <span class="prelude-val">Some</span>(<span class="string">b&quot;aaa&quot;</span>),
-            <span class="prelude-val">Some</span>(<span class="string">b&quot;a&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="string">b"aaa"</span>),
+            <span class="prelude-val">Some</span>(<span class="string">b"a"</span>),
             <span class="prelude-val">None</span>,
-            <span class="prelude-val">Some</span>(<span class="string">b&quot;aaa&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="string">b"aaa"</span>),
         ];
         <span class="kw">let </span>expected = GenericBinaryArray::&lt;Offset&gt;::from(expected);
         <span class="macro">assert_eq!</span>(array, <span class="kw-2">&amp;</span>expected);
@@ -2065,7 +2067,7 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
             .build()<span class="question-mark">?</span>;
 
         <span class="kw">let </span>list_data_type =
-            DataType::FixedSizeList(Arc::new(Field::new(<span class="string">&quot;f&quot;</span>, DataType::Int32, <span class="bool-val">false</span>)), <span class="number">3</span>);
+            DataType::FixedSizeList(Arc::new(Field::new(<span class="string">"f"</span>, DataType::Int32, <span class="bool-val">false</span>)), <span class="number">3</span>);
         <span class="kw">let </span>list_data = ArrayData::builder(list_data_type.clone())
             .len(<span class="number">3</span>)
             .null_bit_buffer(<span class="prelude-val">Some</span>(Buffer::from(validity_bits)))
@@ -2114,7 +2116,7 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_dictionary() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="comment">// create an array natively
-        </span><span class="kw">let </span>values = <span class="macro">vec!</span>[<span class="string">&quot;a&quot;</span>, <span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;aaa&quot;</span>];
+        </span><span class="kw">let </span>values = <span class="macro">vec!</span>[<span class="string">"a"</span>, <span class="string">"aaa"</span>, <span class="string">"aaa"</span>];
         <span class="kw">let </span>dict_array: DictionaryArray&lt;Int8Type&gt; = values.into_iter().collect();
 
         <span class="comment">// export it
@@ -2132,7 +2134,7 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
             .unwrap();
 
         <span class="comment">// verify
-        </span><span class="kw">let </span>new_values = <span class="macro">vec!</span>[<span class="string">&quot;a&quot;</span>, <span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;aaa&quot;</span>];
+        </span><span class="kw">let </span>new_values = <span class="macro">vec!</span>[<span class="string">"a"</span>, <span class="string">"aaa"</span>, <span class="string">"aaa"</span>, <span class="string">"a"</span>, <span class="string">"aaa"</span>, <span class="string">"aaa"</span>];
         <span class="kw">let </span>expected: DictionaryArray&lt;Int8Type&gt; = new_values.into_iter().collect();
         <span class="macro">assert_eq!</span>(actual, <span class="kw-2">&amp;</span>expected);
 
@@ -2202,7 +2204,7 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_map_array() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>keys = <span class="macro">vec!</span>[<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;d&quot;</span>, <span class="string">&quot;e&quot;</span>, <span class="string">&quot;f&quot;</span>, <span class="string">&quot;g&quot;</span>, <span class="string">&quot;h&quot;</span>];
+        <span class="kw">let </span>keys = <span class="macro">vec!</span>[<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>, <span class="string">"e"</span>, <span class="string">"f"</span>, <span class="string">"g"</span>, <span class="string">"h"</span>];
         <span class="kw">let </span>values_data = UInt32Array::from(<span class="macro">vec!</span>[<span class="number">0u32</span>, <span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>, <span class="number">60</span>, <span class="number">70</span>]);
 
         <span class="comment">// Construct a buffer for value offsets, for the nested array:
@@ -2230,9 +2232,9 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_struct_array() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span>metadata: HashMap&lt;String, String&gt; =
-            [(<span class="string">&quot;Hello&quot;</span>.to_string(), <span class="string">&quot;World! 😊&quot;</span>.to_string())].into();
+            [(<span class="string">"Hello"</span>.to_string(), <span class="string">"World! 😊"</span>.to_string())].into();
         <span class="kw">let </span>struct_array = StructArray::from(<span class="macro">vec!</span>[(
-            Arc::new(Field::new(<span class="string">&quot;a&quot;</span>, DataType::Int32, <span class="bool-val">false</span>).with_metadata(metadata)),
+            Arc::new(Field::new(<span class="string">"a"</span>, DataType::Int32, <span class="bool-val">false</span>).with_metadata(metadata)),
             Arc::new(Int32Array::from(<span class="macro">vec!</span>[<span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>])) <span class="kw">as </span>Arc&lt;<span class="kw">dyn </span>Array&gt;,
         )]);
 
@@ -2254,10 +2256,10 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_union_sparse_array() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>builder = UnionBuilder::new_sparse();
-        builder.append::&lt;Int32Type&gt;(<span class="string">&quot;a&quot;</span>, <span class="number">1</span>).unwrap();
-        builder.append_null::&lt;Int32Type&gt;(<span class="string">&quot;a&quot;</span>).unwrap();
-        builder.append::&lt;Float64Type&gt;(<span class="string">&quot;c&quot;</span>, <span class="number">3.0</span>).unwrap();
-        builder.append::&lt;Int32Type&gt;(<span class="string">&quot;a&quot;</span>, <span class="number">4</span>).unwrap();
+        builder.append::&lt;Int32Type&gt;(<span class="string">"a"</span>, <span class="number">1</span>).unwrap();
+        builder.append_null::&lt;Int32Type&gt;(<span class="string">"a"</span>).unwrap();
+        builder.append::&lt;Float64Type&gt;(<span class="string">"c"</span>, <span class="number">3.0</span>).unwrap();
+        builder.append::&lt;Int32Type&gt;(<span class="string">"a"</span>, <span class="number">4</span>).unwrap();
         <span class="kw">let </span>union = builder.build().unwrap();
 
         <span class="comment">// export it
@@ -2315,10 +2317,10 @@ To export an array, create an `ArrowArray` using [ArrowArray::try_new].
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_union_dense_array() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>builder = UnionBuilder::new_dense();
-        builder.append::&lt;Int32Type&gt;(<span class="string">&quot;a&quot;</span>, <span class="number">1</span>).unwrap();
-        builder.append_null::&lt;Int32Type&gt;(<span class="string">&quot;a&quot;</span>).unwrap();
-        builder.append::&lt;Float64Type&gt;(<span class="string">&quot;c&quot;</span>, <span class="number">3.0</span>).unwrap();
-        builder.append::&lt;Int32Type&gt;(<span class="string">&quot;a&quot;</span>, <span class="number">4</span>).unwrap();
+        builder.append::&lt;Int32Type&gt;(<span class="string">"a"</span>, <span class="number">1</span>).unwrap();
+        builder.append_null::&lt;Int32Type&gt;(<span class="string">"a"</span>).unwrap();
+        builder.append::&lt;Float64Type&gt;(<span class="string">"c"</span>, <span class="number">3.0</span>).unwrap();
+        builder.append::&lt;Int32Type&gt;(<span class="string">"a"</span>, <span class="number">4</span>).unwrap();
         <span class="kw">let </span>union = builder.build().unwrap();
 
         <span class="comment">// export it

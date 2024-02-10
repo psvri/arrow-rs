@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-integration-testing/src/bin/arrow-json-integration-test.rs`."><title>arrow-json-integration-test.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c67e44d78ab2db17.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_json_integration_test" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (0e2dac837 2023-12-04)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-integration-testing/src/bin/arrow-json-integration-test.rs`."><title>arrow-json-integration-test.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_json_integration_test" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (d44e3b95c 2024-02-09)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../arrow_json_integration_test/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -180,14 +182,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -201,7 +203,7 @@
 <span class="kw">use </span>std::fs::File;
 
 <span class="attr">#[derive(clap::ValueEnum, Debug, Clone)]
-#[clap(rename_all = <span class="string">&quot;SCREAMING_SNAKE_CASE&quot;</span>)]
+#[clap(rename_all = <span class="string">"SCREAMING_SNAKE_CASE"</span>)]
 </span><span class="kw">enum </span>Mode {
     ArrowToJson,
     JsonToArrow,
@@ -209,15 +211,15 @@
 }
 
 <span class="attr">#[derive(Debug, Parser)]
-#[clap(author, version, about(<span class="string">&quot;rust arrow-json-integration-test&quot;</span>), long_about = <span class="prelude-val">None</span>)]
+#[clap(author, version, about(<span class="string">"rust arrow-json-integration-test"</span>), long_about = <span class="prelude-val">None</span>)]
 </span><span class="kw">struct </span>Args {
     <span class="attr">#[clap(short, long)]
     </span>integration: bool,
-    <span class="attr">#[clap(short, long, help(<span class="string">&quot;Path to ARROW file&quot;</span>))]
+    <span class="attr">#[clap(short, long, help(<span class="string">"Path to ARROW file"</span>))]
     </span>arrow: String,
-    <span class="attr">#[clap(short, long, help(<span class="string">&quot;Path to JSON file&quot;</span>))]
+    <span class="attr">#[clap(short, long, help(<span class="string">"Path to JSON file"</span>))]
     </span>json: String,
-    <span class="attr">#[clap(value_enum, short, long, default_value_t = Mode::Validate, help=<span class="string">&quot;Mode of integration testing tool&quot;</span>)]
+    <span class="attr">#[clap(value_enum, short, long, default_value_t = Mode::Validate, help=<span class="string">"Mode of integration testing tool"</span>)]
     </span>mode: Mode,
     <span class="attr">#[clap(short, long)]
     </span>verbose: bool,
@@ -237,7 +239,7 @@
 
 <span class="kw">fn </span>json_to_arrow(json_name: <span class="kw-2">&amp;</span>str, arrow_name: <span class="kw-2">&amp;</span>str, verbose: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
     <span class="kw">if </span>verbose {
-        <span class="macro">eprintln!</span>(<span class="string">&quot;Converting {json_name} to {arrow_name}&quot;</span>);
+        <span class="macro">eprintln!</span>(<span class="string">"Converting {json_name} to {arrow_name}"</span>);
     }
 
     <span class="kw">let </span>json_file = open_json_file(json_name)<span class="question-mark">?</span>;
@@ -256,7 +258,7 @@
 
 <span class="kw">fn </span>arrow_to_json(arrow_name: <span class="kw-2">&amp;</span>str, json_name: <span class="kw-2">&amp;</span>str, verbose: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
     <span class="kw">if </span>verbose {
-        <span class="macro">eprintln!</span>(<span class="string">&quot;Converting {arrow_name} to {json_name}&quot;</span>);
+        <span class="macro">eprintln!</span>(<span class="string">"Converting {arrow_name} to {json_name}"</span>);
     }
 
     <span class="kw">let </span>arrow_file = File::open(arrow_name)<span class="question-mark">?</span>;
@@ -289,7 +291,7 @@
 
 <span class="kw">fn </span>validate(arrow_name: <span class="kw-2">&amp;</span>str, json_name: <span class="kw-2">&amp;</span>str, verbose: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
     <span class="kw">if </span>verbose {
-        <span class="macro">eprintln!</span>(<span class="string">&quot;Validating {arrow_name} and {json_name}&quot;</span>);
+        <span class="macro">eprintln!</span>(<span class="string">"Validating {arrow_name} and {json_name}"</span>);
     }
 
     <span class="comment">// open JSON file
@@ -303,7 +305,7 @@
     <span class="comment">// compare schemas
     </span><span class="kw">if </span>canonicalize_schema(<span class="kw-2">&amp;</span>json_file.schema) != canonicalize_schema(<span class="kw-2">&amp;</span>arrow_schema) {
         <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::ComputeError(<span class="macro">format!</span>(
-            <span class="string">&quot;Schemas do not match. JSON: {:?}. Arrow: {:?}&quot;</span>,
+            <span class="string">"Schemas do not match. JSON: {:?}. Arrow: {:?}"</span>,
             json_file.schema, arrow_schema
         )));
     }
@@ -313,12 +315,12 @@
     <span class="comment">// compare number of batches
     </span><span class="macro">assert!</span>(
         json_batches.len() == arrow_reader.num_batches(),
-        <span class="string">&quot;JSON batches and Arrow batches are unequal&quot;
+        <span class="string">"JSON batches and Arrow batches are unequal"
     </span>);
 
     <span class="kw">if </span>verbose {
         <span class="macro">eprintln!</span>(
-            <span class="string">&quot;Schemas match. JSON file has {} batches.&quot;</span>,
+            <span class="string">"Schemas match. JSON file has {} batches."</span>,
             json_batches.len()
         );
     }
@@ -334,19 +336,19 @@
                 <span class="macro">assert_eq!</span>(
                     arrow_batch.column(i).as_ref(),
                     json_batch.column(i).as_ref(),
-                    <span class="string">&quot;Arrow and JSON batch columns not the same&quot;
+                    <span class="string">"Arrow and JSON batch columns not the same"
                 </span>);
             }
         } <span class="kw">else </span>{
             <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::ComputeError(
-                <span class="string">&quot;no more arrow batches left&quot;</span>.to_owned(),
+                <span class="string">"no more arrow batches left"</span>.to_owned(),
             ));
         }
     }
 
     <span class="kw">if </span>arrow_reader.next().is_some() {
         <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::ComputeError(
-            <span class="string">&quot;no more json batches left&quot;</span>.to_owned(),
+            <span class="string">"no more json batches left"</span>.to_owned(),
         ));
     }
 

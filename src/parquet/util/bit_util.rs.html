@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/util/bit_util.rs`."><title>bit_util.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c67e44d78ab2db17.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (0e2dac837 2023-12-04)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/util/bit_util.rs`."><title>bit_util.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (d44e3b95c 2024-02-09)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../parquet/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1144,14 +1146,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -1176,7 +1178,7 @@
     </span><span class="kw">match </span>bs.get(..N) {
         <span class="prelude-val">Some</span>(b) =&gt; <span class="prelude-val">Ok</span>(b.try_into().unwrap()),
         <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">general_err!</span>(
-            <span class="string">&quot;error converting value, expected {} bytes got {}&quot;</span>,
+            <span class="string">"error converting value, expected {} bytes got {}"</span>,
             N,
             bs.len()
         )),
@@ -1290,7 +1292,7 @@
     }
 }
 
-<span class="doccomment">/// Returns the minimum number of bits needed to represent the value &#39;x&#39;
+<span class="doccomment">/// Returns the minimum number of bits needed to represent the value 'x'
 </span><span class="attr">#[inline]
 </span><span class="kw">pub fn </span>num_required_bits(x: u64) -&gt; u8 {
     <span class="number">64 </span>- x.leading_zeros() <span class="kw">as </span>u8
@@ -1337,7 +1339,7 @@
         <span class="self">self</span>.buffer
     }
 
-    <span class="doccomment">/// Flushes the internal buffered bits and returns the buffer&#39;s content.
+    <span class="doccomment">/// Flushes the internal buffered bits and returns the buffer's content.
     /// This is a borrow equivalent of `consume` method.
     </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>flush_buffer(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8] {
@@ -1485,7 +1487,7 @@
     <span class="doccomment">/// The byte buffer to read from, passed in by client
     </span>buffer: Bytes,
 
-    <span class="doccomment">/// Bytes are memcpy&#39;d from `buffer` and values are read from this variable.
+    <span class="doccomment">/// Bytes are memcpy'd from `buffer` and values are read from this variable.
     /// This is faster than reading values byte by byte directly from `buffer`
     ///
     /// This is only populated when `self.bit_offset != 0`
@@ -1531,7 +1533,7 @@
 
     <span class="doccomment">/// Reads a value of type `T` and of size `num_bits`.
     ///
-    /// Returns `None` if there&#39;s not enough data available. `Some` otherwise.
+    /// Returns `None` if there's not enough data available. `Some` otherwise.
     </span><span class="kw">pub fn </span>get_value&lt;T: FromBytes&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, num_bits: usize) -&gt; <span class="prelude-ty">Option</span>&lt;T&gt; {
         <span class="macro">assert!</span>(num_bits &lt;= <span class="number">64</span>);
         <span class="macro">assert!</span>(num_bits &lt;= size_of::&lt;T&gt;() * <span class="number">8</span>);
@@ -1593,7 +1595,7 @@
             <span class="kw">while </span>i &lt; values_to_read &amp;&amp; <span class="self">self</span>.bit_offset != <span class="number">0 </span>{
                 batch[i] = <span class="self">self
                     </span>.get_value(num_bits)
-                    .expect(<span class="string">&quot;expected to have more data&quot;</span>);
+                    .expect(<span class="string">"expected to have more data"</span>);
                 i += <span class="number">1</span>;
             }
         }
@@ -1690,7 +1692,7 @@
         </span><span class="kw">while </span>i &lt; values_to_read {
             <span class="kw">let </span>value = <span class="self">self
                 </span>.get_value(num_bits)
-                .expect(<span class="string">&quot;expected to have more data&quot;</span>);
+                .expect(<span class="string">"expected to have more data"</span>);
             batch[i] = value;
             i += <span class="number">1</span>;
         }
@@ -1749,7 +1751,7 @@
     /// aligned so the bit reader will be advanced to the start of the next byte before
     /// reading the value.
 
-    /// Returns `Some` if there&#39;s enough bytes left to form a value of `T`.
+    /// Returns `Some` if there's enough bytes left to form a value of `T`.
     /// Otherwise `None`.
     </span><span class="kw">pub fn </span>get_aligned&lt;T: FromBytes&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, num_bytes: usize) -&gt; <span class="prelude-ty">Option</span>&lt;T&gt; {
         <span class="self">self</span>.byte_offset = <span class="self">self</span>.get_byte_offset();
@@ -1769,7 +1771,7 @@
     <span class="doccomment">/// Reads a VLQ encoded (in little endian order) int from the stream.
     /// The encoded int must start at the beginning of a byte.
     ///
-    /// Returns `None` if there&#39;s not enough bytes in the stream. `Some` otherwise.
+    /// Returns `None` if there's not enough bytes in the stream. `Some` otherwise.
     </span><span class="kw">pub fn </span>get_vlq_int(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;i64&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>shift = <span class="number">0</span>;
         <span class="kw">let </span><span class="kw-2">mut </span>v: i64 = <span class="number">0</span>;
@@ -1778,7 +1780,7 @@
             shift += <span class="number">7</span>;
             <span class="macro">assert!</span>(
                 shift &lt;= MAX_VLQ_BYTE_LEN * <span class="number">7</span>,
-                <span class="string">&quot;Num of bytes exceed MAX_VLQ_BYTE_LEN ({MAX_VLQ_BYTE_LEN})&quot;
+                <span class="string">"Num of bytes exceed MAX_VLQ_BYTE_LEN ({MAX_VLQ_BYTE_LEN})"
             </span>);
             <span class="kw">if </span>byte &amp; <span class="number">0x80 </span>== <span class="number">0 </span>{
                 <span class="kw">return </span><span class="prelude-val">Some</span>(v);
@@ -1794,7 +1796,7 @@
     ///
     /// Note: the encoded int must start at the beginning of a byte.
     ///
-    /// Returns `None` if the number of bytes there&#39;s not enough bytes in the stream.
+    /// Returns `None` if the number of bytes there's not enough bytes in the stream.
     /// `Some` otherwise.
     </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>get_zigzag_vlq_int(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;i64&gt; {
@@ -2053,14 +2055,14 @@
         <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="number">8 </span>{
             <span class="kw">let </span>val = reader
                 .get_value::&lt;u8&gt;(<span class="number">1</span>)
-                .expect(<span class="string">&quot;get_value() should return OK&quot;</span>);
+                .expect(<span class="string">"get_value() should return OK"</span>);
             <span class="macro">assert_eq!</span>(val, i % <span class="number">2</span>);
         }
 
         <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="number">8 </span>{
             <span class="kw">let </span>val = reader
                 .get_value::&lt;bool&gt;(<span class="number">1</span>)
-                .expect(<span class="string">&quot;get_value() should return OK&quot;</span>);
+                .expect(<span class="string">"get_value() should return OK"</span>);
             <span class="kw">match </span>i {
                 <span class="number">0 </span>| <span class="number">1 </span>| <span class="number">4 </span>| <span class="number">5 </span>=&gt; <span class="macro">assert!</span>(!val),
                 <span class="kw">_ </span>=&gt; <span class="macro">assert!</span>(val),
@@ -2096,10 +2098,10 @@
         (<span class="number">0</span>..total).for_each(|i| {
             <span class="kw">let </span>v = reader
                 .get_value::&lt;u64&gt;(num_bits)
-                .expect(<span class="string">&quot;get_value() should return OK&quot;</span>);
+                .expect(<span class="string">"get_value() should return OK"</span>);
             <span class="macro">assert_eq!</span>(
                 v, values[i],
-                <span class="string">&quot;[{}]: expected {} but got {}&quot;</span>,
+                <span class="string">"[{}]: expected {} but got {}"</span>,
                 i, values[i], v
             );
         });
@@ -2153,7 +2155,7 @@
             <span class="macro">assert_eq!</span>(
                 batch[i],
                 expected_values[i],
-                <span class="string">&quot;max_num_bits = {}, num_bits = {}, index = {}&quot;</span>,
+                <span class="string">"max_num_bits = {}, num_bits = {}, index = {}"</span>,
                 size_of::&lt;T&gt;() * <span class="number">8</span>,
                 num_bits,
                 i
@@ -2206,19 +2208,19 @@
             <span class="kw">if </span>i % <span class="number">2 </span>== <span class="number">0 </span>{
                 <span class="kw">let </span>v = reader
                     .get_value::&lt;u64&gt;(num_bits)
-                    .expect(<span class="string">&quot;get_value() should return OK&quot;</span>);
+                    .expect(<span class="string">"get_value() should return OK"</span>);
                 <span class="macro">assert_eq!</span>(
                     v, values[j] <span class="kw">as </span>u64,
-                    <span class="string">&quot;[{}]: expected {} but got {}&quot;</span>,
+                    <span class="string">"[{}]: expected {} but got {}"</span>,
                     i, values[j], v
                 );
             } <span class="kw">else </span>{
                 <span class="kw">let </span>v = reader
                     .get_aligned::&lt;T&gt;(aligned_value_byte_width)
-                    .expect(<span class="string">&quot;get_aligned() should return OK&quot;</span>);
+                    .expect(<span class="string">"get_aligned() should return OK"</span>);
                 <span class="macro">assert_eq!</span>(
                     v, aligned_values[j],
-                    <span class="string">&quot;[{}]: expected {:?} but got {:?}&quot;</span>,
+                    <span class="string">"[{}]: expected {:?} but got {:?}"</span>,
                     i, aligned_values[j], v
                 );
             }
@@ -2236,10 +2238,10 @@
         (<span class="number">0</span>..total).for_each(|i| {
             <span class="kw">let </span>v = reader
                 .get_vlq_int()
-                .expect(<span class="string">&quot;get_vlq_int() should return OK&quot;</span>);
+                .expect(<span class="string">"get_vlq_int() should return OK"</span>);
             <span class="macro">assert_eq!</span>(
                 v <span class="kw">as </span>u32, values[i],
-                <span class="string">&quot;[{}]: expected {} but got {}&quot;</span>,
+                <span class="string">"[{}]: expected {} but got {}"</span>,
                 i, values[i], v
             );
         });
@@ -2256,10 +2258,10 @@
         (<span class="number">0</span>..total).for_each(|i| {
             <span class="kw">let </span>v = reader
                 .get_zigzag_vlq_int()
-                .expect(<span class="string">&quot;get_zigzag_vlq_int() should return OK&quot;</span>);
+                .expect(<span class="string">"get_zigzag_vlq_int() should return OK"</span>);
             <span class="macro">assert_eq!</span>(
                 v <span class="kw">as </span>i32, values[i],
-                <span class="string">&quot;[{}]: expected {} but got {}&quot;</span>,
+                <span class="string">"[{}]: expected {} but got {}"</span>,
                 i, values[i], v
             );
         });

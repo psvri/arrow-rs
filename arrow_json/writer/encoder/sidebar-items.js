@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["encode_string","make_encoder","make_encoder_impl"],"macro":["float_encode","integer_encode"],"struct":["BooleanEncoder","DictionaryEncoder","EncoderOptions","FieldEncoder","ListEncoder","MapEncoder","NullEncoder","PrimitiveEncoder","StringEncoder","StructArrayEncoder"],"trait":["Encoder","PrimitiveEncode"]};

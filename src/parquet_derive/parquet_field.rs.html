@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet_derive/src/parquet_field.rs`."><title>parquet_field.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c67e44d78ab2db17.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="parquet_derive" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (0e2dac837 2023-12-04)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet_derive/src/parquet_field.rs`."><title>parquet_field.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="parquet_derive" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (d44e3b95c 2024-02-09)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../parquet_derive/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1402,47 +1404,19 @@
 <a href="#1402" id="1402">1402</a>
 <a href="#1403" id="1403">1403</a>
 <a href="#1404" id="1404">1404</a>
-<a href="#1405" id="1405">1405</a>
-<a href="#1406" id="1406">1406</a>
-<a href="#1407" id="1407">1407</a>
-<a href="#1408" id="1408">1408</a>
-<a href="#1409" id="1409">1409</a>
-<a href="#1410" id="1410">1410</a>
-<a href="#1411" id="1411">1411</a>
-<a href="#1412" id="1412">1412</a>
-<a href="#1413" id="1413">1413</a>
-<a href="#1414" id="1414">1414</a>
-<a href="#1415" id="1415">1415</a>
-<a href="#1416" id="1416">1416</a>
-<a href="#1417" id="1417">1417</a>
-<a href="#1418" id="1418">1418</a>
-<a href="#1419" id="1419">1419</a>
-<a href="#1420" id="1420">1420</a>
-<a href="#1421" id="1421">1421</a>
-<a href="#1422" id="1422">1422</a>
-<a href="#1423" id="1423">1423</a>
-<a href="#1424" id="1424">1424</a>
-<a href="#1425" id="1425">1425</a>
-<a href="#1426" id="1426">1426</a>
-<a href="#1427" id="1427">1427</a>
-<a href="#1428" id="1428">1428</a>
-<a href="#1429" id="1429">1429</a>
-<a href="#1430" id="1430">1430</a>
-<a href="#1431" id="1431">1431</a>
-<a href="#1432" id="1432">1432</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -1475,9 +1449,9 @@
         <span class="kw">let </span>is_a_byte_buf = ty.physical_type() == parquet::basic::Type::BYTE_ARRAY;
 
         <span class="kw">let </span>third_party_type = <span class="kw">match </span><span class="kw-2">&amp;</span>ty.last_part()[..] {
-            <span class="string">&quot;NaiveDateTime&quot; </span>=&gt; <span class="prelude-val">Some</span>(ThirdPartyType::ChronoNaiveDateTime),
-            <span class="string">&quot;NaiveDate&quot; </span>=&gt; <span class="prelude-val">Some</span>(ThirdPartyType::ChronoNaiveDate),
-            <span class="string">&quot;Uuid&quot; </span>=&gt; <span class="prelude-val">Some</span>(ThirdPartyType::Uuid),
+            <span class="string">"NaiveDateTime" </span>=&gt; <span class="prelude-val">Some</span>(ThirdPartyType::ChronoNaiveDateTime),
+            <span class="string">"NaiveDate" </span>=&gt; <span class="prelude-val">Some</span>(ThirdPartyType::ChronoNaiveDate),
+            <span class="string">"Uuid" </span>=&gt; <span class="prelude-val">Some</span>(ThirdPartyType::Uuid),
             <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         };
 
@@ -1485,7 +1459,7 @@
             ident: f
                 .ident
                 .clone()
-                .expect(<span class="string">&quot;Only structs with named fields are currently supported&quot;</span>),
+                .expect(<span class="string">"Only structs with named fields are currently supported"</span>),
             ty,
             is_a_byte_buf,
             third_party_type,
@@ -1522,13 +1496,13 @@
                 Type::TypePath(<span class="kw">_</span>) =&gt; <span class="self">self</span>.option_into_vals(),
                 Type::Reference(<span class="kw">_</span>, <span class="kw-2">ref </span>second_type) =&gt; <span class="kw">match </span><span class="kw-2">**</span>second_type {
                     Type::TypePath(<span class="kw">_</span>) =&gt; <span class="self">self</span>.option_into_vals(),
-                    <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported type encountered&quot;</span>),
+                    <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported type encountered"</span>),
                 },
                 Type::Vec(<span class="kw-2">ref </span>first_type) =&gt; <span class="kw">match </span><span class="kw-2">**</span>first_type {
                     Type::TypePath(<span class="kw">_</span>) =&gt; <span class="self">self</span>.option_into_vals(),
-                    <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported type encountered&quot;</span>),
+                    <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported type encountered"</span>),
                 },
-                <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported: {:#?}&quot;</span>, f),
+                <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported: {:#?}"</span>, f),
             },
             Type::Reference(<span class="kw">_</span>, <span class="kw-2">ref </span>first_type) =&gt; <span class="kw">match </span><span class="kw-2">**</span>first_type {
                 Type::TypePath(<span class="kw">_</span>) =&gt; <span class="self">self</span>.copied_direct_vals(),
@@ -1538,40 +1512,40 @@
                         Type::TypePath(<span class="kw">_</span>) =&gt; <span class="self">self</span>.option_into_vals(),
                         Type::Slice(<span class="kw-2">ref </span>second_type) =&gt; <span class="kw">match </span><span class="kw-2">**</span>second_type {
                             Type::TypePath(<span class="kw">_</span>) =&gt; <span class="self">self</span>.option_into_vals(),
-                            <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported: {:#?}&quot;</span>, f),
+                            <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported: {:#?}"</span>, f),
                         },
-                        <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported type encountered&quot;</span>),
+                        <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported type encountered"</span>),
                     },
                     Type::Vec(<span class="kw-2">ref </span>first_type) =&gt; <span class="kw">match </span><span class="kw-2">**</span>first_type {
                         Type::TypePath(<span class="kw">_</span>) =&gt; <span class="self">self</span>.option_into_vals(),
-                        <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported type encountered&quot;</span>),
+                        <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported type encountered"</span>),
                     },
-                    <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported: {:#?}&quot;</span>, f),
+                    <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported: {:#?}"</span>, f),
                 },
                 Type::Slice(<span class="kw-2">ref </span>second_type) =&gt; <span class="kw">match </span><span class="kw-2">**</span>second_type {
                     Type::TypePath(<span class="kw">_</span>) =&gt; <span class="self">self</span>.copied_direct_vals(),
-                    <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported: {:#?}&quot;</span>, f),
+                    <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported: {:#?}"</span>, f),
                 },
-                <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported: {:#?}&quot;</span>, f),
+                <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported: {:#?}"</span>, f),
             },
             Type::Vec(<span class="kw-2">ref </span>first_type) =&gt; <span class="kw">match </span><span class="kw-2">**</span>first_type {
                 Type::TypePath(<span class="kw">_</span>) =&gt; <span class="self">self</span>.copied_direct_vals(),
-                <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported: {:#?}&quot;</span>, f),
+                <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported: {:#?}"</span>, f),
             },
-            f =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported: {:#?}&quot;</span>, f),
+            f =&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported: {:#?}"</span>, f),
         };
 
         <span class="kw">let </span>definition_levels = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.ty {
             Type::TypePath(<span class="kw">_</span>) =&gt; <span class="prelude-val">None</span>,
             Type::Option(<span class="kw-2">ref </span>first_type) =&gt; <span class="kw">match </span><span class="kw-2">**</span>first_type {
                 Type::TypePath(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="self">self</span>.optional_definition_levels()),
-                Type::Option(<span class="kw">_</span>) =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported nesting encountered&quot;</span>),
+                Type::Option(<span class="kw">_</span>) =&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported nesting encountered"</span>),
                 Type::Reference(<span class="kw">_</span>, <span class="kw-2">ref </span>second_type)
                 | Type::Vec(<span class="kw-2">ref </span>second_type)
                 | Type::Array(<span class="kw-2">ref </span>second_type)
                 | Type::Slice(<span class="kw-2">ref </span>second_type) =&gt; <span class="kw">match </span><span class="kw-2">**</span>second_type {
                     Type::TypePath(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="self">self</span>.optional_definition_levels()),
-                    <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported nesting encountered&quot;</span>),
+                    <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported nesting encountered"</span>),
                 },
             },
             Type::Reference(<span class="kw">_</span>, <span class="kw-2">ref </span>first_type)
@@ -1585,9 +1559,9 @@
                     Type::TypePath(<span class="kw">_</span>) =&gt; <span class="prelude-val">None</span>,
                     Type::Reference(<span class="kw">_</span>, <span class="kw-2">ref </span>third_type) =&gt; <span class="kw">match </span><span class="kw-2">**</span>third_type {
                         Type::TypePath(<span class="kw">_</span>) =&gt; <span class="prelude-val">None</span>,
-                        <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported definition encountered&quot;</span>),
+                        <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported definition encountered"</span>),
                     },
-                    <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported definition encountered&quot;</span>),
+                    <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported definition encountered"</span>),
                 },
                 Type::Reference(<span class="kw">_</span>, <span class="kw-2">ref </span>second_type) | Type::Option(<span class="kw-2">ref </span>second_type) =&gt; {
                     <span class="kw">match </span><span class="kw-2">**</span>second_type {
@@ -1598,28 +1572,28 @@
                             Type::TypePath(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="self">self</span>.optional_definition_levels()),
                             Type::Reference(<span class="kw">_</span>, <span class="kw-2">ref </span>fourth_type) =&gt; <span class="kw">match </span><span class="kw-2">**</span>fourth_type {
                                 Type::TypePath(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="self">self</span>.optional_definition_levels()),
-                                <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported definition encountered&quot;</span>),
+                                <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported definition encountered"</span>),
                             },
-                            <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported definition encountered&quot;</span>),
+                            <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported definition encountered"</span>),
                         },
                         Type::Reference(<span class="kw">_</span>, <span class="kw-2">ref </span>third_type) =&gt; <span class="kw">match </span><span class="kw-2">**</span>third_type {
                             Type::TypePath(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="self">self</span>.optional_definition_levels()),
                             Type::Slice(<span class="kw-2">ref </span>fourth_type) =&gt; <span class="kw">match </span><span class="kw-2">**</span>fourth_type {
                                 Type::TypePath(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="self">self</span>.optional_definition_levels()),
-                                <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported definition encountered&quot;</span>),
+                                <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported definition encountered"</span>),
                             },
-                            <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported definition encountered&quot;</span>),
+                            <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported definition encountered"</span>),
                         },
-                        <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported definition encountered&quot;</span>),
+                        <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported definition encountered"</span>),
                     }
                 }
             },
         };
 
-        <span class="comment">// &quot;vals&quot; is the run of primitive data being written for the column
-        // &quot;definition_levels&quot; is a vector of bools which controls whether a value is missing or present
+        <span class="comment">// "vals" is the run of primitive data being written for the column
+        // "definition_levels" is a vector of bools which controls whether a value is missing or present
         // this TokenStream is only one part of the code for writing a column and
-        // it relies on values calculated in prior code snippets, namely &quot;definition_levels&quot; and &quot;vals_builder&quot;.
+        // it relies on values calculated in prior code snippets, namely "definition_levels" and "vals_builder".
         // All the context is put together in this functions final quote and
         // this expression just switches between non-nullable and nullable write statements
         </span><span class="kw">let </span>write_batch_expr = <span class="kw">if </span>definition_levels.is_some() {
@@ -1627,7 +1601,7 @@
                 <span class="kw">if let </span>#column_writer(<span class="kw-2">ref mut </span>typed) = column_writer.untyped() {
                     typed.write_batch(<span class="kw-2">&amp;</span>vals[..], <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>definition_levels[..]), <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
                 } <span class="kw">else </span>{
-                    <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot;</span>, <span class="macro">stringify!</span>{#ident})
+                    <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}"</span>, <span class="macro">stringify!</span>{#ident})
                 }
             }
         } <span class="kw">else </span>{
@@ -1635,7 +1609,7 @@
                 <span class="kw">if let </span>#column_writer(<span class="kw-2">ref mut </span>typed) = column_writer.untyped() {
                     typed.write_batch(<span class="kw-2">&amp;</span>vals[..], <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
                 } <span class="kw">else </span>{
-                    <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot;</span>, <span class="macro">stringify!</span>{#ident})
+                    <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}"</span>, <span class="macro">stringify!</span>{#ident})
                 }
             }
         };
@@ -1675,17 +1649,14 @@
     </span><span class="kw">pub fn </span>reader_snippet(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; proc_macro2::TokenStream {
         <span class="kw">let </span>ident = <span class="kw-2">&amp;</span><span class="self">self</span>.ident;
         <span class="kw">let </span>column_reader = <span class="self">self</span>.ty.column_reader();
-        <span class="kw">let </span>parquet_type = <span class="self">self</span>.ty.physical_type_as_rust();
 
         <span class="comment">// generate the code to read the column into a vector `vals`
         </span><span class="kw">let </span>write_batch_expr = <span class="macro">quote! </span>{
-            <span class="kw">let </span><span class="kw-2">mut </span>vals_vec = Vec::new();
-            vals_vec.resize(num_records, Default::default());
-            <span class="kw">let </span><span class="kw-2">mut </span>vals: <span class="kw-2">&amp;mut </span>[#parquet_type] = vals_vec.as_mut_slice();
+            <span class="kw">let </span><span class="kw-2">mut </span>vals = Vec::new();
             <span class="kw">if let </span>#column_reader(<span class="kw-2">mut </span>typed) = column_reader {
-                typed.read_records(num_records, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, vals)<span class="question-mark">?</span>;
+                typed.read_records(num_records, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="kw-2">&amp;mut </span>vals)<span class="question-mark">?</span>;
             } <span class="kw">else </span>{
-                <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot;</span>, <span class="macro">stringify!</span>{#ident});
+                <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}"</span>, <span class="macro">stringify!</span>{#ident});
             }
         };
 
@@ -1697,15 +1668,15 @@
                 Type::TypePath(<span class="kw">_</span>) =&gt; <span class="self">self</span>.copied_direct_fields(),
                 Type::Slice(<span class="kw-2">ref </span>second_type) =&gt; <span class="kw">match </span><span class="kw-2">**</span>second_type {
                     Type::TypePath(<span class="kw">_</span>) =&gt; <span class="self">self</span>.copied_direct_fields(),
-                    <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported: {:#?}&quot;</span>, f),
+                    <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported: {:#?}"</span>, f),
                 },
-                <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported: {:#?}&quot;</span>, f),
+                <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported: {:#?}"</span>, f),
             },
             Type::Vec(<span class="kw-2">ref </span>first_type) =&gt; <span class="kw">match </span><span class="kw-2">**</span>first_type {
                 Type::TypePath(<span class="kw">_</span>) =&gt; <span class="self">self</span>.copied_direct_fields(),
-                <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported: {:#?}&quot;</span>, f),
+                <span class="kw-2">ref </span>f =&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported: {:#?}"</span>, f),
             },
-            f =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported: {:#?}&quot;</span>, f),
+            f =&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported: {:#?}"</span>, f),
         };
 
         <span class="macro">quote! </span>{
@@ -1869,15 +1840,15 @@
             }
             <span class="kw">_ </span>=&gt; <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.ty {
                 Type::TypePath(<span class="kw">_</span>) =&gt; <span class="kw">match </span><span class="self">self</span>.ty.last_part().as_str() {
-                    <span class="string">&quot;String&quot; </span>=&gt; <span class="macro">quote! </span>{ String::from(std::str::from_utf8(vals[i].data())
-                    .expect(<span class="string">&quot;invalid UTF-8 sequence&quot;</span>)) },
+                    <span class="string">"String" </span>=&gt; <span class="macro">quote! </span>{ String::from(std::str::from_utf8(vals[i].data())
+                    .expect(<span class="string">"invalid UTF-8 sequence"</span>)) },
                     t =&gt; {
                         <span class="kw">let </span>s: proc_macro2::TokenStream = t.parse().unwrap();
                         <span class="macro">quote! </span>{ vals[i] <span class="kw">as </span>#s }
                     }
                 },
                 Type::Vec(<span class="kw">_</span>) =&gt; <span class="macro">quote! </span>{ vals[i].data().to_vec() },
-                f =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported: {:#?}&quot;</span>, f),
+                f =&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported: {:#?}"</span>, f),
             },
         };
 
@@ -1972,7 +1943,7 @@
         Type::leaf_type_recursive_helper(<span class="self">self</span>, <span class="prelude-val">None</span>)
     }
 
-    <span class="kw">fn </span>leaf_type_recursive_helper&lt;<span class="lifetime">&#39;a</span>&gt;(ty: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Type, parent_ty: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Type&gt;) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Type {
+    <span class="kw">fn </span>leaf_type_recursive_helper&lt;<span class="lifetime">'a</span>&gt;(ty: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Type, parent_ty: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Type&gt;) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Type {
         <span class="kw">match </span>ty {
             Type::TypePath(<span class="kw">_</span>) =&gt; parent_ty.unwrap_or(ty),
             Type::Option(<span class="kw-2">ref </span>first_type)
@@ -1999,7 +1970,7 @@
             | Type::Slice(<span class="kw-2">ref </span>first_type)
             | Type::Reference(<span class="kw">_</span>, <span class="kw-2">ref </span>first_type) =&gt; <span class="kw">match </span><span class="kw-2">**</span>first_type {
                 Type::TypePath(<span class="kw-2">ref </span>type_) =&gt; type_,
-                <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;leaf_type() should only return shallow types&quot;</span>),
+                <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">"leaf_type() should only return shallow types"</span>),
             },
         }
     }
@@ -2021,7 +1992,7 @@
         <span class="kw">let </span>inner_type_str = (<span class="macro">quote! </span>{ #inner_type }).to_string();
 
         inner_type_str
-            .split(<span class="string">&quot;::&quot;</span>)
+            .split(<span class="string">"::"</span>)
             .last()
             .unwrap()
             .trim()
@@ -2044,14 +2015,14 @@
         <span class="kw">match </span>leaf_type {
             Type::Array(<span class="kw-2">ref </span>first_type) =&gt; {
                 <span class="kw">if let </span>Type::TypePath(<span class="kw">_</span>) = <span class="kw-2">**</span>first_type {
-                    <span class="kw">if </span>last_part == <span class="string">&quot;u8&quot; </span>{
+                    <span class="kw">if </span>last_part == <span class="string">"u8" </span>{
                         <span class="kw">return </span>BasicType::FIXED_LEN_BYTE_ARRAY;
                     }
                 }
             }
             Type::Vec(<span class="kw-2">ref </span>first_type) | Type::Slice(<span class="kw-2">ref </span>first_type) =&gt; {
                 <span class="kw">if let </span>Type::TypePath(<span class="kw">_</span>) = <span class="kw-2">**</span>first_type {
-                    <span class="kw">if </span>last_part == <span class="string">&quot;u8&quot; </span>{
+                    <span class="kw">if </span>last_part == <span class="string">"u8" </span>{
                         <span class="kw">return </span>BasicType::BYTE_ARRAY;
                     }
                 }
@@ -2060,38 +2031,21 @@
         }
 
         <span class="kw">match </span>last_part.trim() {
-            <span class="string">&quot;bool&quot; </span>=&gt; BasicType::BOOLEAN,
-            <span class="string">&quot;u8&quot; </span>| <span class="string">&quot;u16&quot; </span>| <span class="string">&quot;u32&quot; </span>=&gt; BasicType::INT32,
-            <span class="string">&quot;i8&quot; </span>| <span class="string">&quot;i16&quot; </span>| <span class="string">&quot;i32&quot; </span>| <span class="string">&quot;NaiveDate&quot; </span>=&gt; BasicType::INT32,
-            <span class="string">&quot;u64&quot; </span>| <span class="string">&quot;i64&quot; </span>| <span class="string">&quot;NaiveDateTime&quot; </span>=&gt; BasicType::INT64,
-            <span class="string">&quot;usize&quot; </span>| <span class="string">&quot;isize&quot; </span>=&gt; {
+            <span class="string">"bool" </span>=&gt; BasicType::BOOLEAN,
+            <span class="string">"u8" </span>| <span class="string">"u16" </span>| <span class="string">"u32" </span>=&gt; BasicType::INT32,
+            <span class="string">"i8" </span>| <span class="string">"i16" </span>| <span class="string">"i32" </span>| <span class="string">"NaiveDate" </span>=&gt; BasicType::INT32,
+            <span class="string">"u64" </span>| <span class="string">"i64" </span>| <span class="string">"NaiveDateTime" </span>=&gt; BasicType::INT64,
+            <span class="string">"usize" </span>| <span class="string">"isize" </span>=&gt; {
                 <span class="kw">if </span>usize::BITS == <span class="number">64 </span>{
                     BasicType::INT64
                 } <span class="kw">else </span>{
                     BasicType::INT32
                 }
             }
-            <span class="string">&quot;f32&quot; </span>=&gt; BasicType::FLOAT,
-            <span class="string">&quot;f64&quot; </span>=&gt; BasicType::DOUBLE,
-            <span class="string">&quot;String&quot; </span>| <span class="string">&quot;str&quot; </span>| <span class="string">&quot;Uuid&quot; </span>=&gt; BasicType::BYTE_ARRAY,
-            f =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;{} currently is not supported&quot;</span>, f),
-        }
-    }
-
-    <span class="kw">fn </span>physical_type_as_rust(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; proc_macro2::TokenStream {
-        <span class="kw">use </span>parquet::basic::Type <span class="kw">as </span>BasicType;
-
-        <span class="kw">match </span><span class="self">self</span>.physical_type() {
-            BasicType::BOOLEAN =&gt; <span class="macro">quote! </span>{ bool },
-            BasicType::INT32 =&gt; <span class="macro">quote! </span>{ i32 },
-            BasicType::INT64 =&gt; <span class="macro">quote! </span>{ i64 },
-            BasicType::INT96 =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;96-bit int currently is not supported&quot;</span>),
-            BasicType::FLOAT =&gt; <span class="macro">quote! </span>{ f32 },
-            BasicType::DOUBLE =&gt; <span class="macro">quote! </span>{ f64 },
-            BasicType::BYTE_ARRAY =&gt; <span class="macro">quote! </span>{ ::parquet::data_type::ByteArray },
-            BasicType::FIXED_LEN_BYTE_ARRAY =&gt; {
-                <span class="macro">quote! </span>{ ::parquet::data_type::FixedLenByteArray }
-            }
+            <span class="string">"f32" </span>=&gt; BasicType::FLOAT,
+            <span class="string">"f64" </span>=&gt; BasicType::DOUBLE,
+            <span class="string">"String" </span>| <span class="string">"str" </span>| <span class="string">"Uuid" </span>=&gt; BasicType::BYTE_ARRAY,
+            f =&gt; <span class="macro">unimplemented!</span>(<span class="string">"{} currently is not supported"</span>, f),
         }
     }
 
@@ -2102,14 +2056,14 @@
         <span class="kw">match </span>leaf_type {
             Type::Array(<span class="kw-2">ref </span>first_type) =&gt; {
                 <span class="kw">if let </span>Type::TypePath(<span class="kw">_</span>) = <span class="kw-2">**</span>first_type {
-                    <span class="kw">if </span>last_part == <span class="string">&quot;u8&quot; </span>{
+                    <span class="kw">if </span>last_part == <span class="string">"u8" </span>{
                         <span class="kw">return </span><span class="macro">quote! </span>{ <span class="prelude-val">None </span>};
                     }
                 }
             }
             Type::Vec(<span class="kw-2">ref </span>first_type) | Type::Slice(<span class="kw-2">ref </span>first_type) =&gt; {
                 <span class="kw">if let </span>Type::TypePath(<span class="kw">_</span>) = <span class="kw-2">**</span>first_type {
-                    <span class="kw">if </span>last_part == <span class="string">&quot;u8&quot; </span>{
+                    <span class="kw">if </span>last_part == <span class="string">"u8" </span>{
                         <span class="kw">return </span><span class="macro">quote! </span>{ <span class="prelude-val">None </span>};
                     }
                 }
@@ -2118,50 +2072,50 @@
         }
 
         <span class="kw">match </span>last_part.trim() {
-            <span class="string">&quot;bool&quot; </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">None </span>},
-            <span class="string">&quot;u8&quot; </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Integer {
+            <span class="string">"bool" </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">None </span>},
+            <span class="string">"u8" </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Integer {
                 bit_width: <span class="number">8</span>,
                 is_signed: <span class="bool-val">false</span>,
             }) },
-            <span class="string">&quot;u16&quot; </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Integer {
+            <span class="string">"u16" </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Integer {
                 bit_width: <span class="number">16</span>,
                 is_signed: <span class="bool-val">false</span>,
             }) },
-            <span class="string">&quot;u32&quot; </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Integer {
+            <span class="string">"u32" </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Integer {
                 bit_width: <span class="number">32</span>,
                 is_signed: <span class="bool-val">false</span>,
             }) },
-            <span class="string">&quot;u64&quot; </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Integer {
+            <span class="string">"u64" </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Integer {
                 bit_width: <span class="number">64</span>,
                 is_signed: <span class="bool-val">false</span>,
             }) },
-            <span class="string">&quot;i8&quot; </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Integer {
+            <span class="string">"i8" </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Integer {
                 bit_width: <span class="number">8</span>,
                 is_signed: <span class="bool-val">true</span>,
             }) },
-            <span class="string">&quot;i16&quot; </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Integer {
+            <span class="string">"i16" </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Integer {
                 bit_width: <span class="number">16</span>,
                 is_signed: <span class="bool-val">true</span>,
             }) },
-            <span class="string">&quot;i32&quot; </span>| <span class="string">&quot;i64&quot; </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">None </span>},
-            <span class="string">&quot;usize&quot; </span>=&gt; {
+            <span class="string">"i32" </span>| <span class="string">"i64" </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">None </span>},
+            <span class="string">"usize" </span>=&gt; {
                 <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Integer {
                     bit_width: usize::BITS <span class="kw">as </span>i8,
                     is_signed: <span class="bool-val">false
                 </span>}) }
             }
-            <span class="string">&quot;isize&quot; </span>=&gt; {
+            <span class="string">"isize" </span>=&gt; {
                 <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Integer {
                     bit_width: usize::BITS <span class="kw">as </span>i8,
                     is_signed: <span class="bool-val">true
                 </span>}) }
             }
-            <span class="string">&quot;NaiveDate&quot; </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Date) },
-            <span class="string">&quot;NaiveDateTime&quot; </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">None </span>},
-            <span class="string">&quot;f32&quot; </span>| <span class="string">&quot;f64&quot; </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">None </span>},
-            <span class="string">&quot;String&quot; </span>| <span class="string">&quot;str&quot; </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::String) },
-            <span class="string">&quot;Uuid&quot; </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Uuid) },
-            f =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;{} currently is not supported&quot;</span>, f),
+            <span class="string">"NaiveDate" </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Date) },
+            <span class="string">"NaiveDateTime" </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">None </span>},
+            <span class="string">"f32" </span>| <span class="string">"f64" </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">None </span>},
+            <span class="string">"String" </span>| <span class="string">"str" </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::String) },
+            <span class="string">"Uuid" </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(LogicalType::Uuid) },
+            f =&gt; <span class="macro">unimplemented!</span>(<span class="string">"{} currently is not supported"</span>, f),
         }
     }
 
@@ -2169,7 +2123,7 @@
         <span class="kw">let </span>last_part = <span class="self">self</span>.last_part();
 
         <span class="kw">match </span>last_part.trim() {
-            <span class="string">&quot;NaiveDateTime&quot; </span>=&gt; <span class="prelude-val">Some</span>(<span class="macro">quote! </span>{ ::parquet::basic::ConvertedType::TIMESTAMP_MILLIS }),
+            <span class="string">"NaiveDateTime" </span>=&gt; <span class="prelude-val">Some</span>(<span class="macro">quote! </span>{ ::parquet::basic::ConvertedType::TIMESTAMP_MILLIS }),
             <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
@@ -2195,7 +2149,7 @@
             syn::Type::Array(<span class="kw-2">ref </span>ta) =&gt; Type::from_type_array(f, ta),
             syn::Type::Slice(<span class="kw-2">ref </span>ts) =&gt; Type::from_type_slice(f, ts),
             other =&gt; <span class="macro">unimplemented!</span>(
-                <span class="string">&quot;Unable to derive {:?} - it is currently an unsupported type\n{:#?}&quot;</span>,
+                <span class="string">"Unable to derive {:?} - it is currently an unsupported type\n{:#?}"</span>,
                 f.ident.as_ref().unwrap(),
                 other
             ),
@@ -2205,9 +2159,9 @@
     <span class="kw">fn </span>from_type_path(f: <span class="kw-2">&amp;</span>syn::Field, p: <span class="kw-2">&amp;</span>syn::TypePath) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>last_segment = p.path.segments.last().unwrap();
 
-        <span class="kw">let </span>is_vec = last_segment.ident == syn::Ident::new(<span class="string">&quot;Vec&quot;</span>, proc_macro2::Span::call_site());
+        <span class="kw">let </span>is_vec = last_segment.ident == syn::Ident::new(<span class="string">"Vec"</span>, proc_macro2::Span::call_site());
         <span class="kw">let </span>is_option =
-            last_segment.ident == syn::Ident::new(<span class="string">&quot;Option&quot;</span>, proc_macro2::Span::call_site());
+            last_segment.ident == syn::Ident::new(<span class="string">"Option"</span>, proc_macro2::Span::call_site());
 
         <span class="kw">if </span>is_vec || is_option {
             <span class="kw">let </span>generic_type = <span class="kw">match </span><span class="kw-2">&amp;</span>last_segment.arguments {
@@ -2217,10 +2171,10 @@
 
                     <span class="kw">match </span>first_arg {
                         syn::GenericArgument::Type(<span class="kw-2">ref </span>typath) =&gt; typath.clone(),
-                        other =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported: {:#?}&quot;</span>, other),
+                        other =&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported: {:#?}"</span>, other),
                     }
                 }
-                other =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unsupported: {:#?}&quot;</span>, other),
+                other =&gt; <span class="macro">unimplemented!</span>(<span class="string">"Unsupported: {:#?}"</span>, other),
             };
 
             <span class="kw">if </span>is_vec {
@@ -2260,7 +2214,7 @@
 
         <span class="kw">let </span>fields = <span class="kw">match </span>input.data {
             Data::Struct(DataStruct { fields, .. }) =&gt; fields,
-            <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;Input must be a struct&quot;</span>),
+            <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"Input must be a struct"</span>),
         };
 
         fields.iter().map(|field| field.to_owned()).collect()
@@ -2286,7 +2240,7 @@
                             <span class="kw">if let </span>ColumnWriter::Int64ColumnWriter ( <span class="kw-2">ref mut </span>typed ) = column_writer.untyped() {
                                 typed . write_batch ( &amp; vals [ .. ] , <span class="prelude-val">None </span>, <span class="prelude-val">None </span>) <span class="question-mark">?</span>;
                             }  <span class="kw">else </span>{
-                                <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot; </span>, <span class="macro">stringify!</span>{ counter } )
+                                <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}" </span>, <span class="macro">stringify!</span>{ counter } )
                             }
                         }
                    }).to_string()
@@ -2309,13 +2263,11 @@
             snippet,
             (<span class="macro">quote! </span>{
                  {
-                     <span class="kw">let </span><span class="kw-2">mut </span>vals_vec = Vec::new();
-                     vals_vec.resize(num_records, Default::default());
-                     <span class="kw">let </span><span class="kw-2">mut </span>vals: <span class="kw-2">&amp;mut</span>[i64] = vals_vec.as_mut_slice();
+                     <span class="kw">let </span><span class="kw-2">mut </span>vals = Vec::new();
                      <span class="kw">if let </span>ColumnReader::Int64ColumnReader(<span class="kw-2">mut </span>typed) = column_reader {
-                         typed.read_records(num_records, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, vals)<span class="question-mark">?</span>;
+                         typed.read_records(num_records, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="kw-2">&amp;mut </span>vals)<span class="question-mark">?</span>;
                      } <span class="kw">else </span>{
-                         <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot;</span>, <span class="macro">stringify!</span>{ counter });
+                         <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}"</span>, <span class="macro">stringify!</span>{ counter });
                      }
                      <span class="kw">for </span>(i, r) <span class="kw">in </span><span class="kw-2">&amp;mut </span>records[..num_records].iter_mut().enumerate() {
                          r.counter = vals[i] <span class="kw">as </span>usize;
@@ -2329,8 +2281,8 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_optional_to_writer_snippet() {
         <span class="kw">let </span>struct_def: proc_macro2::TokenStream = <span class="macro">quote! </span>{
-          <span class="kw">struct </span>StringBorrower&lt;<span class="lifetime">&#39;a</span>&gt; {
-            optional_str: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;,
+          <span class="kw">struct </span>StringBorrower&lt;<span class="lifetime">'a</span>&gt; {
+            optional_str: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>str&gt;,
             optional_string: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>String&gt;,
             optional_dumb_int: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>i32&gt;,
           }
@@ -2356,7 +2308,7 @@
                 <span class="kw">if let </span>ColumnWriter::ByteArrayColumnWriter ( <span class="kw-2">ref mut </span>typed ) = column_writer.untyped() {
                     typed . write_batch ( &amp; vals [ .. ] , <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>definition_levels[..]) , <span class="prelude-val">None </span>) <span class="question-mark">? </span>;
                 } <span class="kw">else </span>{
-                    <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot; </span>, stringify ! { optional_str } )
+                    <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}" </span>, stringify ! { optional_str } )
                 }
            }
             }
@@ -2380,7 +2332,7 @@
                         <span class="kw">if let </span>ColumnWriter::ByteArrayColumnWriter ( <span class="kw-2">ref mut </span>typed ) = column_writer.untyped() {
                             typed . write_batch ( &amp; vals [ .. ] , <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>definition_levels[..]) , <span class="prelude-val">None </span>) <span class="question-mark">? </span>;
                         } <span class="kw">else </span>{
-                            <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot; </span>, stringify ! { optional_string } )
+                            <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}" </span>, stringify ! { optional_string } )
                         }
                     }
         }).to_string());
@@ -2403,7 +2355,7 @@
                         <span class="kw">if let </span>ColumnWriter::Int32ColumnWriter ( <span class="kw-2">ref mut </span>typed ) = column_writer.untyped() {
                             typed . write_batch ( &amp; vals [ .. ] , <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>definition_levels[..]) , <span class="prelude-val">None </span>) <span class="question-mark">? </span>;
                         }  <span class="kw">else </span>{
-                            <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot; </span>, stringify ! { optional_dumb_int } )
+                            <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}" </span>, stringify ! { optional_dumb_int } )
                         }
                     }
         }).to_string());
@@ -2479,19 +2431,19 @@
             processed,
             <span class="macro">vec!</span>[
                 Field {
-                    ident: syn::Ident::new(<span class="string">&quot;yes_no&quot;</span>, proc_macro2::Span::call_site()),
+                    ident: syn::Ident::new(<span class="string">"yes_no"</span>, proc_macro2::Span::call_site()),
                     ty: Type::TypePath(<span class="macro">syn::parse_quote!</span>(bool)),
                     is_a_byte_buf: <span class="bool-val">false</span>,
                     third_party_type: <span class="prelude-val">None</span>,
                 },
                 Field {
-                    ident: syn::Ident::new(<span class="string">&quot;name&quot;</span>, proc_macro2::Span::call_site()),
+                    ident: syn::Ident::new(<span class="string">"name"</span>, proc_macro2::Span::call_site()),
                     ty: Type::TypePath(<span class="macro">syn::parse_quote!</span>(String)),
                     is_a_byte_buf: <span class="bool-val">true</span>,
                     third_party_type: <span class="prelude-val">None</span>,
                 },
                 Field {
-                    ident: syn::Ident::new(<span class="string">&quot;length&quot;</span>, proc_macro2::Span::call_site()),
+                    ident: syn::Ident::new(<span class="string">"length"</span>, proc_macro2::Span::call_site()),
                     ty: Type::TypePath(<span class="macro">syn::parse_quote!</span>(usize)),
                     is_a_byte_buf: <span class="bool-val">false</span>,
                     third_party_type: <span class="prelude-val">None</span>,
@@ -2525,10 +2477,10 @@
         <span class="macro">assert_eq!</span>(
             inner_types_strs,
             <span class="macro">vec!</span>[
-                <span class="string">&quot;u8&quot;</span>,
-                <span class="string">&quot;bool&quot;</span>,
-                <span class="string">&quot;:: std :: string :: String&quot;</span>,
-                <span class="string">&quot;:: std :: result :: Result &lt; () , () &gt;&quot;
+                <span class="string">"u8"</span>,
+                <span class="string">"bool"</span>,
+                <span class="string">":: std :: string :: String"</span>,
+                <span class="string">":: std :: result :: Result &lt; () , () &gt;"
             </span>]
         )
     }
@@ -2599,10 +2551,10 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_convert_borrowed_struct() {
         <span class="kw">let </span>snippet: proc_macro2::TokenStream = <span class="macro">quote! </span>{
-          <span class="kw">struct </span>Borrower&lt;<span class="lifetime">&#39;a</span>&gt; {
-            a_str: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
-            a_borrowed_option: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="prelude-ty">Option</span>&lt;bool&gt;,
-            so_many_borrows: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;,
+          <span class="kw">struct </span>Borrower&lt;<span class="lifetime">'a</span>&gt; {
+            a_str: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str,
+            a_borrowed_option: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="prelude-ty">Option</span>&lt;bool&gt;,
+            so_many_borrows: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>str&gt;,
           }
         };
 
@@ -2613,19 +2565,19 @@
             types,
             <span class="macro">vec!</span>[
                 Type::Reference(
-                    <span class="prelude-val">Some</span>(syn::Lifetime::new(<span class="string">&quot;&#39;a&quot;</span>, proc_macro2::Span::call_site())),
+                    <span class="prelude-val">Some</span>(syn::Lifetime::new(<span class="string">"'a"</span>, proc_macro2::Span::call_site())),
                     Box::new(Type::TypePath(<span class="macro">syn::parse_quote!</span>(str)))
                 ),
                 Type::Reference(
-                    <span class="prelude-val">Some</span>(syn::Lifetime::new(<span class="string">&quot;&#39;a&quot;</span>, proc_macro2::Span::call_site())),
+                    <span class="prelude-val">Some</span>(syn::Lifetime::new(<span class="string">"'a"</span>, proc_macro2::Span::call_site())),
                     Box::new(Type::Option(Box::new(Type::TypePath(<span class="macro">syn::parse_quote!</span>(
                         bool
                     )))))
                 ),
                 Type::Reference(
-                    <span class="prelude-val">Some</span>(syn::Lifetime::new(<span class="string">&quot;&#39;a&quot;</span>, proc_macro2::Span::call_site())),
+                    <span class="prelude-val">Some</span>(syn::Lifetime::new(<span class="string">"'a"</span>, proc_macro2::Span::call_site())),
                     Box::new(Type::Option(Box::new(Type::Reference(
-                        <span class="prelude-val">Some</span>(syn::Lifetime::new(<span class="string">&quot;&#39;a&quot;</span>, proc_macro2::Span::call_site())),
+                        <span class="prelude-val">Some</span>(syn::Lifetime::new(<span class="string">"'a"</span>, proc_macro2::Span::call_site())),
                         Box::new(Type::TypePath(<span class="macro">syn::parse_quote!</span>(str)))
                     ))))
                 ),
@@ -2650,7 +2602,7 @@
                 <span class="kw">if let </span>ColumnWriter::Int64ColumnWriter(<span class="kw-2">ref mut </span>typed) = column_writer.untyped() {
                     typed.write_batch(<span class="kw-2">&amp;</span>vals[..], <span class="prelude-val">None</span>, <span class="prelude-val">None</span>) <span class="question-mark">?</span>;
                 } <span class="kw">else </span>{
-                    <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot; </span>, <span class="macro">stringify!</span>{ henceforth })
+                    <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}" </span>, <span class="macro">stringify!</span>{ henceforth })
                 }
             }
         }).to_string());
@@ -2670,7 +2622,7 @@
                 <span class="kw">if let </span>ColumnWriter::Int64ColumnWriter(<span class="kw-2">ref mut </span>typed) = column_writer.untyped() {
                     typed.write_batch(<span class="kw-2">&amp;</span>vals[..], <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>definition_levels[..]), <span class="prelude-val">None</span>) <span class="question-mark">?</span>;
                 } <span class="kw">else </span>{
-                    <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot; </span>, <span class="macro">stringify!</span>{ maybe_happened })
+                    <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}" </span>, <span class="macro">stringify!</span>{ maybe_happened })
                 }
             }
         }).to_string());
@@ -2688,13 +2640,11 @@
         <span class="kw">let </span>when = Field::from(<span class="kw-2">&amp;</span>fields[<span class="number">0</span>]);
         <span class="macro">assert_eq!</span>(when.reader_snippet().to_string(),(<span class="macro">quote!</span>{
             {
-                <span class="kw">let </span><span class="kw-2">mut </span>vals_vec = Vec::new();
-                vals_vec.resize(num_records, Default::default());
-                <span class="kw">let </span><span class="kw-2">mut </span>vals: <span class="kw-2">&amp;mut</span>[i64] = vals_vec.as_mut_slice();
+                <span class="kw">let </span><span class="kw-2">mut </span>vals = Vec::new();
                 <span class="kw">if let </span>ColumnReader::Int64ColumnReader(<span class="kw-2">mut </span>typed) = column_reader {
-                    typed.read_records(num_records, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, vals)<span class="question-mark">?</span>;
+                    typed.read_records(num_records, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="kw-2">&amp;mut </span>vals)<span class="question-mark">?</span>;
                 } <span class="kw">else </span>{
-                    <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot;</span>, <span class="macro">stringify!</span>{ henceforth });
+                    <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}"</span>, <span class="macro">stringify!</span>{ henceforth });
                 }
                 <span class="kw">for </span>(i, r) <span class="kw">in </span><span class="kw-2">&amp;mut </span>records[..num_records].iter_mut().enumerate() {
                     r.henceforth = ::chrono::naive::NaiveDateTime::from_timestamp_millis(vals[i]).unwrap();
@@ -2720,7 +2670,7 @@
                 <span class="kw">if let </span>ColumnWriter::Int32ColumnWriter(<span class="kw-2">ref mut </span>typed) = column_writer.untyped() {
                     typed.write_batch(<span class="kw-2">&amp;</span>vals[..], <span class="prelude-val">None</span>, <span class="prelude-val">None</span>) <span class="question-mark">?</span>;
                 } <span class="kw">else </span>{
-                    <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot; </span>, <span class="macro">stringify!</span>{ henceforth })
+                    <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}" </span>, <span class="macro">stringify!</span>{ henceforth })
                 }
             }
         }).to_string());
@@ -2740,7 +2690,7 @@
                 <span class="kw">if let </span>ColumnWriter::Int32ColumnWriter(<span class="kw-2">ref mut </span>typed) = column_writer.untyped() {
                     typed.write_batch(<span class="kw-2">&amp;</span>vals[..], <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>definition_levels[..]), <span class="prelude-val">None</span>) <span class="question-mark">?</span>;
                 } <span class="kw">else </span>{
-                    <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot; </span>, <span class="macro">stringify!</span>{ maybe_happened })
+                    <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}" </span>, <span class="macro">stringify!</span>{ maybe_happened })
                 }
             }
         }).to_string());
@@ -2758,13 +2708,11 @@
         <span class="kw">let </span>when = Field::from(<span class="kw-2">&amp;</span>fields[<span class="number">0</span>]);
         <span class="macro">assert_eq!</span>(when.reader_snippet().to_string(),(<span class="macro">quote!</span>{
             {
-                <span class="kw">let </span><span class="kw-2">mut </span>vals_vec = Vec::new();
-                vals_vec.resize(num_records, Default::default());
-                <span class="kw">let </span><span class="kw-2">mut </span>vals: <span class="kw-2">&amp;mut </span>[i32] = vals_vec.as_mut_slice();
+                <span class="kw">let </span><span class="kw-2">mut </span>vals = Vec::new();
                 <span class="kw">if let </span>ColumnReader::Int32ColumnReader(<span class="kw-2">mut </span>typed) = column_reader {
-                    typed.read_records(num_records, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, vals)<span class="question-mark">?</span>;
+                    typed.read_records(num_records, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="kw-2">&amp;mut </span>vals)<span class="question-mark">?</span>;
                 } <span class="kw">else </span>{
-                    <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot;</span>, <span class="macro">stringify!</span>{ henceforth });
+                    <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}"</span>, <span class="macro">stringify!</span>{ henceforth });
                 }
                 <span class="kw">for </span>(i, r) <span class="kw">in </span><span class="kw-2">&amp;mut </span>records[..num_records].iter_mut().enumerate() {
                     r.henceforth = ::chrono::naive::NaiveDate::from_num_days_from_ce_opt(vals[i].saturating_add(<span class="number">719163</span>)).unwrap();
@@ -2790,7 +2738,7 @@
                 <span class="kw">if let </span>ColumnWriter::ByteArrayColumnWriter(<span class="kw-2">ref mut </span>typed) = column_writer.untyped() {
                     typed.write_batch(<span class="kw-2">&amp;</span>vals[..], <span class="prelude-val">None</span>, <span class="prelude-val">None</span>) <span class="question-mark">?</span>;
                 } <span class="kw">else </span>{
-                    <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot; </span>, <span class="macro">stringify!</span>{ unique_id })
+                    <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}" </span>, <span class="macro">stringify!</span>{ unique_id })
                 }
             }
         }).to_string());
@@ -2810,7 +2758,7 @@
                 <span class="kw">if let </span>ColumnWriter::ByteArrayColumnWriter(<span class="kw-2">ref mut </span>typed) = column_writer.untyped() {
                     typed.write_batch(<span class="kw-2">&amp;</span>vals[..], <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>definition_levels[..]), <span class="prelude-val">None</span>) <span class="question-mark">?</span>;
                 } <span class="kw">else </span>{
-                    <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot; </span>, <span class="macro">stringify!</span>{ maybe_unique_id })
+                    <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}" </span>, <span class="macro">stringify!</span>{ maybe_unique_id })
                 }
             }
         }).to_string());
@@ -2828,13 +2776,11 @@
         <span class="kw">let </span>when = Field::from(<span class="kw-2">&amp;</span>fields[<span class="number">0</span>]);
         <span class="macro">assert_eq!</span>(when.reader_snippet().to_string(),(<span class="macro">quote!</span>{
             {
-                <span class="kw">let </span><span class="kw-2">mut </span>vals_vec = Vec::new();
-                vals_vec.resize(num_records, Default::default());
-                <span class="kw">let </span><span class="kw-2">mut </span>vals: <span class="kw-2">&amp;mut </span>[::parquet::data_type::ByteArray] = vals_vec.as_mut_slice();
+                <span class="kw">let </span><span class="kw-2">mut </span>vals = Vec::new();
                 <span class="kw">if let </span>ColumnReader::ByteArrayColumnReader(<span class="kw-2">mut </span>typed) = column_reader {
-                    typed.read_records(num_records, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, vals)<span class="question-mark">?</span>;
+                    typed.read_records(num_records, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="kw-2">&amp;mut </span>vals)<span class="question-mark">?</span>;
                 } <span class="kw">else </span>{
-                    <span class="macro">panic!</span>(<span class="string">&quot;Schema and struct disagree on type for {}&quot;</span>, <span class="macro">stringify!</span>{ unique_id });
+                    <span class="macro">panic!</span>(<span class="string">"Schema and struct disagree on type for {}"</span>, <span class="macro">stringify!</span>{ unique_id });
                 }
                 <span class="kw">for </span>(i, r) <span class="kw">in </span><span class="kw-2">&amp;mut </span>records[..num_records].iter_mut().enumerate() {
                     r.unique_id = ::uuid::Uuid::parse_str(vals[i].data().convert()).unwrap();

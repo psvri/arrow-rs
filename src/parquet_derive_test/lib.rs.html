@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet_derive_test/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c67e44d78ab2db17.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="parquet_derive_test" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (0e2dac837 2023-12-04)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet_derive_test/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="parquet_derive_test" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (d44e3b95c 2024-02-09)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../parquet_derive_test/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -242,14 +244,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -259,12 +261,12 @@
 </span><span class="kw">use </span>parquet_derive::{ParquetRecordReader, ParquetRecordWriter};
 
 <span class="attr">#[derive(ParquetRecordWriter)]
-</span><span class="kw">struct </span>ACompleteRecord&lt;<span class="lifetime">&#39;a</span>&gt; {
+</span><span class="kw">struct </span>ACompleteRecord&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">pub </span>a_bool: bool,
-    <span class="kw">pub </span>a_str: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+    <span class="kw">pub </span>a_str: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str,
     <span class="kw">pub </span>a_string: String,
-    <span class="kw">pub </span>a_borrowed_string: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>String,
-    <span class="kw">pub </span>maybe_a_str: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;,
+    <span class="kw">pub </span>a_borrowed_string: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>String,
+    <span class="kw">pub </span>maybe_a_str: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>str&gt;,
     <span class="kw">pub </span>maybe_a_string: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="kw">pub </span>i16: i16,
     <span class="kw">pub </span>i32: i32,
@@ -278,14 +280,14 @@
     <span class="kw">pub </span>double: f64,
     <span class="kw">pub </span>maybe_float: <span class="prelude-ty">Option</span>&lt;f32&gt;,
     <span class="kw">pub </span>maybe_double: <span class="prelude-ty">Option</span>&lt;f64&gt;,
-    <span class="kw">pub </span>borrowed_maybe_a_string: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="prelude-ty">Option</span>&lt;String&gt;,
-    <span class="kw">pub </span>borrowed_maybe_a_str: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;,
+    <span class="kw">pub </span>borrowed_maybe_a_string: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="kw">pub </span>borrowed_maybe_a_str: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>str&gt;,
     <span class="kw">pub </span>now: chrono::NaiveDateTime,
     <span class="kw">pub </span>byte_vec: Vec&lt;u8&gt;,
     <span class="kw">pub </span>maybe_byte_vec: <span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt;,
-    <span class="kw">pub </span>borrowed_byte_vec: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[u8],
-    <span class="kw">pub </span>borrowed_maybe_byte_vec: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt;,
-    <span class="kw">pub </span>borrowed_maybe_borrowed_byte_vec: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[u8]&gt;,
+    <span class="kw">pub </span>borrowed_byte_vec: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8],
+    <span class="kw">pub </span>borrowed_maybe_byte_vec: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt;,
+    <span class="kw">pub </span>borrowed_maybe_borrowed_byte_vec: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]&gt;,
 }
 
 <span class="attr">#[derive(PartialEq, ParquetRecordWriter, ParquetRecordReader, Debug)]
@@ -317,11 +319,11 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_parquet_derive_hello() {
-        <span class="kw">let </span>file = get_temp_file(<span class="string">&quot;test_parquet_derive_hello&quot;</span>, <span class="kw-2">&amp;</span>[]);
+        <span class="kw">let </span>file = get_temp_file(<span class="string">"test_parquet_derive_hello"</span>, <span class="kw-2">&amp;</span>[]);
 
         <span class="comment">// The schema is not required, but this tests that the generated
         // schema agrees with what one would write by hand.
-        </span><span class="kw">let </span>schema_str = <span class="string">&quot;message rust_schema {
+        </span><span class="kw">let </span>schema_str = <span class="string">"message rust_schema {
             REQUIRED boolean         a_bool;
             REQUIRED BINARY          a_str (STRING);
             REQUIRED BINARY          a_string (STRING);
@@ -348,13 +350,13 @@
             REQUIRED BINARY          borrowed_byte_vec;
             OPTIONAL BINARY          borrowed_maybe_byte_vec;
             OPTIONAL BINARY          borrowed_maybe_borrowed_byte_vec;
-        }&quot;</span>;
+        }"</span>;
 
         <span class="kw">let </span>schema = Arc::new(parse_message_type(schema_str).unwrap());
 
-        <span class="kw">let </span>a_str = <span class="string">&quot;hello mother&quot;</span>.to_owned();
-        <span class="kw">let </span>a_borrowed_string = <span class="string">&quot;cool news&quot;</span>.to_owned();
-        <span class="kw">let </span>maybe_a_string = <span class="prelude-val">Some</span>(<span class="string">&quot;it&#39;s true, I&#39;m a string&quot;</span>.to_owned());
+        <span class="kw">let </span>a_str = <span class="string">"hello mother"</span>.to_owned();
+        <span class="kw">let </span>a_borrowed_string = <span class="string">"cool news"</span>.to_owned();
+        <span class="kw">let </span>maybe_a_string = <span class="prelude-val">Some</span>(<span class="string">"it's true, I'm a string"</span>.to_owned());
         <span class="kw">let </span>maybe_a_str = <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>a_str[..]);
         <span class="kw">let </span>borrowed_byte_vec = <span class="macro">vec!</span>[<span class="number">0x68</span>, <span class="number">0x69</span>, <span class="number">0x70</span>];
         <span class="kw">let </span>borrowed_maybe_byte_vec = <span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="number">0x71</span>, <span class="number">0x72</span>]);
@@ -363,7 +365,7 @@
         <span class="kw">let </span>drs: Vec&lt;ACompleteRecord&gt; = <span class="macro">vec!</span>[ACompleteRecord {
             a_bool: <span class="bool-val">true</span>,
             a_str: <span class="kw-2">&amp;</span>a_str[..],
-            a_string: <span class="string">&quot;hello father&quot;</span>.into(),
+            a_string: <span class="string">"hello father"</span>.into(),
             a_borrowed_string: <span class="kw-2">&amp;</span>a_borrowed_string,
             maybe_a_str: <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>a_str[..]),
             maybe_a_string: <span class="prelude-val">Some</span>(a_str.clone()),
@@ -404,11 +406,11 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_parquet_derive_read_write_combined() {
-        <span class="kw">let </span>file = get_temp_file(<span class="string">&quot;test_parquet_derive_combined&quot;</span>, <span class="kw-2">&amp;</span>[]);
+        <span class="kw">let </span>file = get_temp_file(<span class="string">"test_parquet_derive_combined"</span>, <span class="kw-2">&amp;</span>[]);
 
         <span class="kw">let </span><span class="kw-2">mut </span>drs: Vec&lt;APartiallyCompleteRecord&gt; = <span class="macro">vec!</span>[APartiallyCompleteRecord {
             bool: <span class="bool-val">true</span>,
-            string: <span class="string">&quot;a string&quot;</span>.into(),
+            string: <span class="string">"a string"</span>.into(),
             i16: -<span class="number">45</span>,
             i32: <span class="number">456</span>,
             u64: <span class="number">4563424</span>,
@@ -452,13 +454,13 @@
         <span class="macro">assert_eq!</span>(drs[<span class="number">0</span>], out[<span class="number">0</span>]);
     }
 
-    <span class="doccomment">/// Returns file handle for a temp file in &#39;target&#39; directory with a provided content
+    <span class="doccomment">/// Returns file handle for a temp file in 'target' directory with a provided content
     </span><span class="kw">pub fn </span>get_temp_file(file_name: <span class="kw-2">&amp;</span>str, content: <span class="kw-2">&amp;</span>[u8]) -&gt; fs::File {
-        <span class="comment">// build tmp path to a file in &quot;target/debug/testdata&quot;
+        <span class="comment">// build tmp path to a file in "target/debug/testdata"
         </span><span class="kw">let </span><span class="kw-2">mut </span>path_buf = env::current_dir().unwrap();
-        path_buf.push(<span class="string">&quot;target&quot;</span>);
-        path_buf.push(<span class="string">&quot;debug&quot;</span>);
-        path_buf.push(<span class="string">&quot;testdata&quot;</span>);
+        path_buf.push(<span class="string">"target"</span>);
+        path_buf.push(<span class="string">"debug"</span>);
+        path_buf.push(<span class="string">"testdata"</span>);
         fs::create_dir_all(<span class="kw-2">&amp;</span>path_buf).unwrap();
         path_buf.push(file_name);
 

@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/column/reader/decoder.rs`."><title>decoder.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c67e44d78ab2db17.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (0e2dac837 2023-12-04)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `parquet/src/column/reader/decoder.rs`."><title>decoder.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="parquet" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (d44e3b95c 2024-02-09)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../parquet/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -556,44 +558,24 @@
 <a href="#556" id="556">556</a>
 <a href="#557" id="557">557</a>
 <a href="#558" id="558">558</a>
-<a href="#559" id="559">559</a>
-<a href="#560" id="560">560</a>
-<a href="#561" id="561">561</a>
-<a href="#562" id="562">562</a>
-<a href="#563" id="563">563</a>
-<a href="#564" id="564">564</a>
-<a href="#565" id="565">565</a>
-<a href="#566" id="566">566</a>
-<a href="#567" id="567">567</a>
-<a href="#568" id="568">568</a>
-<a href="#569" id="569">569</a>
-<a href="#570" id="570">570</a>
-<a href="#571" id="571">571</a>
-<a href="#572" id="572">572</a>
-<a href="#573" id="573">573</a>
-<a href="#574" id="574">574</a>
-<a href="#575" id="575">575</a>
-<a href="#576" id="576">576</a>
-<a href="#577" id="577">577</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
 
 </span><span class="kw">use </span>std::collections::HashMap;
-<span class="kw">use </span>std::ops::Range;
 
 <span class="kw">use </span>bytes::Bytes;
 
@@ -607,51 +589,17 @@
 <span class="kw">use </span><span class="kw">crate</span>::schema::types::ColumnDescPtr;
 <span class="kw">use </span><span class="kw">crate</span>::util::bit_util::{num_required_bits, BitReader};
 
-<span class="doccomment">/// A slice of levels buffer data that is written to by a [`ColumnLevelDecoder`]
-</span><span class="kw">pub trait </span>LevelsBufferSlice {
-    <span class="doccomment">/// Returns the capacity of this slice or `usize::MAX` if no limit
-    </span><span class="kw">fn </span>capacity(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize;
-
-    <span class="doccomment">/// Count the number of levels in `range` not equal to `max_level`
-    </span><span class="kw">fn </span>count_nulls(<span class="kw-2">&amp;</span><span class="self">self</span>, range: Range&lt;usize&gt;, max_level: i16) -&gt; usize;
-}
-
-<span class="kw">impl </span>LevelsBufferSlice <span class="kw">for </span>[i16] {
-    <span class="kw">fn </span>capacity(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        <span class="self">self</span>.len()
-    }
-
-    <span class="kw">fn </span>count_nulls(<span class="kw-2">&amp;</span><span class="self">self</span>, range: Range&lt;usize&gt;, max_level: i16) -&gt; usize {
-        <span class="self">self</span>[range].iter().filter(|i| <span class="kw-2">**</span>i != max_level).count()
-    }
-}
-
-<span class="doccomment">/// A slice of values buffer data that is written to by a [`ColumnValueDecoder`]
-</span><span class="kw">pub trait </span>ValuesBufferSlice {
-    <span class="doccomment">/// Returns the capacity of this slice or `usize::MAX` if no limit
-    </span><span class="kw">fn </span>capacity(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize;
-}
-
-<span class="kw">impl</span>&lt;T&gt; ValuesBufferSlice <span class="kw">for </span>[T] {
-    <span class="kw">fn </span>capacity(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        <span class="self">self</span>.len()
-    }
-}
-
-<span class="doccomment">/// Decodes level data to a [`LevelsBufferSlice`]
+<span class="doccomment">/// Decodes level data
 </span><span class="kw">pub trait </span>ColumnLevelDecoder {
-    <span class="kw">type </span>Slice: LevelsBufferSlice + <span class="question-mark">?</span>Sized;
+    <span class="kw">type </span>Buffer;
 
     <span class="doccomment">/// Set data for this [`ColumnLevelDecoder`]
     </span><span class="kw">fn </span>set_data(<span class="kw-2">&amp;mut </span><span class="self">self</span>, encoding: Encoding, data: Bytes);
 }
 
 <span class="kw">pub trait </span>RepetitionLevelDecoder: ColumnLevelDecoder {
-    <span class="doccomment">/// Read up to `max_records` of repetition level data into `out[range]` returning the number
+    <span class="doccomment">/// Read up to `max_records` of repetition level data into `out` returning the number
     /// of complete records and levels read
-    ///
-    /// `range` is provided by the caller to allow for types such as default-initialized `[T]`
-    /// that only track capacity and not length
     ///
     /// A record only ends when the data contains a subsequent repetition level of 0,
     /// it is therefore left to the caller to delimit the final record in a column
@@ -661,9 +609,9 @@
     /// Implementations may panic if `range` overlaps with already written data
     </span><span class="kw">fn </span>read_rep_levels(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        out: <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Slice,
-        range: Range&lt;usize&gt;,
-        max_records: usize,
+        out: <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Buffer,
+        num_records: usize,
+        num_levels: usize,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;(usize, usize)&gt;;
 
     <span class="doccomment">/// Skips over up to `num_levels` repetition levels corresponding to `num_records` records,
@@ -680,27 +628,28 @@
 }
 
 <span class="kw">pub trait </span>DefinitionLevelDecoder: ColumnLevelDecoder {
-    <span class="doccomment">/// Read definition level data into `out[range]` returning the number of levels read
+    <span class="doccomment">/// Read up to `num_levels` definition levels into `out`
     ///
-    /// `range` is provided by the caller to allow for types such as default-initialized `[T]`
-    /// that only track capacity and not length
+    /// Returns the number of values skipped, and the number of levels skipped
     ///
     /// # Panics
     ///
     /// Implementations may panic if `range` overlaps with already written data
-    ///
-    </span><span class="comment">// TODO: Should this return the number of nulls
-    </span><span class="kw">fn </span>read_def_levels(<span class="kw-2">&amp;mut </span><span class="self">self</span>, out: <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Slice, range: Range&lt;usize&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt;;
+    </span><span class="kw">fn </span>read_def_levels(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        out: <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Buffer,
+        num_levels: usize,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;(usize, usize)&gt;;
 
     <span class="doccomment">/// Skips over `num_levels` definition levels
     ///
     /// Returns the number of values skipped, and the number of levels skipped
-    </span><span class="kw">fn </span>skip_def_levels(<span class="kw-2">&amp;mut </span><span class="self">self</span>, num_levels: usize, max_def_level: i16) -&gt; <span class="prelude-ty">Result</span>&lt;(usize, usize)&gt;;
+    </span><span class="kw">fn </span>skip_def_levels(<span class="kw-2">&amp;mut </span><span class="self">self</span>, num_levels: usize) -&gt; <span class="prelude-ty">Result</span>&lt;(usize, usize)&gt;;
 }
 
-<span class="doccomment">/// Decodes value data to a [`ValuesBufferSlice`]
+<span class="doccomment">/// Decodes value data
 </span><span class="kw">pub trait </span>ColumnValueDecoder {
-    <span class="kw">type </span>Slice: ValuesBufferSlice + <span class="question-mark">?</span>Sized;
+    <span class="kw">type </span>Buffer;
 
     <span class="doccomment">/// Create a new [`ColumnValueDecoder`]
     </span><span class="kw">fn </span>new(col: <span class="kw-2">&amp;</span>ColumnDescPtr) -&gt; <span class="self">Self</span>;
@@ -717,7 +666,7 @@
     <span class="doccomment">/// Set the current data page
     ///
     /// - `encoding` - the encoding of the page
-    /// - `data` - a point to the page&#39;s uncompressed value data
+    /// - `data` - a point to the page's uncompressed value data
     /// - `num_levels` - the number of levels contained within the page, i.e. values including nulls
     /// - `num_values` - the number of non-null values contained within the page (V2 page only)
     ///
@@ -733,16 +682,13 @@
         num_values: <span class="prelude-ty">Option</span>&lt;usize&gt;,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;;
 
-    <span class="doccomment">/// Read values data into `out[range]` returning the number of values read
-    ///
-    /// `range` is provided by the caller to allow for types such as default-initialized `[T]`
-    /// that only track capacity and not length
+    <span class="doccomment">/// Read up to `num_values` values into `out`
     ///
     /// # Panics
     ///
     /// Implementations may panic if `range` overlaps with already written data
     ///
-    </span><span class="kw">fn </span>read(<span class="kw-2">&amp;mut </span><span class="self">self</span>, out: <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Slice, range: Range&lt;usize&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt;;
+    </span><span class="kw">fn </span>read(<span class="kw-2">&amp;mut </span><span class="self">self</span>, out: <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Buffer, num_values: usize) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt;;
 
     <span class="doccomment">/// Skips over `num_values` values
     ///
@@ -761,7 +707,7 @@
 }
 
 <span class="kw">impl</span>&lt;T: DataType&gt; ColumnValueDecoder <span class="kw">for </span>ColumnValueDecoderImpl&lt;T&gt; {
-    <span class="kw">type </span>Slice = [T::T];
+    <span class="kw">type </span>Buffer = Vec&lt;T::T&gt;;
 
     <span class="kw">fn </span>new(descr: <span class="kw-2">&amp;</span>ColumnDescPtr) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
@@ -783,7 +729,7 @@
         }
 
         <span class="kw">if </span><span class="self">self</span>.decoders.contains_key(<span class="kw-2">&amp;</span>encoding) {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">general_err!</span>(<span class="string">&quot;Column cannot have more than one dictionary&quot;</span>));
+            <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">general_err!</span>(<span class="string">"Column cannot have more than one dictionary"</span>));
         }
 
         <span class="kw">if </span>encoding == Encoding::RLE_DICTIONARY {
@@ -796,7 +742,7 @@
             <span class="prelude-val">Ok</span>(())
         } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(<span class="macro">nyi_err!</span>(
-                <span class="string">&quot;Invalid/Unsupported encoding type for dictionary: {}&quot;</span>,
+                <span class="string">"Invalid/Unsupported encoding type for dictionary: {}"</span>,
                 encoding
             ))
         }
@@ -818,7 +764,7 @@
         <span class="kw">let </span>decoder = <span class="kw">if </span>encoding == Encoding::RLE_DICTIONARY {
             <span class="self">self</span>.decoders
                 .get_mut(<span class="kw-2">&amp;</span>encoding)
-                .expect(<span class="string">&quot;Decoder for dict should have been set&quot;</span>)
+                .expect(<span class="string">"Decoder for dict should have been set"</span>)
         } <span class="kw">else </span>{
             <span class="comment">// Search cache for data page decoder
             </span><span class="kw">match </span><span class="self">self</span>.decoders.entry(encoding) {
@@ -835,28 +781,33 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn </span>read(<span class="kw-2">&amp;mut </span><span class="self">self</span>, out: <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Slice, range: Range&lt;usize&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+    <span class="kw">fn </span>read(<span class="kw-2">&amp;mut </span><span class="self">self</span>, out: <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Buffer, num_values: usize) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
         <span class="kw">let </span>encoding = <span class="self">self
             </span>.current_encoding
-            .expect(<span class="string">&quot;current_encoding should be set&quot;</span>);
+            .expect(<span class="string">"current_encoding should be set"</span>);
 
         <span class="kw">let </span>current_decoder = <span class="self">self
             </span>.decoders
             .get_mut(<span class="kw-2">&amp;</span>encoding)
-            .unwrap_or_else(|| <span class="macro">panic!</span>(<span class="string">&quot;decoder for encoding {encoding} should be set&quot;</span>));
+            .unwrap_or_else(|| <span class="macro">panic!</span>(<span class="string">"decoder for encoding {encoding} should be set"</span>));
 
-        current_decoder.get(<span class="kw-2">&amp;mut </span>out[range])
+        <span class="comment">// TODO: Push vec into decoder (#5177)
+        </span><span class="kw">let </span>start = out.len();
+        out.resize(start + num_values, T::T::default());
+        <span class="kw">let </span>read = current_decoder.get(<span class="kw-2">&amp;mut </span>out[start..])<span class="question-mark">?</span>;
+        out.truncate(start + read);
+        <span class="prelude-val">Ok</span>(read)
     }
 
     <span class="kw">fn </span>skip_values(<span class="kw-2">&amp;mut </span><span class="self">self</span>, num_values: usize) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
         <span class="kw">let </span>encoding = <span class="self">self
             </span>.current_encoding
-            .expect(<span class="string">&quot;current_encoding should be set&quot;</span>);
+            .expect(<span class="string">"current_encoding should be set"</span>);
 
         <span class="kw">let </span>current_decoder = <span class="self">self
             </span>.decoders
             .get_mut(<span class="kw-2">&amp;</span>encoding)
-            .unwrap_or_else(|| <span class="macro">panic!</span>(<span class="string">&quot;decoder for encoding {encoding} should be set&quot;</span>));
+            .unwrap_or_else(|| <span class="macro">panic!</span>(<span class="string">"decoder for encoding {encoding} should be set"</span>));
 
         current_decoder.skip(num_values)
     }
@@ -877,8 +828,9 @@
                 decoder.set_data(data);
                 <span class="self">Self</span>::Rle(decoder)
             }
-            Encoding::BIT_PACKED =&gt; <span class="self">Self</span>::Packed(BitReader::new(data), bit_width),
-            <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;invalid level encoding: {}&quot;</span>, encoding),
+            <span class="attr">#[allow(deprecated)]
+            </span>Encoding::BIT_PACKED =&gt; <span class="self">Self</span>::Packed(BitReader::new(data), bit_width),
+            <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">"invalid level encoding: {}"</span>, encoding),
         }
     }
 
@@ -896,6 +848,7 @@
 </span><span class="kw">pub struct </span>DefinitionLevelDecoderImpl {
     decoder: <span class="prelude-ty">Option</span>&lt;LevelDecoder&gt;,
     bit_width: u8,
+    max_level: i16,
 }
 
 <span class="kw">impl </span>DefinitionLevelDecoderImpl {
@@ -904,12 +857,13 @@
         <span class="self">Self </span>{
             decoder: <span class="prelude-val">None</span>,
             bit_width,
+            max_level,
         }
     }
 }
 
 <span class="kw">impl </span>ColumnLevelDecoder <span class="kw">for </span>DefinitionLevelDecoderImpl {
-    <span class="kw">type </span>Slice = [i16];
+    <span class="kw">type </span>Buffer = Vec&lt;i16&gt;;
 
     <span class="kw">fn </span>set_data(<span class="kw-2">&amp;mut </span><span class="self">self</span>, encoding: Encoding, data: Bytes) {
         <span class="self">self</span>.decoder = <span class="prelude-val">Some</span>(LevelDecoder::new(encoding, data, <span class="self">self</span>.bit_width))
@@ -917,11 +871,23 @@
 }
 
 <span class="kw">impl </span>DefinitionLevelDecoder <span class="kw">for </span>DefinitionLevelDecoderImpl {
-    <span class="kw">fn </span>read_def_levels(<span class="kw-2">&amp;mut </span><span class="self">self</span>, out: <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Slice, range: Range&lt;usize&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
-        <span class="self">self</span>.decoder.as_mut().unwrap().read(<span class="kw-2">&amp;mut </span>out[range])
+    <span class="kw">fn </span>read_def_levels(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        out: <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Buffer,
+        num_levels: usize,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;(usize, usize)&gt; {
+        <span class="comment">// TODO: Push vec into decoder (#5177)
+        </span><span class="kw">let </span>start = out.len();
+        out.resize(start + num_levels, <span class="number">0</span>);
+        <span class="kw">let </span>levels_read = <span class="self">self</span>.decoder.as_mut().unwrap().read(<span class="kw-2">&amp;mut </span>out[start..])<span class="question-mark">?</span>;
+        out.truncate(start + levels_read);
+
+        <span class="kw">let </span>iter = out.iter().skip(start);
+        <span class="kw">let </span>values_read = iter.filter(|x| <span class="kw-2">**</span>x == <span class="self">self</span>.max_level).count();
+        <span class="prelude-val">Ok</span>((values_read, levels_read))
     }
 
-    <span class="kw">fn </span>skip_def_levels(<span class="kw-2">&amp;mut </span><span class="self">self</span>, num_levels: usize, max_def_level: i16) -&gt; <span class="prelude-ty">Result</span>&lt;(usize, usize)&gt; {
+    <span class="kw">fn </span>skip_def_levels(<span class="kw-2">&amp;mut </span><span class="self">self</span>, num_levels: usize) -&gt; <span class="prelude-ty">Result</span>&lt;(usize, usize)&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>level_skip = <span class="number">0</span>;
         <span class="kw">let </span><span class="kw-2">mut </span>value_skip = <span class="number">0</span>;
         <span class="kw">let </span><span class="kw-2">mut </span>buf: Vec&lt;i16&gt; = <span class="macro">vec!</span>[];
@@ -930,14 +896,14 @@
 
             <span class="kw">let </span>to_read = remaining_levels.min(SKIP_BUFFER_SIZE);
             buf.resize(to_read, <span class="number">0</span>);
-            <span class="kw">let </span>read = <span class="self">self</span>.read_def_levels(<span class="kw-2">&amp;mut </span>buf, <span class="number">0</span>..to_read)<span class="question-mark">?</span>;
-            <span class="kw">if </span>read == <span class="number">0 </span>{
+            <span class="kw">let </span>(values_read, levels_read) = <span class="self">self</span>.read_def_levels(<span class="kw-2">&amp;mut </span>buf, to_read)<span class="question-mark">?</span>;
+            <span class="kw">if </span>levels_read == <span class="number">0 </span>{
                 <span class="comment">// Reached end of page
                 </span><span class="kw">break</span>;
             }
 
-            level_skip += read;
-            value_skip += buf[..read].iter().filter(|x| <span class="kw-2">**</span>x == max_def_level).count();
+            level_skip += levels_read;
+            value_skip += values_read;
         }
 
         <span class="prelude-val">Ok</span>((value_skip, level_skip))
@@ -977,9 +943,9 @@
     }
 
     <span class="doccomment">/// Inspects the buffered repetition levels in the range `self.buffer_offset..self.buffer_len`
-    /// and returns the number of &quot;complete&quot; records along with the corresponding number of values
+    /// and returns the number of "complete" records along with the corresponding number of values
     ///
-    /// A &quot;complete&quot; record is one where the buffer contains a subsequent repetition level of 0
+    /// A "complete" record is one where the buffer contains a subsequent repetition level of 0
     </span><span class="kw">fn </span>count_records(<span class="kw-2">&amp;mut </span><span class="self">self</span>, records_to_read: usize, num_levels: usize) -&gt; (bool, usize, usize) {
         <span class="kw">let </span><span class="kw-2">mut </span>records_read = <span class="number">0</span>;
 
@@ -1000,7 +966,7 @@
 }
 
 <span class="kw">impl </span>ColumnLevelDecoder <span class="kw">for </span>RepetitionLevelDecoderImpl {
-    <span class="kw">type </span>Slice = [i16];
+    <span class="kw">type </span>Buffer = Vec&lt;i16&gt;;
 
     <span class="kw">fn </span>set_data(<span class="kw-2">&amp;mut </span><span class="self">self</span>, encoding: Encoding, data: Bytes) {
         <span class="self">self</span>.decoder = <span class="prelude-val">Some</span>(LevelDecoder::new(encoding, data, <span class="self">self</span>.bit_width));
@@ -1012,16 +978,14 @@
 <span class="kw">impl </span>RepetitionLevelDecoder <span class="kw">for </span>RepetitionLevelDecoderImpl {
     <span class="kw">fn </span>read_rep_levels(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        out: <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Slice,
-        range: Range&lt;usize&gt;,
-        max_records: usize,
+        out: <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Buffer,
+        num_records: usize,
+        num_levels: usize,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;(usize, usize)&gt; {
-        <span class="kw">let </span>output = <span class="kw-2">&amp;mut </span>out[range];
-        <span class="kw">let </span>max_levels = output.len();
         <span class="kw">let </span><span class="kw-2">mut </span>total_records_read = <span class="number">0</span>;
         <span class="kw">let </span><span class="kw-2">mut </span>total_levels_read = <span class="number">0</span>;
 
-        <span class="kw">while </span>total_records_read &lt; max_records &amp;&amp; total_levels_read &lt; max_levels {
+        <span class="kw">while </span>total_records_read &lt; num_records &amp;&amp; total_levels_read &lt; num_levels {
             <span class="kw">if </span><span class="self">self</span>.buffer_len == <span class="self">self</span>.buffer_offset {
                 <span class="self">self</span>.fill_buf()<span class="question-mark">?</span>;
                 <span class="kw">if </span><span class="self">self</span>.buffer_len == <span class="number">0 </span>{
@@ -1030,11 +994,11 @@
             }
 
             <span class="kw">let </span>(partial, records_read, levels_read) = <span class="self">self</span>.count_records(
-                max_records - total_records_read,
-                max_levels - total_levels_read,
+                num_records - total_records_read,
+                num_levels - total_levels_read,
             );
 
-            output[total_levels_read..total_levels_read + levels_read].copy_from_slice(
+            out.extend_from_slice(
                 <span class="kw-2">&amp;</span><span class="self">self</span>.buffer[<span class="self">self</span>.buffer_offset..<span class="self">self</span>.buffer_offset + levels_read],
             );
 
@@ -1127,13 +1091,13 @@
                 <span class="kw">let </span>(records_read, levels_read) = <span class="kw">if </span>skip {
                     decoder.skip_rep_levels(records, remaining_levels).unwrap()
                 } <span class="kw">else </span>{
-                    <span class="kw">let </span><span class="kw-2">mut </span>decoded = <span class="macro">vec!</span>[<span class="number">0</span>; remaining_levels];
+                    <span class="kw">let </span><span class="kw-2">mut </span>decoded = Vec::new();
                     <span class="kw">let </span>(records_read, levels_read) = decoder
-                        .read_rep_levels(<span class="kw-2">&amp;mut </span>decoded, <span class="number">0</span>..remaining_levels, records)
+                        .read_rep_levels(<span class="kw-2">&amp;mut </span>decoded, records, remaining_levels)
                         .unwrap();
 
                     <span class="macro">assert_eq!</span>(
-                        decoded[..levels_read],
+                        decoded,
                         encoded[encoded.len() - remaining_levels..][..levels_read]
                     );
                     (records_read, levels_read)

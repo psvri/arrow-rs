@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-json/src/writer.rs`."><title>writer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c67e44d78ab2db17.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_json" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (0e2dac837 2023-12-04)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-json/src/writer.rs`."><title>writer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_json" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (d44e3b95c 2024-02-09)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../arrow_json/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -2004,19 +2006,60 @@
 <a href="#2004" id="2004">2004</a>
 <a href="#2005" id="2005">2005</a>
 <a href="#2006" id="2006">2006</a>
+<a href="#2007" id="2007">2007</a>
+<a href="#2008" id="2008">2008</a>
+<a href="#2009" id="2009">2009</a>
+<a href="#2010" id="2010">2010</a>
+<a href="#2011" id="2011">2011</a>
+<a href="#2012" id="2012">2012</a>
+<a href="#2013" id="2013">2013</a>
+<a href="#2014" id="2014">2014</a>
+<a href="#2015" id="2015">2015</a>
+<a href="#2016" id="2016">2016</a>
+<a href="#2017" id="2017">2017</a>
+<a href="#2018" id="2018">2018</a>
+<a href="#2019" id="2019">2019</a>
+<a href="#2020" id="2020">2020</a>
+<a href="#2021" id="2021">2021</a>
+<a href="#2022" id="2022">2022</a>
+<a href="#2023" id="2023">2023</a>
+<a href="#2024" id="2024">2024</a>
+<a href="#2025" id="2025">2025</a>
+<a href="#2026" id="2026">2026</a>
+<a href="#2027" id="2027">2027</a>
+<a href="#2028" id="2028">2028</a>
+<a href="#2029" id="2029">2029</a>
+<a href="#2030" id="2030">2030</a>
+<a href="#2031" id="2031">2031</a>
+<a href="#2032" id="2032">2032</a>
+<a href="#2033" id="2033">2033</a>
+<a href="#2034" id="2034">2034</a>
+<a href="#2035" id="2035">2035</a>
+<a href="#2036" id="2036">2036</a>
+<a href="#2037" id="2037">2037</a>
+<a href="#2038" id="2038">2038</a>
+<a href="#2039" id="2039">2039</a>
+<a href="#2040" id="2040">2040</a>
+<a href="#2041" id="2041">2041</a>
+<a href="#2042" id="2042">2042</a>
+<a href="#2043" id="2043">2043</a>
+<a href="#2044" id="2044">2044</a>
+<a href="#2045" id="2045">2045</a>
+<a href="#2046" id="2046">2046</a>
+<a href="#2047" id="2047">2047</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -2025,28 +2068,6 @@
 //!
 //! This JSON writer converts Arrow [`RecordBatch`]es into arrays of
 //! JSON objects or JSON formatted byte streams.
-//!
-//! ## Writing JSON Objects
-//!
-//! To serialize [`RecordBatch`]es into array of
-//! [JSON](https://docs.serde.rs/serde_json/) objects, use
-//! [`record_batches_to_json_rows`]:
-//!
-//! ```
-//! # use std::sync::Arc;
-//! # use arrow_array::{Int32Array, RecordBatch};
-//! # use arrow_schema::{DataType, Field, Schema};
-//!
-//! let schema = Schema::new(vec![Field::new(&quot;a&quot;, DataType::Int32, false)]);
-//! let a = Int32Array::from(vec![1, 2, 3]);
-//! let batch = RecordBatch::try_new(Arc::new(schema), vec![Arc::new(a)]).unwrap();
-//!
-//! let json_rows = arrow_json::writer::record_batches_to_json_rows(&amp;[&amp;batch]).unwrap();
-//! assert_eq!(
-//!     serde_json::Value::Object(json_rows[1].clone()),
-//!     serde_json::json!({&quot;a&quot;: 2}),
-//! );
-//! ```
 //!
 //! ## Writing JSON formatted byte streams
 //!
@@ -2058,7 +2079,7 @@
 //! # use arrow_array::{Int32Array, RecordBatch};
 //! # use arrow_schema::{DataType, Field, Schema};
 //!
-//! let schema = Schema::new(vec![Field::new(&quot;a&quot;, DataType::Int32, false)]);
+//! let schema = Schema::new(vec![Field::new("a", DataType::Int32, false)]);
 //! let a = Int32Array::from(vec![1, 2, 3]);
 //! let batch = RecordBatch::try_new(Arc::new(schema), vec![Arc::new(a)]).unwrap();
 //!
@@ -2070,10 +2091,10 @@
 //!
 //! // Get the underlying buffer back,
 //! let buf = writer.into_inner();
-//! assert_eq!(r#&quot;{&quot;a&quot;:1}
-//! {&quot;a&quot;:2}
-//! {&quot;a&quot;:3}
-//!&quot;#, String::from_utf8(buf).unwrap())
+//! assert_eq!(r#"{"a":1}
+//! {"a":2}
+//! {"a":3}
+//!"#, String::from_utf8(buf).unwrap())
 //! ```
 //!
 //! To serialize [`RecordBatch`]es into a well formed JSON array, use
@@ -2084,7 +2105,7 @@
 //! # use arrow_array::{Int32Array, RecordBatch};
 //! use arrow_schema::{DataType, Field, Schema};
 //!
-//! let schema = Schema::new(vec![Field::new(&quot;a&quot;, DataType::Int32, false)]);
+//! let schema = Schema::new(vec![Field::new("a", DataType::Int32, false)]);
 //! let a = Int32Array::from(vec![1, 2, 3]);
 //! let batch = RecordBatch::try_new(Arc::new(schema), vec![Arc::new(a)]).unwrap();
 //!
@@ -2096,14 +2117,45 @@
 //!
 //! // Get the underlying buffer back,
 //! let buf = writer.into_inner();
-//! assert_eq!(r#&quot;[{&quot;a&quot;:1},{&quot;a&quot;:2},{&quot;a&quot;:3}]&quot;#, String::from_utf8(buf).unwrap())
+//! assert_eq!(r#"[{"a":1},{"a":2},{"a":3}]"#, String::from_utf8(buf).unwrap())
 //! ```
 //!
 //! [`LineDelimitedWriter`] and [`ArrayWriter`] will omit writing keys with null values.
 //! In order to explicitly write null values for keys, configure a custom [`Writer`] by
 //! using a [`WriterBuilder`] to construct a [`Writer`].
+//!
+//! ## Writing to [serde_json] JSON Objects
+//!
+//! To serialize [`RecordBatch`]es into an array of
+//! [JSON](https://docs.serde.rs/serde_json/) objects you can reparse the resulting JSON string.
+//! Note that this is less efficient than using the `Writer` API.
+//!
+//! ```
+//! # use std::sync::Arc;
+//! # use arrow_array::{Int32Array, RecordBatch};
+//! # use arrow_schema::{DataType, Field, Schema};
+//! let schema = Schema::new(vec![Field::new("a", DataType::Int32, false)]);
+//! let a = Int32Array::from(vec![1, 2, 3]);
+//! let batch = RecordBatch::try_new(Arc::new(schema), vec![Arc::new(a)]).unwrap();
+//!
+//! // Write the record batch out as json bytes (string)
+//! let buf = Vec::new();
+//! let mut writer = arrow_json::ArrayWriter::new(buf);
+//! writer.write_batches(&amp;vec![&amp;batch]).unwrap();
+//! writer.finish().unwrap();
+//! let json_data = writer.into_inner();
+//!
+//! // Parse the string using serde_json
+//! use serde_json::{Map, Value};
+//! let json_rows: Vec&lt;Map&lt;String, Value&gt;&gt; = serde_json::from_reader(json_data.as_slice()).unwrap();
+//! assert_eq!(
+//!     serde_json::Value::Object(json_rows[1].clone()),
+//!     serde_json::json!({"a": 2}),
+//! );
+//! ```
+</span><span class="kw">mod </span>encoder;
 
-</span><span class="kw">use </span>std::iter;
+<span class="kw">use </span>std::iter;
 <span class="kw">use </span>std::{fmt::Debug, io::Write};
 
 <span class="kw">use </span>serde_json::map::Map <span class="kw">as </span>JsonMap;
@@ -2115,7 +2167,9 @@
 <span class="kw">use </span>arrow_array::<span class="kw-2">*</span>;
 <span class="kw">use </span>arrow_schema::<span class="kw-2">*</span>;
 
+<span class="kw">use </span><span class="kw">crate</span>::writer::encoder::EncoderOptions;
 <span class="kw">use </span>arrow_cast::display::{ArrayFormatter, FormatOptions};
+<span class="kw">use </span>encoder::make_encoder;
 
 <span class="kw">fn </span>primitive_array_to_json&lt;T&gt;(array: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Array) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Value&gt;, ArrowError&gt;
 <span class="kw">where
@@ -2155,7 +2209,7 @@
     <span class="prelude-val">Ok</span>(inner_objs)
 }
 
-<span class="doccomment">/// Converts an arrow [`Array`] into a `Vec` of Serde JSON [`serde_json::Value`]&#39;s
+<span class="doccomment">/// Converts an arrow [`Array`] into a `Vec` of Serde JSON [`serde_json::Value`]'s
 </span><span class="kw">pub fn </span>array_to_json_array(array: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Array) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Value&gt;, ArrowError&gt; {
     <span class="comment">// For backwards compatibility, default to skip nulls
     </span>array_to_json_array_internal(array, <span class="bool-val">false</span>)
@@ -2252,7 +2306,7 @@
             })
             .collect(),
         t =&gt; <span class="prelude-val">Err</span>(ArrowError::JsonError(<span class="macro">format!</span>(
-            <span class="string">&quot;data type {t:?} not supported&quot;
+            <span class="string">"data type {t:?} not supported"
         </span>))),
     }
 }
@@ -2433,7 +2487,7 @@
         }
         DataType::Dictionary(<span class="kw">_</span>, value_type) =&gt; {
             <span class="kw">let </span>hydrated = arrow_cast::cast::cast(<span class="kw-2">&amp;</span>array, value_type)
-                .expect(<span class="string">&quot;cannot cast dictionary to underlying values&quot;</span>);
+                .expect(<span class="string">"cannot cast dictionary to underlying values"</span>);
             set_column_for_json_rows(rows, <span class="kw-2">&amp;</span>hydrated, col_name, explicit_nulls)<span class="question-mark">?</span>;
         }
         DataType::Map(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; {
@@ -2445,7 +2499,7 @@
             <span class="comment">// Keys have to be strings to convert to json.
             </span><span class="kw">if </span>!<span class="macro">matches!</span>(keys.data_type(), DataType::Utf8) {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::JsonError(<span class="macro">format!</span>(
-                    <span class="string">&quot;data type {:?} not supported in nested map for json writer&quot;</span>,
+                    <span class="string">"data type {:?} not supported in nested map for json writer"</span>,
                     keys.data_type()
                 )));
             }
@@ -2469,7 +2523,7 @@
                 <span class="kw">let </span><span class="kw-2">mut </span>obj = serde_json::Map::new();
 
                 <span class="kw">for </span>(<span class="kw">_</span>, (k, v)) <span class="kw">in </span>(<span class="number">0</span>..len).zip(<span class="kw-2">&amp;mut </span>kv) {
-                    obj.insert(k.expect(<span class="string">&quot;keys in a map should be non-null&quot;</span>).to_string(), v);
+                    obj.insert(k.expect(<span class="string">"keys in a map should be non-null"</span>).to_string(), v);
                 }
 
                 row.insert(col_name.to_string(), serde_json::Value::Object(obj));
@@ -2477,7 +2531,7 @@
         }
         <span class="kw">_ </span>=&gt; {
             <span class="kw">return </span><span class="prelude-val">Err</span>(ArrowError::JsonError(<span class="macro">format!</span>(
-                <span class="string">&quot;data type {:?} not supported in nested map for json writer&quot;</span>,
+                <span class="string">"data type {:?} not supported in nested map for json writer"</span>,
                 array.data_type()
             )))
         }
@@ -2487,6 +2541,7 @@
 
 <span class="doccomment">/// Converts an arrow [`RecordBatch`] into a `Vec` of Serde JSON
 /// [`JsonMap`]s (objects)
+</span><span class="attr">#[deprecated(note = <span class="string">"Use Writer"</span>)]
 </span><span class="kw">pub fn </span>record_batches_to_json_rows(
     batches: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>RecordBatch],
 ) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;JsonMap&lt;String, Value&gt;&gt;, ArrowError&gt; {
@@ -2552,8 +2607,8 @@
 /// For example:
 ///
 /// ```json
-/// {&quot;foo&quot;:1}
-/// {&quot;bar&quot;:1}
+/// {"foo":1}
+/// {"bar":1}
 ///
 /// ```
 </span><span class="attr">#[derive(Debug, Default)]
@@ -2561,7 +2616,7 @@
 
 <span class="kw">impl </span>JsonFormat <span class="kw">for </span>LineDelimited {
     <span class="kw">fn </span>end_row&lt;W: Write&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, writer: <span class="kw-2">&amp;mut </span>W) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt; {
-        writer.write_all(<span class="string">b&quot;\n&quot;</span>)<span class="question-mark">?</span>;
+        writer.write_all(<span class="string">b"\n"</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 }
@@ -2571,26 +2626,26 @@
 /// For example:
 ///
 /// ```json
-/// [{&quot;foo&quot;:1},{&quot;bar&quot;:1}]
+/// [{"foo":1},{"bar":1}]
 /// ```
 </span><span class="attr">#[derive(Debug, Default)]
 </span><span class="kw">pub struct </span>JsonArray {}
 
 <span class="kw">impl </span>JsonFormat <span class="kw">for </span>JsonArray {
     <span class="kw">fn </span>start_stream&lt;W: Write&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, writer: <span class="kw-2">&amp;mut </span>W) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt; {
-        writer.write_all(<span class="string">b&quot;[&quot;</span>)<span class="question-mark">?</span>;
+        writer.write_all(<span class="string">b"["</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
     <span class="kw">fn </span>start_row&lt;W: Write&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, writer: <span class="kw-2">&amp;mut </span>W, is_first_row: bool) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt; {
         <span class="kw">if </span>!is_first_row {
-            writer.write_all(<span class="string">b&quot;,&quot;</span>)<span class="question-mark">?</span>;
+            writer.write_all(<span class="string">b","</span>)<span class="question-mark">?</span>;
         }
         <span class="prelude-val">Ok</span>(())
     }
 
     <span class="kw">fn </span>end_stream&lt;W: Write&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, writer: <span class="kw-2">&amp;mut </span>W) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt; {
-        writer.write_all(<span class="string">b&quot;]&quot;</span>)<span class="question-mark">?</span>;
+        writer.write_all(<span class="string">b"]"</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 }
@@ -2603,11 +2658,7 @@
 
 <span class="doccomment">/// JSON writer builder.
 </span><span class="attr">#[derive(Debug, Clone, Default)]
-</span><span class="kw">pub struct </span>WriterBuilder {
-    <span class="doccomment">/// Controls whether null values should be written explicitly for keys
-    /// in objects, or whether the key should be omitted entirely.
-    </span>explicit_nulls: bool,
-}
+</span><span class="kw">pub struct </span>WriterBuilder(EncoderOptions);
 
 <span class="kw">impl </span>WriterBuilder {
     <span class="doccomment">/// Create a new builder for configuring JSON writing options.
@@ -2620,7 +2671,7 @@
     /// # use std::fs::File;
     ///
     /// fn example() -&gt; Writer&lt;File, LineDelimited&gt; {
-    ///     let file = File::create(&quot;target/out.json&quot;).unwrap();
+    ///     let file = File::create("target/out.json").unwrap();
     ///
     ///     // create a builder that keeps keys with null values
     ///     let builder = WriterBuilder::new().with_explicit_nulls(true);
@@ -2635,7 +2686,7 @@
 
     <span class="doccomment">/// Returns `true` if this writer is configured to keep keys with null values.
     </span><span class="kw">pub fn </span>explicit_nulls(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="self">self</span>.explicit_nulls
+        <span class="self">self</span>.<span class="number">0</span>.explicit_nulls
     }
 
     <span class="doccomment">/// Set whether to keep keys with null values, or to omit writing them.
@@ -2645,22 +2696,22 @@
     /// Skip nulls (set to `false`):
     ///
     /// ```json
-    /// {&quot;foo&quot;:1}
-    /// {&quot;foo&quot;:1,&quot;bar&quot;:2}
+    /// {"foo":1}
+    /// {"foo":1,"bar":2}
     /// {}
     /// ```
     ///
     /// Keep nulls (set to `true`):
     ///
     /// ```json
-    /// {&quot;foo&quot;:1,&quot;bar&quot;:null}
-    /// {&quot;foo&quot;:1,&quot;bar&quot;:2}
-    /// {&quot;foo&quot;:null,&quot;bar&quot;:null}
+    /// {"foo":1,"bar":null}
+    /// {"foo":1,"bar":2}
+    /// {"foo":null,"bar":null}
     /// ```
     ///
     /// Default is to skip nulls (set to `false`).
     </span><span class="kw">pub fn </span>with_explicit_nulls(<span class="kw-2">mut </span><span class="self">self</span>, explicit_nulls: bool) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.explicit_nulls = explicit_nulls;
+        <span class="self">self</span>.<span class="number">0</span>.explicit_nulls = explicit_nulls;
         <span class="self">self
     </span>}
 
@@ -2675,7 +2726,7 @@
             started: <span class="bool-val">false</span>,
             finished: <span class="bool-val">false</span>,
             format: F::default(),
-            explicit_nulls: <span class="self">self</span>.explicit_nulls,
+            options: <span class="self">self</span>.<span class="number">0</span>,
         }
     }
 }
@@ -2708,8 +2759,8 @@
     <span class="doccomment">/// Determines how the byte stream is formatted
     </span>format: F,
 
-    <span class="doccomment">/// Whether keys with null values should be written or skipped
-    </span>explicit_nulls: bool,
+    <span class="doccomment">/// Controls how JSON should be encoded, e.g. whether to write explicit nulls or skip them
+    </span>options: EncoderOptions,
 }
 
 <span class="kw">impl</span>&lt;W, F&gt; Writer&lt;W, F&gt;
@@ -2724,11 +2775,12 @@
             started: <span class="bool-val">false</span>,
             finished: <span class="bool-val">false</span>,
             format: F::default(),
-            explicit_nulls: <span class="bool-val">false</span>,
+            options: EncoderOptions::default(),
         }
     }
 
     <span class="doccomment">/// Write a single JSON row to the output writer
+    </span><span class="attr">#[deprecated(note = <span class="string">"Use Writer::write"</span>)]
     </span><span class="kw">pub fn </span>write_row(<span class="kw-2">&amp;mut </span><span class="self">self</span>, row: <span class="kw-2">&amp;</span>Value) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt; {
         <span class="kw">let </span>is_first_row = !<span class="self">self</span>.started;
         <span class="kw">if </span>!<span class="self">self</span>.started {
@@ -2744,24 +2796,54 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="doccomment">/// Convert the `RecordBatch` into JSON rows, and write them to the output
+    <span class="doccomment">/// Serialize `batch` to JSON output
     </span><span class="kw">pub fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, batch: <span class="kw-2">&amp;</span>RecordBatch) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt; {
-        <span class="kw">for </span>row <span class="kw">in </span>record_batches_to_json_rows_internal(<span class="kw-2">&amp;</span>[batch], <span class="self">self</span>.explicit_nulls)<span class="question-mark">? </span>{
-            <span class="self">self</span>.write_row(<span class="kw-2">&amp;</span>Value::Object(row))<span class="question-mark">?</span>;
+        <span class="kw">if </span>batch.num_rows() == <span class="number">0 </span>{
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(());
         }
+
+        <span class="comment">// BufWriter uses a buffer size of 8KB
+        // We therefore double this and flush once we have more than 8KB
+        </span><span class="kw">let </span><span class="kw-2">mut </span>buffer = Vec::with_capacity(<span class="number">16 </span>* <span class="number">1024</span>);
+
+        <span class="kw">let </span><span class="kw-2">mut </span>is_first_row = !<span class="self">self</span>.started;
+        <span class="kw">if </span>!<span class="self">self</span>.started {
+            <span class="self">self</span>.format.start_stream(<span class="kw-2">&amp;mut </span>buffer)<span class="question-mark">?</span>;
+            <span class="self">self</span>.started = <span class="bool-val">true</span>;
+        }
+
+        <span class="kw">let </span>array = StructArray::from(batch.clone());
+        <span class="kw">let </span><span class="kw-2">mut </span>encoder = make_encoder(<span class="kw-2">&amp;</span>array, <span class="kw-2">&amp;</span><span class="self">self</span>.options)<span class="question-mark">?</span>;
+
+        <span class="kw">for </span>idx <span class="kw">in </span><span class="number">0</span>..batch.num_rows() {
+            <span class="self">self</span>.format.start_row(<span class="kw-2">&amp;mut </span>buffer, is_first_row)<span class="question-mark">?</span>;
+            is_first_row = <span class="bool-val">false</span>;
+
+            encoder.encode(idx, <span class="kw-2">&amp;mut </span>buffer);
+            <span class="kw">if </span>buffer.len() &gt; <span class="number">8 </span>* <span class="number">1024 </span>{
+                <span class="self">self</span>.writer.write_all(<span class="kw-2">&amp;</span>buffer)<span class="question-mark">?</span>;
+                buffer.clear();
+            }
+            <span class="self">self</span>.format.end_row(<span class="kw-2">&amp;mut </span>buffer)<span class="question-mark">?</span>;
+        }
+
+        <span class="kw">if </span>!buffer.is_empty() {
+            <span class="self">self</span>.writer.write_all(<span class="kw-2">&amp;</span>buffer)<span class="question-mark">?</span>;
+        }
+
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="doccomment">/// Convert the [`RecordBatch`] into JSON rows, and write them to the output
+    <span class="doccomment">/// Serialize `batches` to JSON output
     </span><span class="kw">pub fn </span>write_batches(<span class="kw-2">&amp;mut </span><span class="self">self</span>, batches: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>RecordBatch]) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt; {
-        <span class="kw">for </span>row <span class="kw">in </span>record_batches_to_json_rows_internal(batches, <span class="self">self</span>.explicit_nulls)<span class="question-mark">? </span>{
-            <span class="self">self</span>.write_row(<span class="kw-2">&amp;</span>Value::Object(row))<span class="question-mark">?</span>;
+        <span class="kw">for </span>b <span class="kw">in </span>batches {
+            <span class="self">self</span>.write(b)<span class="question-mark">?</span>;
         }
         <span class="prelude-val">Ok</span>(())
     }
 
     <span class="doccomment">/// Finishes the output stream. This function must be called after
-    /// all record batches have been produced. (e.g. producing the final `&#39;]&#39;` if writing
+    /// all record batches have been produced. (e.g. producing the final `']'` if writing
     /// arrays.
     </span><span class="kw">pub fn </span>finish(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(), ArrowError&gt; {
         <span class="kw">if </span><span class="self">self</span>.started &amp;&amp; !<span class="self">self</span>.finished {
@@ -2810,12 +2892,12 @@
     <span class="doccomment">/// Asserts that the NDJSON `input` is semantically identical to `expected`
     </span><span class="kw">fn </span>assert_json_eq(input: <span class="kw-2">&amp;</span>[u8], expected: <span class="kw-2">&amp;</span>str) {
         <span class="kw">let </span>expected: Vec&lt;<span class="prelude-ty">Option</span>&lt;Value&gt;&gt; = expected
-            .split(<span class="string">&#39;\n&#39;</span>)
+            .split(<span class="string">'\n'</span>)
             .map(|s| (!s.is_empty()).then(|| serde_json::from_str(s).unwrap()))
             .collect();
 
         <span class="kw">let </span>actual: Vec&lt;<span class="prelude-ty">Option</span>&lt;Value&gt;&gt; = input
-            .split(|b| <span class="kw-2">*</span>b == <span class="string">b&#39;\n&#39;</span>)
+            .split(|b| <span class="kw-2">*</span>b == <span class="string">b'\n'</span>)
             .map(|s| (!s.is_empty()).then(|| serde_json::from_slice(s).unwrap()))
             .collect();
 
@@ -2825,12 +2907,12 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>write_simple_rows() {
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[
-            Field::new(<span class="string">&quot;c1&quot;</span>, DataType::Int32, <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;c2&quot;</span>, DataType::Utf8, <span class="bool-val">true</span>),
+            Field::new(<span class="string">"c1"</span>, DataType::Int32, <span class="bool-val">true</span>),
+            Field::new(<span class="string">"c2"</span>, DataType::Utf8, <span class="bool-val">true</span>),
         ]);
 
         <span class="kw">let </span>a = Int32Array::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="number">2</span>), <span class="prelude-val">Some</span>(<span class="number">3</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">5</span>)]);
-        <span class="kw">let </span>b = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;b&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;c&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;d&quot;</span>), <span class="prelude-val">None</span>]);
+        <span class="kw">let </span>b = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"a"</span>), <span class="prelude-val">Some</span>(<span class="string">"b"</span>), <span class="prelude-val">Some</span>(<span class="string">"c"</span>), <span class="prelude-val">Some</span>(<span class="string">"d"</span>), <span class="prelude-val">None</span>]);
 
         <span class="kw">let </span>batch = RecordBatch::try_new(Arc::new(schema), <span class="macro">vec!</span>[Arc::new(a), Arc::new(b)]).unwrap();
 
@@ -2842,24 +2924,24 @@
 
         assert_json_eq(
             <span class="kw-2">&amp;</span>buf,
-            <span class="string">r#&quot;{&quot;c1&quot;:1,&quot;c2&quot;:&quot;a&quot;}
-{&quot;c1&quot;:2,&quot;c2&quot;:&quot;b&quot;}
-{&quot;c1&quot;:3,&quot;c2&quot;:&quot;c&quot;}
-{&quot;c2&quot;:&quot;d&quot;}
-{&quot;c1&quot;:5}
-&quot;#</span>,
+            <span class="string">r#"{"c1":1,"c2":"a"}
+{"c1":2,"c2":"b"}
+{"c1":3,"c2":"c"}
+{"c2":"d"}
+{"c1":5}
+"#</span>,
         );
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>write_large_utf8() {
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[
-            Field::new(<span class="string">&quot;c1&quot;</span>, DataType::Utf8, <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;c2&quot;</span>, DataType::LargeUtf8, <span class="bool-val">true</span>),
+            Field::new(<span class="string">"c1"</span>, DataType::Utf8, <span class="bool-val">true</span>),
+            Field::new(<span class="string">"c2"</span>, DataType::LargeUtf8, <span class="bool-val">true</span>),
         ]);
 
-        <span class="kw">let </span>a = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;c&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;d&quot;</span>), <span class="prelude-val">None</span>]);
-        <span class="kw">let </span>b = LargeStringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;b&quot;</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;d&quot;</span>), <span class="prelude-val">None</span>]);
+        <span class="kw">let </span>a = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"a"</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">"c"</span>), <span class="prelude-val">Some</span>(<span class="string">"d"</span>), <span class="prelude-val">None</span>]);
+        <span class="kw">let </span>b = LargeStringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"a"</span>), <span class="prelude-val">Some</span>(<span class="string">"b"</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">"d"</span>), <span class="prelude-val">None</span>]);
 
         <span class="kw">let </span>batch = RecordBatch::try_new(Arc::new(schema), <span class="macro">vec!</span>[Arc::new(a), Arc::new(b)]).unwrap();
 
@@ -2871,33 +2953,33 @@
 
         assert_json_eq(
             <span class="kw-2">&amp;</span>buf,
-            <span class="string">r#&quot;{&quot;c1&quot;:&quot;a&quot;,&quot;c2&quot;:&quot;a&quot;}
-{&quot;c2&quot;:&quot;b&quot;}
-{&quot;c1&quot;:&quot;c&quot;}
-{&quot;c1&quot;:&quot;d&quot;,&quot;c2&quot;:&quot;d&quot;}
+            <span class="string">r#"{"c1":"a","c2":"a"}
+{"c2":"b"}
+{"c1":"c"}
+{"c1":"d","c2":"d"}
 {}
-&quot;#</span>,
+"#</span>,
         );
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>write_dictionary() {
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[
-            Field::new_dictionary(<span class="string">&quot;c1&quot;</span>, DataType::Int32, DataType::Utf8, <span class="bool-val">true</span>),
-            Field::new_dictionary(<span class="string">&quot;c2&quot;</span>, DataType::Int8, DataType::Utf8, <span class="bool-val">true</span>),
+            Field::new_dictionary(<span class="string">"c1"</span>, DataType::Int32, DataType::Utf8, <span class="bool-val">true</span>),
+            Field::new_dictionary(<span class="string">"c2"</span>, DataType::Int8, DataType::Utf8, <span class="bool-val">true</span>),
         ]);
 
         <span class="kw">let </span>a: DictionaryArray&lt;Int32Type&gt; = <span class="macro">vec!</span>[
-            <span class="prelude-val">Some</span>(<span class="string">&quot;cupcakes&quot;</span>),
-            <span class="prelude-val">Some</span>(<span class="string">&quot;foo&quot;</span>),
-            <span class="prelude-val">Some</span>(<span class="string">&quot;foo&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="string">"cupcakes"</span>),
+            <span class="prelude-val">Some</span>(<span class="string">"foo"</span>),
+            <span class="prelude-val">Some</span>(<span class="string">"foo"</span>),
             <span class="prelude-val">None</span>,
-            <span class="prelude-val">Some</span>(<span class="string">&quot;cupcakes&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="string">"cupcakes"</span>),
         ]
         .into_iter()
         .collect();
         <span class="kw">let </span>b: DictionaryArray&lt;Int8Type&gt; =
-            <span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;sdsd&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;sdsd&quot;</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;sd&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;sdsd&quot;</span>)]
+            <span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"sdsd"</span>), <span class="prelude-val">Some</span>(<span class="string">"sdsd"</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">"sd"</span>), <span class="prelude-val">Some</span>(<span class="string">"sdsd"</span>)]
                 .into_iter()
                 .collect();
 
@@ -2911,18 +2993,18 @@
 
         assert_json_eq(
             <span class="kw-2">&amp;</span>buf,
-            <span class="string">r#&quot;{&quot;c1&quot;:&quot;cupcakes&quot;,&quot;c2&quot;:&quot;sdsd&quot;}
-{&quot;c1&quot;:&quot;foo&quot;,&quot;c2&quot;:&quot;sdsd&quot;}
-{&quot;c1&quot;:&quot;foo&quot;}
-{&quot;c2&quot;:&quot;sd&quot;}
-{&quot;c1&quot;:&quot;cupcakes&quot;,&quot;c2&quot;:&quot;sdsd&quot;}
-&quot;#</span>,
+            <span class="string">r#"{"c1":"cupcakes","c2":"sdsd"}
+{"c1":"foo","c2":"sdsd"}
+{"c1":"foo"}
+{"c2":"sd"}
+{"c1":"cupcakes","c2":"sdsd"}
+"#</span>,
         );
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>write_timestamps() {
-        <span class="kw">let </span>ts_string = <span class="string">&quot;2018-11-13T17:11:10.011375885995&quot;</span>;
+        <span class="kw">let </span>ts_string = <span class="string">"2018-11-13T17:11:10.011375885995"</span>;
         <span class="kw">let </span>ts_nanos = ts_string
             .parse::&lt;chrono::NaiveDateTime&gt;()
             .unwrap()
@@ -2936,14 +3018,14 @@
         <span class="kw">let </span>arr_micros = TimestampMicrosecondArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(ts_micros), <span class="prelude-val">None</span>]);
         <span class="kw">let </span>arr_millis = TimestampMillisecondArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(ts_millis), <span class="prelude-val">None</span>]);
         <span class="kw">let </span>arr_secs = TimestampSecondArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(ts_secs), <span class="prelude-val">None</span>]);
-        <span class="kw">let </span>arr_names = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;b&quot;</span>)]);
+        <span class="kw">let </span>arr_names = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"a"</span>), <span class="prelude-val">Some</span>(<span class="string">"b"</span>)]);
 
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[
-            Field::new(<span class="string">&quot;nanos&quot;</span>, arr_nanos.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;micros&quot;</span>, arr_micros.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;millis&quot;</span>, arr_millis.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;secs&quot;</span>, arr_secs.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;name&quot;</span>, arr_names.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"nanos"</span>, arr_nanos.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"micros"</span>, arr_micros.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"millis"</span>, arr_millis.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"secs"</span>, arr_secs.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"name"</span>, arr_names.data_type().clone(), <span class="bool-val">true</span>),
         ]);
         <span class="kw">let </span>schema = Arc::new(schema);
 
@@ -2967,15 +3049,15 @@
 
         assert_json_eq(
             <span class="kw-2">&amp;</span>buf,
-            <span class="string">r#&quot;{&quot;micros&quot;:&quot;2018-11-13T17:11:10.011375&quot;,&quot;millis&quot;:&quot;2018-11-13T17:11:10.011&quot;,&quot;name&quot;:&quot;a&quot;,&quot;nanos&quot;:&quot;2018-11-13T17:11:10.011375885&quot;,&quot;secs&quot;:&quot;2018-11-13T17:11:10&quot;}
-{&quot;name&quot;:&quot;b&quot;}
-&quot;#</span>,
+            <span class="string">r#"{"micros":"2018-11-13T17:11:10.011375","millis":"2018-11-13T17:11:10.011","name":"a","nanos":"2018-11-13T17:11:10.011375885","secs":"2018-11-13T17:11:10"}
+{"name":"b"}
+"#</span>,
         );
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>write_timestamps_with_tz() {
-        <span class="kw">let </span>ts_string = <span class="string">&quot;2018-11-13T17:11:10.011375885995&quot;</span>;
+        <span class="kw">let </span>ts_string = <span class="string">"2018-11-13T17:11:10.011375885995"</span>;
         <span class="kw">let </span>ts_nanos = ts_string
             .parse::&lt;chrono::NaiveDateTime&gt;()
             .unwrap()
@@ -2989,9 +3071,9 @@
         <span class="kw">let </span>arr_micros = TimestampMicrosecondArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(ts_micros), <span class="prelude-val">None</span>]);
         <span class="kw">let </span>arr_millis = TimestampMillisecondArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(ts_millis), <span class="prelude-val">None</span>]);
         <span class="kw">let </span>arr_secs = TimestampSecondArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(ts_secs), <span class="prelude-val">None</span>]);
-        <span class="kw">let </span>arr_names = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;b&quot;</span>)]);
+        <span class="kw">let </span>arr_names = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"a"</span>), <span class="prelude-val">Some</span>(<span class="string">"b"</span>)]);
 
-        <span class="kw">let </span>tz = <span class="string">&quot;+00:00&quot;</span>;
+        <span class="kw">let </span>tz = <span class="string">"+00:00"</span>;
 
         <span class="kw">let </span>arr_nanos = arr_nanos.with_timezone(tz);
         <span class="kw">let </span>arr_micros = arr_micros.with_timezone(tz);
@@ -2999,11 +3081,11 @@
         <span class="kw">let </span>arr_secs = arr_secs.with_timezone(tz);
 
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[
-            Field::new(<span class="string">&quot;nanos&quot;</span>, arr_nanos.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;micros&quot;</span>, arr_micros.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;millis&quot;</span>, arr_millis.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;secs&quot;</span>, arr_secs.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;name&quot;</span>, arr_names.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"nanos"</span>, arr_nanos.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"micros"</span>, arr_micros.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"millis"</span>, arr_millis.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"secs"</span>, arr_secs.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"name"</span>, arr_names.data_type().clone(), <span class="bool-val">true</span>),
         ]);
         <span class="kw">let </span>schema = Arc::new(schema);
 
@@ -3027,15 +3109,15 @@
 
         assert_json_eq(
             <span class="kw-2">&amp;</span>buf,
-            <span class="string">r#&quot;{&quot;micros&quot;:&quot;2018-11-13T17:11:10.011375Z&quot;,&quot;millis&quot;:&quot;2018-11-13T17:11:10.011Z&quot;,&quot;name&quot;:&quot;a&quot;,&quot;nanos&quot;:&quot;2018-11-13T17:11:10.011375885Z&quot;,&quot;secs&quot;:&quot;2018-11-13T17:11:10Z&quot;}
-{&quot;name&quot;:&quot;b&quot;}
-&quot;#</span>,
+            <span class="string">r#"{"micros":"2018-11-13T17:11:10.011375Z","millis":"2018-11-13T17:11:10.011Z","name":"a","nanos":"2018-11-13T17:11:10.011375885Z","secs":"2018-11-13T17:11:10Z"}
+{"name":"b"}
+"#</span>,
         );
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>write_dates() {
-        <span class="kw">let </span>ts_string = <span class="string">&quot;2018-11-13T17:11:10.011375885995&quot;</span>;
+        <span class="kw">let </span>ts_string = <span class="string">"2018-11-13T17:11:10.011375885995"</span>;
         <span class="kw">let </span>ts_millis = ts_string
             .parse::&lt;chrono::NaiveDateTime&gt;()
             .unwrap()
@@ -3046,12 +3128,12 @@
             <span class="prelude-val">None</span>,
         ]);
         <span class="kw">let </span>arr_date64 = Date64Array::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(ts_millis), <span class="prelude-val">None</span>]);
-        <span class="kw">let </span>arr_names = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;b&quot;</span>)]);
+        <span class="kw">let </span>arr_names = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"a"</span>), <span class="prelude-val">Some</span>(<span class="string">"b"</span>)]);
 
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[
-            Field::new(<span class="string">&quot;date32&quot;</span>, arr_date32.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;date64&quot;</span>, arr_date64.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;name&quot;</span>, arr_names.data_type().clone(), <span class="bool-val">false</span>),
+            Field::new(<span class="string">"date32"</span>, arr_date32.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"date64"</span>, arr_date64.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"name"</span>, arr_names.data_type().clone(), <span class="bool-val">false</span>),
         ]);
         <span class="kw">let </span>schema = Arc::new(schema);
 
@@ -3073,9 +3155,9 @@
 
         assert_json_eq(
             <span class="kw-2">&amp;</span>buf,
-            <span class="string">r#&quot;{&quot;date32&quot;:&quot;2018-11-13&quot;,&quot;date64&quot;:&quot;2018-11-13T17:11:10.011&quot;,&quot;name&quot;:&quot;a&quot;}
-{&quot;name&quot;:&quot;b&quot;}
-&quot;#</span>,
+            <span class="string">r#"{"date32":"2018-11-13","date64":"2018-11-13T17:11:10.011","name":"a"}
+{"name":"b"}
+"#</span>,
         );
     }
 
@@ -3085,14 +3167,14 @@
         <span class="kw">let </span>arr_time32msec = Time32MillisecondArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">120</span>), <span class="prelude-val">None</span>]);
         <span class="kw">let </span>arr_time64usec = Time64MicrosecondArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">120</span>), <span class="prelude-val">None</span>]);
         <span class="kw">let </span>arr_time64nsec = Time64NanosecondArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">120</span>), <span class="prelude-val">None</span>]);
-        <span class="kw">let </span>arr_names = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;b&quot;</span>)]);
+        <span class="kw">let </span>arr_names = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"a"</span>), <span class="prelude-val">Some</span>(<span class="string">"b"</span>)]);
 
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[
-            Field::new(<span class="string">&quot;time32sec&quot;</span>, arr_time32sec.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;time32msec&quot;</span>, arr_time32msec.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;time64usec&quot;</span>, arr_time64usec.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;time64nsec&quot;</span>, arr_time64nsec.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;name&quot;</span>, arr_names.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"time32sec"</span>, arr_time32sec.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"time32msec"</span>, arr_time32msec.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"time64usec"</span>, arr_time64usec.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"time64nsec"</span>, arr_time64nsec.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"name"</span>, arr_names.data_type().clone(), <span class="bool-val">true</span>),
         ]);
         <span class="kw">let </span>schema = Arc::new(schema);
 
@@ -3116,9 +3198,9 @@
 
         assert_json_eq(
             <span class="kw-2">&amp;</span>buf,
-            <span class="string">r#&quot;{&quot;time32sec&quot;:&quot;00:02:00&quot;,&quot;time32msec&quot;:&quot;00:00:00.120&quot;,&quot;time64usec&quot;:&quot;00:00:00.000120&quot;,&quot;time64nsec&quot;:&quot;00:00:00.000000120&quot;,&quot;name&quot;:&quot;a&quot;}
-{&quot;name&quot;:&quot;b&quot;}
-&quot;#</span>,
+            <span class="string">r#"{"time32sec":"00:02:00","time32msec":"00:00:00.120","time64usec":"00:00:00.000120","time64nsec":"00:00:00.000000120","name":"a"}
+{"name":"b"}
+"#</span>,
         );
     }
 
@@ -3128,14 +3210,14 @@
         <span class="kw">let </span>arr_durationmsec = DurationMillisecondArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">120</span>), <span class="prelude-val">None</span>]);
         <span class="kw">let </span>arr_durationusec = DurationMicrosecondArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">120</span>), <span class="prelude-val">None</span>]);
         <span class="kw">let </span>arr_durationnsec = DurationNanosecondArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">120</span>), <span class="prelude-val">None</span>]);
-        <span class="kw">let </span>arr_names = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;b&quot;</span>)]);
+        <span class="kw">let </span>arr_names = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"a"</span>), <span class="prelude-val">Some</span>(<span class="string">"b"</span>)]);
 
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[
-            Field::new(<span class="string">&quot;duration_sec&quot;</span>, arr_durationsec.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;duration_msec&quot;</span>, arr_durationmsec.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;duration_usec&quot;</span>, arr_durationusec.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;duration_nsec&quot;</span>, arr_durationnsec.data_type().clone(), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;name&quot;</span>, arr_names.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"duration_sec"</span>, arr_durationsec.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"duration_msec"</span>, arr_durationmsec.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"duration_usec"</span>, arr_durationusec.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"duration_nsec"</span>, arr_durationnsec.data_type().clone(), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"name"</span>, arr_names.data_type().clone(), <span class="bool-val">true</span>),
         ]);
         <span class="kw">let </span>schema = Arc::new(schema);
 
@@ -3159,9 +3241,9 @@
 
         assert_json_eq(
             <span class="kw-2">&amp;</span>buf,
-            <span class="string">r#&quot;{&quot;duration_sec&quot;:&quot;PT120S&quot;,&quot;duration_msec&quot;:&quot;PT0.120S&quot;,&quot;duration_usec&quot;:&quot;PT0.000120S&quot;,&quot;duration_nsec&quot;:&quot;PT0.000000120S&quot;,&quot;name&quot;:&quot;a&quot;}
-{&quot;name&quot;:&quot;b&quot;}
-&quot;#</span>,
+            <span class="string">r#"{"duration_sec":"PT120S","duration_msec":"PT0.120S","duration_usec":"PT0.000120S","duration_nsec":"PT0.000000120S","name":"a"}
+{"name":"b"}
+"#</span>,
         );
     }
 
@@ -3169,38 +3251,38 @@
     </span><span class="kw">fn </span>write_nested_structs() {
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[
             Field::new(
-                <span class="string">&quot;c1&quot;</span>,
+                <span class="string">"c1"</span>,
                 DataType::Struct(Fields::from(<span class="macro">vec!</span>[
-                    Field::new(<span class="string">&quot;c11&quot;</span>, DataType::Int32, <span class="bool-val">true</span>),
+                    Field::new(<span class="string">"c11"</span>, DataType::Int32, <span class="bool-val">true</span>),
                     Field::new(
-                        <span class="string">&quot;c12&quot;</span>,
-                        DataType::Struct(<span class="macro">vec!</span>[Field::new(<span class="string">&quot;c121&quot;</span>, DataType::Utf8, <span class="bool-val">false</span>)].into()),
+                        <span class="string">"c12"</span>,
+                        DataType::Struct(<span class="macro">vec!</span>[Field::new(<span class="string">"c121"</span>, DataType::Utf8, <span class="bool-val">false</span>)].into()),
                         <span class="bool-val">false</span>,
                     ),
                 ])),
                 <span class="bool-val">false</span>,
             ),
-            Field::new(<span class="string">&quot;c2&quot;</span>, DataType::Utf8, <span class="bool-val">false</span>),
+            Field::new(<span class="string">"c2"</span>, DataType::Utf8, <span class="bool-val">false</span>),
         ]);
 
         <span class="kw">let </span>c1 = StructArray::from(<span class="macro">vec!</span>[
             (
-                Arc::new(Field::new(<span class="string">&quot;c11&quot;</span>, DataType::Int32, <span class="bool-val">true</span>)),
+                Arc::new(Field::new(<span class="string">"c11"</span>, DataType::Int32, <span class="bool-val">true</span>)),
                 Arc::new(Int32Array::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">5</span>)])) <span class="kw">as </span>ArrayRef,
             ),
             (
                 Arc::new(Field::new(
-                    <span class="string">&quot;c12&quot;</span>,
-                    DataType::Struct(<span class="macro">vec!</span>[Field::new(<span class="string">&quot;c121&quot;</span>, DataType::Utf8, <span class="bool-val">false</span>)].into()),
+                    <span class="string">"c12"</span>,
+                    DataType::Struct(<span class="macro">vec!</span>[Field::new(<span class="string">"c121"</span>, DataType::Utf8, <span class="bool-val">false</span>)].into()),
                     <span class="bool-val">false</span>,
                 )),
                 Arc::new(StructArray::from(<span class="macro">vec!</span>[(
-                    Arc::new(Field::new(<span class="string">&quot;c121&quot;</span>, DataType::Utf8, <span class="bool-val">false</span>)),
-                    Arc::new(StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;e&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;f&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;g&quot;</span>)])) <span class="kw">as </span>ArrayRef,
+                    Arc::new(Field::new(<span class="string">"c121"</span>, DataType::Utf8, <span class="bool-val">false</span>)),
+                    Arc::new(StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"e"</span>), <span class="prelude-val">Some</span>(<span class="string">"f"</span>), <span class="prelude-val">Some</span>(<span class="string">"g"</span>)])) <span class="kw">as </span>ArrayRef,
                 )])) <span class="kw">as </span>ArrayRef,
             ),
         ]);
-        <span class="kw">let </span>c2 = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;b&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;c&quot;</span>)]);
+        <span class="kw">let </span>c2 = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"a"</span>), <span class="prelude-val">Some</span>(<span class="string">"b"</span>), <span class="prelude-val">Some</span>(<span class="string">"c"</span>)]);
 
         <span class="kw">let </span>batch =
             RecordBatch::try_new(Arc::new(schema), <span class="macro">vec!</span>[Arc::new(c1), Arc::new(c2)]).unwrap();
@@ -3213,25 +3295,25 @@
 
         assert_json_eq(
             <span class="kw-2">&amp;</span>buf,
-            <span class="string">r#&quot;{&quot;c1&quot;:{&quot;c11&quot;:1,&quot;c12&quot;:{&quot;c121&quot;:&quot;e&quot;}},&quot;c2&quot;:&quot;a&quot;}
-{&quot;c1&quot;:{&quot;c12&quot;:{&quot;c121&quot;:&quot;f&quot;}},&quot;c2&quot;:&quot;b&quot;}
-{&quot;c1&quot;:{&quot;c11&quot;:5,&quot;c12&quot;:{&quot;c121&quot;:&quot;g&quot;}},&quot;c2&quot;:&quot;c&quot;}
-&quot;#</span>,
+            <span class="string">r#"{"c1":{"c11":1,"c12":{"c121":"e"}},"c2":"a"}
+{"c1":{"c12":{"c121":"f"}},"c2":"b"}
+{"c1":{"c11":5,"c12":{"c121":"g"}},"c2":"c"}
+"#</span>,
         );
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>write_struct_with_list_field() {
         <span class="kw">let </span>field_c1 = Field::new(
-            <span class="string">&quot;c1&quot;</span>,
-            DataType::List(Arc::new(Field::new(<span class="string">&quot;c_list&quot;</span>, DataType::Utf8, <span class="bool-val">false</span>))),
+            <span class="string">"c1"</span>,
+            DataType::List(Arc::new(Field::new(<span class="string">"c_list"</span>, DataType::Utf8, <span class="bool-val">false</span>))),
             <span class="bool-val">false</span>,
         );
-        <span class="kw">let </span>field_c2 = Field::new(<span class="string">&quot;c2&quot;</span>, DataType::Int32, <span class="bool-val">false</span>);
+        <span class="kw">let </span>field_c2 = Field::new(<span class="string">"c2"</span>, DataType::Int32, <span class="bool-val">false</span>);
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[field_c1.clone(), field_c2]);
 
-        <span class="kw">let </span>a_values = StringArray::from(<span class="macro">vec!</span>[<span class="string">&quot;a&quot;</span>, <span class="string">&quot;a1&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;d&quot;</span>, <span class="string">&quot;e&quot;</span>]);
-        <span class="comment">// list column rows: [&quot;a&quot;, &quot;a1&quot;], [&quot;b&quot;], [&quot;c&quot;], [&quot;d&quot;], [&quot;e&quot;]
+        <span class="kw">let </span>a_values = StringArray::from(<span class="macro">vec!</span>[<span class="string">"a"</span>, <span class="string">"a1"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>, <span class="string">"e"</span>]);
+        <span class="comment">// list column rows: ["a", "a1"], ["b"], ["c"], ["d"], ["e"]
         </span><span class="kw">let </span>a_value_offsets = Buffer::from(<span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>].to_byte_slice());
         <span class="kw">let </span>a_list_data = ArrayData::builder(field_c1.data_type().clone())
             .len(<span class="number">5</span>)
@@ -3254,28 +3336,28 @@
 
         assert_json_eq(
             <span class="kw-2">&amp;</span>buf,
-            <span class="string">r#&quot;{&quot;c1&quot;:[&quot;a&quot;,&quot;a1&quot;],&quot;c2&quot;:1}
-{&quot;c1&quot;:[&quot;b&quot;],&quot;c2&quot;:2}
-{&quot;c1&quot;:[&quot;c&quot;],&quot;c2&quot;:3}
-{&quot;c1&quot;:[&quot;d&quot;],&quot;c2&quot;:4}
-{&quot;c1&quot;:[&quot;e&quot;],&quot;c2&quot;:5}
-&quot;#</span>,
+            <span class="string">r#"{"c1":["a","a1"],"c2":1}
+{"c1":["b"],"c2":2}
+{"c1":["c"],"c2":3}
+{"c1":["d"],"c2":4}
+{"c1":["e"],"c2":5}
+"#</span>,
         );
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>write_nested_list() {
         <span class="kw">let </span>list_inner_type = Field::new(
-            <span class="string">&quot;a&quot;</span>,
-            DataType::List(Arc::new(Field::new(<span class="string">&quot;b&quot;</span>, DataType::Int32, <span class="bool-val">false</span>))),
+            <span class="string">"a"</span>,
+            DataType::List(Arc::new(Field::new(<span class="string">"b"</span>, DataType::Int32, <span class="bool-val">false</span>))),
             <span class="bool-val">false</span>,
         );
         <span class="kw">let </span>field_c1 = Field::new(
-            <span class="string">&quot;c1&quot;</span>,
+            <span class="string">"c1"</span>,
             DataType::List(Arc::new(list_inner_type.clone())),
             <span class="bool-val">false</span>,
         );
-        <span class="kw">let </span>field_c2 = Field::new(<span class="string">&quot;c2&quot;</span>, DataType::Utf8, <span class="bool-val">true</span>);
+        <span class="kw">let </span>field_c2 = Field::new(<span class="string">"c2"</span>, DataType::Utf8, <span class="bool-val">true</span>);
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[field_c1.clone(), field_c2]);
 
         <span class="comment">// list column rows: [[1, 2], [3]], [], [[4, 5, 6]]
@@ -3300,7 +3382,7 @@
             .unwrap();
 
         <span class="kw">let </span>c1 = ListArray::from(c1_list_data);
-        <span class="kw">let </span>c2 = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;foo&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;bar&quot;</span>), <span class="prelude-val">None</span>]);
+        <span class="kw">let </span>c2 = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"foo"</span>), <span class="prelude-val">Some</span>(<span class="string">"bar"</span>), <span class="prelude-val">None</span>]);
 
         <span class="kw">let </span>batch =
             RecordBatch::try_new(Arc::new(schema), <span class="macro">vec!</span>[Arc::new(c1), Arc::new(c2)]).unwrap();
@@ -3313,24 +3395,24 @@
 
         assert_json_eq(
             <span class="kw-2">&amp;</span>buf,
-            <span class="string">r#&quot;{&quot;c1&quot;:[[1,2],[3]],&quot;c2&quot;:&quot;foo&quot;}
-{&quot;c1&quot;:[],&quot;c2&quot;:&quot;bar&quot;}
-{&quot;c1&quot;:[[4,5,6]]}
-&quot;#</span>,
+            <span class="string">r#"{"c1":[[1,2],[3]],"c2":"foo"}
+{"c1":[],"c2":"bar"}
+{"c1":[[4,5,6]]}
+"#</span>,
         );
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>write_list_of_struct() {
         <span class="kw">let </span>field_c1 = Field::new(
-            <span class="string">&quot;c1&quot;</span>,
+            <span class="string">"c1"</span>,
             DataType::List(Arc::new(Field::new(
-                <span class="string">&quot;s&quot;</span>,
+                <span class="string">"s"</span>,
                 DataType::Struct(Fields::from(<span class="macro">vec!</span>[
-                    Field::new(<span class="string">&quot;c11&quot;</span>, DataType::Int32, <span class="bool-val">true</span>),
+                    Field::new(<span class="string">"c11"</span>, DataType::Int32, <span class="bool-val">true</span>),
                     Field::new(
-                        <span class="string">&quot;c12&quot;</span>,
-                        DataType::Struct(<span class="macro">vec!</span>[Field::new(<span class="string">&quot;c121&quot;</span>, DataType::Utf8, <span class="bool-val">false</span>)].into()),
+                        <span class="string">"c12"</span>,
+                        DataType::Struct(<span class="macro">vec!</span>[Field::new(<span class="string">"c121"</span>, DataType::Utf8, <span class="bool-val">false</span>)].into()),
                         <span class="bool-val">false</span>,
                     ),
                 ])),
@@ -3338,31 +3420,31 @@
             ))),
             <span class="bool-val">true</span>,
         );
-        <span class="kw">let </span>field_c2 = Field::new(<span class="string">&quot;c2&quot;</span>, DataType::Int32, <span class="bool-val">false</span>);
+        <span class="kw">let </span>field_c2 = Field::new(<span class="string">"c2"</span>, DataType::Int32, <span class="bool-val">false</span>);
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[field_c1.clone(), field_c2]);
 
         <span class="kw">let </span>struct_values = StructArray::from(<span class="macro">vec!</span>[
             (
-                Arc::new(Field::new(<span class="string">&quot;c11&quot;</span>, DataType::Int32, <span class="bool-val">true</span>)),
+                Arc::new(Field::new(<span class="string">"c11"</span>, DataType::Int32, <span class="bool-val">true</span>)),
                 Arc::new(Int32Array::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">5</span>)])) <span class="kw">as </span>ArrayRef,
             ),
             (
                 Arc::new(Field::new(
-                    <span class="string">&quot;c12&quot;</span>,
-                    DataType::Struct(<span class="macro">vec!</span>[Field::new(<span class="string">&quot;c121&quot;</span>, DataType::Utf8, <span class="bool-val">false</span>)].into()),
+                    <span class="string">"c12"</span>,
+                    DataType::Struct(<span class="macro">vec!</span>[Field::new(<span class="string">"c121"</span>, DataType::Utf8, <span class="bool-val">false</span>)].into()),
                     <span class="bool-val">false</span>,
                 )),
                 Arc::new(StructArray::from(<span class="macro">vec!</span>[(
-                    Arc::new(Field::new(<span class="string">&quot;c121&quot;</span>, DataType::Utf8, <span class="bool-val">false</span>)),
-                    Arc::new(StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;e&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;f&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;g&quot;</span>)])) <span class="kw">as </span>ArrayRef,
+                    Arc::new(Field::new(<span class="string">"c121"</span>, DataType::Utf8, <span class="bool-val">false</span>)),
+                    Arc::new(StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"e"</span>), <span class="prelude-val">Some</span>(<span class="string">"f"</span>), <span class="prelude-val">Some</span>(<span class="string">"g"</span>)])) <span class="kw">as </span>ArrayRef,
                 )])) <span class="kw">as </span>ArrayRef,
             ),
         ]);
 
         <span class="comment">// list column rows (c1):
-        // [{&quot;c11&quot;: 1, &quot;c12&quot;: {&quot;c121&quot;: &quot;e&quot;}}, {&quot;c12&quot;: {&quot;c121&quot;: &quot;f&quot;}}],
+        // [{"c11": 1, "c12": {"c121": "e"}}, {"c12": {"c121": "f"}}],
         // null,
-        // [{&quot;c11&quot;: 5, &quot;c12&quot;: {&quot;c121&quot;: &quot;g&quot;}}]
+        // [{"c11": 5, "c12": {"c121": "g"}}]
         </span><span class="kw">let </span>c1_value_offsets = Buffer::from(<span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>].to_byte_slice());
         <span class="kw">let </span>c1_list_data = ArrayData::builder(field_c1.data_type().clone())
             .len(<span class="number">3</span>)
@@ -3386,10 +3468,10 @@
 
         assert_json_eq(
             <span class="kw-2">&amp;</span>buf,
-            <span class="string">r#&quot;{&quot;c1&quot;:[{&quot;c11&quot;:1,&quot;c12&quot;:{&quot;c121&quot;:&quot;e&quot;}},{&quot;c12&quot;:{&quot;c121&quot;:&quot;f&quot;}}],&quot;c2&quot;:1}
-{&quot;c2&quot;:2}
-{&quot;c1&quot;:[{&quot;c11&quot;:5,&quot;c12&quot;:{&quot;c121&quot;:&quot;g&quot;}}],&quot;c2&quot;:3}
-&quot;#</span>,
+            <span class="string">r#"{"c1":[{"c11":1,"c12":{"c121":"e"}},{"c12":{"c121":"f"}}],"c2":1}
+{"c2":2}
+{"c1":[{"c11":5,"c12":{"c121":"g"}}],"c2":3}
+"#</span>,
         );
     }
 
@@ -3433,71 +3515,73 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>write_basic_rows() {
-        test_write_for_file(<span class="string">&quot;test/data/basic.json&quot;</span>, <span class="bool-val">true</span>);
+        test_write_for_file(<span class="string">"test/data/basic.json"</span>, <span class="bool-val">true</span>);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>write_arrays() {
-        test_write_for_file(<span class="string">&quot;test/data/arrays.json&quot;</span>, <span class="bool-val">true</span>);
+        test_write_for_file(<span class="string">"test/data/arrays.json"</span>, <span class="bool-val">true</span>);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>write_basic_nulls() {
-        test_write_for_file(<span class="string">&quot;test/data/basic_nulls.json&quot;</span>, <span class="bool-val">true</span>);
+        test_write_for_file(<span class="string">"test/data/basic_nulls.json"</span>, <span class="bool-val">true</span>);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>write_nested_with_nulls() {
-        test_write_for_file(<span class="string">&quot;test/data/nested_with_nulls.json&quot;</span>, <span class="bool-val">false</span>);
+        test_write_for_file(<span class="string">"test/data/nested_with_nulls.json"</span>, <span class="bool-val">false</span>);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>json_writer_empty() {
         <span class="kw">let </span><span class="kw-2">mut </span>writer = ArrayWriter::new(<span class="macro">vec!</span>[] <span class="kw">as </span>Vec&lt;u8&gt;);
         writer.finish().unwrap();
-        <span class="macro">assert_eq!</span>(String::from_utf8(writer.into_inner()).unwrap(), <span class="string">&quot;&quot;</span>);
+        <span class="macro">assert_eq!</span>(String::from_utf8(writer.into_inner()).unwrap(), <span class="string">""</span>);
     }
 
     <span class="attr">#[test]
+    #[allow(deprecated)]
     </span><span class="kw">fn </span>json_writer_one_row() {
         <span class="kw">let </span><span class="kw-2">mut </span>writer = ArrayWriter::new(<span class="macro">vec!</span>[] <span class="kw">as </span>Vec&lt;u8&gt;);
-        <span class="kw">let </span>v = <span class="macro">json!</span>({ <span class="string">&quot;an&quot;</span>: <span class="string">&quot;object&quot; </span>});
+        <span class="kw">let </span>v = <span class="macro">json!</span>({ <span class="string">"an"</span>: <span class="string">"object" </span>});
         writer.write_row(<span class="kw-2">&amp;</span>v).unwrap();
         writer.finish().unwrap();
         <span class="macro">assert_eq!</span>(
             String::from_utf8(writer.into_inner()).unwrap(),
-            <span class="string">r#&quot;[{&quot;an&quot;:&quot;object&quot;}]&quot;#
+            <span class="string">r#"[{"an":"object"}]"#
         </span>);
     }
 
     <span class="attr">#[test]
+    #[allow(deprecated)]
     </span><span class="kw">fn </span>json_writer_two_rows() {
         <span class="kw">let </span><span class="kw-2">mut </span>writer = ArrayWriter::new(<span class="macro">vec!</span>[] <span class="kw">as </span>Vec&lt;u8&gt;);
-        <span class="kw">let </span>v = <span class="macro">json!</span>({ <span class="string">&quot;an&quot;</span>: <span class="string">&quot;object&quot; </span>});
+        <span class="kw">let </span>v = <span class="macro">json!</span>({ <span class="string">"an"</span>: <span class="string">"object" </span>});
         writer.write_row(<span class="kw-2">&amp;</span>v).unwrap();
-        <span class="kw">let </span>v = <span class="macro">json!</span>({ <span class="string">&quot;another&quot;</span>: <span class="string">&quot;object&quot; </span>});
+        <span class="kw">let </span>v = <span class="macro">json!</span>({ <span class="string">"another"</span>: <span class="string">"object" </span>});
         writer.write_row(<span class="kw-2">&amp;</span>v).unwrap();
         writer.finish().unwrap();
         <span class="macro">assert_eq!</span>(
             String::from_utf8(writer.into_inner()).unwrap(),
-            <span class="string">r#&quot;[{&quot;an&quot;:&quot;object&quot;},{&quot;another&quot;:&quot;object&quot;}]&quot;#
+            <span class="string">r#"[{"an":"object"},{"another":"object"}]"#
         </span>);
     }
 
     <span class="attr">#[test]
     #[allow(deprecated)]
     </span><span class="kw">fn </span>json_list_roundtrip() {
-        <span class="kw">let </span>json_content = <span class="string">r#&quot;
-        {&quot;list&quot;: [{&quot;ints&quot;: 1}]}
-        {&quot;list&quot;: [{}]}
-        {&quot;list&quot;: []}
-        {&quot;list&quot;: null}
-        {&quot;list&quot;: [{&quot;ints&quot;: null}]}
-        {&quot;list&quot;: [null]}
-        &quot;#</span>;
-        <span class="kw">let </span>ints_struct = DataType::Struct(<span class="macro">vec!</span>[Field::new(<span class="string">&quot;ints&quot;</span>, DataType::Int32, <span class="bool-val">true</span>)].into());
-        <span class="kw">let </span>list_type = DataType::List(Arc::new(Field::new(<span class="string">&quot;item&quot;</span>, ints_struct, <span class="bool-val">true</span>)));
-        <span class="kw">let </span>list_field = Field::new(<span class="string">&quot;list&quot;</span>, list_type, <span class="bool-val">true</span>);
+        <span class="kw">let </span>json_content = <span class="string">r#"
+        {"list": [{"ints": 1}]}
+        {"list": [{}]}
+        {"list": []}
+        {"list": null}
+        {"list": [{"ints": null}]}
+        {"list": [null]}
+        "#</span>;
+        <span class="kw">let </span>ints_struct = DataType::Struct(<span class="macro">vec!</span>[Field::new(<span class="string">"ints"</span>, DataType::Int32, <span class="bool-val">true</span>)].into());
+        <span class="kw">let </span>list_type = DataType::List(Arc::new(Field::new(<span class="string">"item"</span>, ints_struct, <span class="bool-val">true</span>)));
+        <span class="kw">let </span>list_field = Field::new(<span class="string">"list"</span>, list_type, <span class="bool-val">true</span>);
         <span class="kw">let </span>schema = Arc::new(Schema::new(<span class="macro">vec!</span>[list_field]));
         <span class="kw">let </span>builder = ReaderBuilder::new(schema).with_batch_size(<span class="number">64</span>);
         <span class="kw">let </span><span class="kw-2">mut </span>reader = builder.build(std::io::Cursor::new(json_content)).unwrap();
@@ -3518,13 +3602,13 @@
 
         assert_json_eq(
             <span class="kw-2">&amp;</span>buf,
-            <span class="string">r#&quot;{&quot;list&quot;:[{&quot;ints&quot;:1}]}
-{&quot;list&quot;:[{}]}
-{&quot;list&quot;:[]}
+            <span class="string">r#"{"list":[{"ints":1}]}
+{"list":[{}]}
+{"list":[]}
 {}
-{&quot;list&quot;:[{}]}
-{&quot;list&quot;:[null]}
-&quot;#</span>,
+{"list":[{}]}
+{"list":[null]}
+"#</span>,
         );
     }
 
@@ -3540,7 +3624,7 @@
             </span><span class="prelude-val">None</span>,
         ]);
 
-        <span class="kw">let </span>field = Arc::new(Field::new(<span class="string">&quot;list&quot;</span>, inner.data_type().clone(), <span class="bool-val">true</span>));
+        <span class="kw">let </span>field = Arc::new(Field::new(<span class="string">"list"</span>, inner.data_type().clone(), <span class="bool-val">true</span>));
         <span class="kw">let </span>array = Arc::new(inner) <span class="kw">as </span>ArrayRef;
         <span class="kw">let </span>struct_array_a = StructArray::from((
             <span class="macro">vec!</span>[(field.clone(), array.clone())],
@@ -3549,8 +3633,8 @@
         <span class="kw">let </span>struct_array_b = StructArray::from(<span class="macro">vec!</span>[(field, array)]);
 
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[
-            Field::new_struct(<span class="string">&quot;a&quot;</span>, struct_array_a.fields().clone(), <span class="bool-val">true</span>),
-            Field::new_struct(<span class="string">&quot;b&quot;</span>, struct_array_b.fields().clone(), <span class="bool-val">true</span>),
+            Field::new_struct(<span class="string">"a"</span>, struct_array_a.fields().clone(), <span class="bool-val">true</span>),
+            Field::new_struct(<span class="string">"b"</span>, struct_array_b.fields().clone(), <span class="bool-val">true</span>),
         ]);
 
         <span class="kw">let </span>batch = RecordBatch::try_new(
@@ -3567,24 +3651,24 @@
 
         assert_json_eq(
             <span class="kw-2">&amp;</span>buf,
-            <span class="string">r#&quot;{&quot;a&quot;:{&quot;list&quot;:[1,2]},&quot;b&quot;:{&quot;list&quot;:[1,2]}}
-{&quot;a&quot;:{&quot;list&quot;:[null]},&quot;b&quot;:{&quot;list&quot;:[null]}}
-{&quot;a&quot;:{&quot;list&quot;:[]},&quot;b&quot;:{&quot;list&quot;:[]}}
-{&quot;a&quot;:null,&quot;b&quot;:{&quot;list&quot;:[3,null]}}
-{&quot;a&quot;:{&quot;list&quot;:[4,5]},&quot;b&quot;:{&quot;list&quot;:[4,5]}}
-{&quot;a&quot;:null,&quot;b&quot;:{}}
-{&quot;a&quot;:{},&quot;b&quot;:{}}
-&quot;#</span>,
+            <span class="string">r#"{"a":{"list":[1,2]},"b":{"list":[1,2]}}
+{"a":{"list":[null]},"b":{"list":[null]}}
+{"a":{"list":[]},"b":{"list":[]}}
+{"b":{"list":[3,null]}}
+{"a":{"list":[4,5]},"b":{"list":[4,5]}}
+{"b":{}}
+{"a":{},"b":{}}
+"#</span>,
         );
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>json_writer_map() {
-        <span class="kw">let </span>keys_array = <span class="kw">super</span>::StringArray::from(<span class="macro">vec!</span>[<span class="string">&quot;foo&quot;</span>, <span class="string">&quot;bar&quot;</span>, <span class="string">&quot;baz&quot;</span>, <span class="string">&quot;qux&quot;</span>, <span class="string">&quot;quux&quot;</span>]);
+        <span class="kw">let </span>keys_array = <span class="kw">super</span>::StringArray::from(<span class="macro">vec!</span>[<span class="string">"foo"</span>, <span class="string">"bar"</span>, <span class="string">"baz"</span>, <span class="string">"qux"</span>, <span class="string">"quux"</span>]);
         <span class="kw">let </span>values_array = <span class="kw">super</span>::Int64Array::from(<span class="macro">vec!</span>[<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>]);
 
-        <span class="kw">let </span>keys = Arc::new(Field::new(<span class="string">&quot;keys&quot;</span>, DataType::Utf8, <span class="bool-val">false</span>));
-        <span class="kw">let </span>values = Arc::new(Field::new(<span class="string">&quot;values&quot;</span>, DataType::Int64, <span class="bool-val">false</span>));
+        <span class="kw">let </span>keys = Arc::new(Field::new(<span class="string">"keys"</span>, DataType::Utf8, <span class="bool-val">false</span>));
+        <span class="kw">let </span>values = Arc::new(Field::new(<span class="string">"values"</span>, DataType::Int64, <span class="bool-val">false</span>));
         <span class="kw">let </span>entry_struct = StructArray::from(<span class="macro">vec!</span>[
             (keys, Arc::new(keys_array) <span class="kw">as </span>ArrayRef),
             (values, Arc::new(values_array) <span class="kw">as </span>ArrayRef),
@@ -3592,14 +3676,14 @@
 
         <span class="kw">let </span>map_data_type = DataType::Map(
             Arc::new(Field::new(
-                <span class="string">&quot;entries&quot;</span>,
+                <span class="string">"entries"</span>,
                 entry_struct.data_type().clone(),
                 <span class="bool-val">false</span>,
             )),
             <span class="bool-val">false</span>,
         );
 
-        <span class="comment">// [{&quot;foo&quot;: 10}, null, {}, {&quot;bar&quot;: 20, &quot;baz&quot;: 30, &quot;qux&quot;: 40}, {&quot;quux&quot;: 50}, {}]
+        <span class="comment">// [{"foo": 10}, null, {}, {"bar": 20, "baz": 30, "qux": 40}, {"quux": 50}, {}]
         </span><span class="kw">let </span>entry_offsets = Buffer::from(<span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">5</span>].to_byte_slice());
         <span class="kw">let </span>valid_buffer = Buffer::from([<span class="number">0b00111101</span>]);
 
@@ -3613,7 +3697,7 @@
 
         <span class="kw">let </span>map = MapArray::from(map_data);
 
-        <span class="kw">let </span>map_field = Field::new(<span class="string">&quot;map&quot;</span>, map_data_type, <span class="bool-val">true</span>);
+        <span class="kw">let </span>map_field = Field::new(<span class="string">"map"</span>, map_data_type, <span class="bool-val">true</span>);
         <span class="kw">let </span>schema = Arc::new(Schema::new(<span class="macro">vec!</span>[map_field]));
 
         <span class="kw">let </span>batch = RecordBatch::try_new(schema, <span class="macro">vec!</span>[Arc::new(map)]).unwrap();
@@ -3626,19 +3710,19 @@
 
         assert_json_eq(
             <span class="kw-2">&amp;</span>buf,
-            <span class="string">r#&quot;{&quot;map&quot;:{&quot;foo&quot;:10}}
-{&quot;map&quot;:null}
-{&quot;map&quot;:{}}
-{&quot;map&quot;:{&quot;bar&quot;:20,&quot;baz&quot;:30,&quot;qux&quot;:40}}
-{&quot;map&quot;:{&quot;quux&quot;:50}}
-{&quot;map&quot;:{}}
-&quot;#</span>,
+            <span class="string">r#"{"map":{"foo":10}}
+{}
+{"map":{}}
+{"map":{"bar":20,"baz":30,"qux":40}}
+{"map":{"quux":50}}
+{"map":{}}
+"#</span>,
         );
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_write_single_batch() {
-        <span class="kw">let </span>test_file = <span class="string">&quot;test/data/basic.json&quot;</span>;
+        <span class="kw">let </span>test_file = <span class="string">"test/data/basic.json"</span>;
         <span class="kw">let </span>file = File::open(test_file).unwrap();
         <span class="kw">let </span><span class="kw-2">mut </span>reader = BufReader::new(file);
         <span class="kw">let </span>(schema, <span class="kw">_</span>) = infer_json_schema(<span class="kw-2">&amp;mut </span>reader, <span class="prelude-val">None</span>).unwrap();
@@ -3669,17 +3753,17 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_write_multi_batches() {
-        <span class="kw">let </span>test_file = <span class="string">&quot;test/data/basic.json&quot;</span>;
+        <span class="kw">let </span>test_file = <span class="string">"test/data/basic.json"</span>;
 
         <span class="kw">let </span>schema = SchemaRef::new(Schema::new(<span class="macro">vec!</span>[
-            Field::new(<span class="string">&quot;a&quot;</span>, DataType::Int64, <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;b&quot;</span>, DataType::Float64, <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;c&quot;</span>, DataType::Boolean, <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;d&quot;</span>, DataType::Utf8, <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;e&quot;</span>, DataType::Utf8, <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;f&quot;</span>, DataType::Utf8, <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;g&quot;</span>, DataType::Timestamp(TimeUnit::Millisecond, <span class="prelude-val">None</span>), <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;h&quot;</span>, DataType::Float16, <span class="bool-val">true</span>),
+            Field::new(<span class="string">"a"</span>, DataType::Int64, <span class="bool-val">true</span>),
+            Field::new(<span class="string">"b"</span>, DataType::Float64, <span class="bool-val">true</span>),
+            Field::new(<span class="string">"c"</span>, DataType::Boolean, <span class="bool-val">true</span>),
+            Field::new(<span class="string">"d"</span>, DataType::Utf8, <span class="bool-val">true</span>),
+            Field::new(<span class="string">"e"</span>, DataType::Utf8, <span class="bool-val">true</span>),
+            Field::new(<span class="string">"f"</span>, DataType::Utf8, <span class="bool-val">true</span>),
+            Field::new(<span class="string">"g"</span>, DataType::Timestamp(TimeUnit::Millisecond, <span class="prelude-val">None</span>), <span class="bool-val">true</span>),
+            Field::new(<span class="string">"h"</span>, DataType::Float16, <span class="bool-val">true</span>),
         ]));
 
         <span class="kw">let </span><span class="kw-2">mut </span>reader = ReaderBuilder::new(schema.clone())
@@ -3699,7 +3783,7 @@
         <span class="kw">let </span>result = String::from_utf8(buf).unwrap();
         <span class="kw">let </span>expected = read_to_string(test_file).unwrap();
         <span class="comment">// result is eq to 2 same batches
-        </span><span class="kw">let </span>expected = <span class="macro">format!</span>(<span class="string">&quot;{expected}\n{expected}&quot;</span>);
+        </span><span class="kw">let </span>expected = <span class="macro">format!</span>(<span class="string">"{expected}\n{expected}"</span>);
         <span class="kw">for </span>(r, e) <span class="kw">in </span>result.lines().zip(expected.lines()) {
             <span class="kw">let </span><span class="kw-2">mut </span>expected_json = serde_json::from_str::&lt;Value&gt;(e).unwrap();
             <span class="comment">// remove null value from object to make comparison consistent:
@@ -3738,18 +3822,18 @@
         <span class="kw">let </span>expected_json = serde_json::from_value::&lt;Vec&lt;Value&gt;&gt;(<span class="macro">json!</span>([
             [
                 {
-                    <span class="string">&quot;keys&quot;</span>: <span class="string">&quot;joe&quot;</span>,
-                    <span class="string">&quot;values&quot;</span>: <span class="number">1
+                    <span class="string">"keys"</span>: <span class="string">"joe"</span>,
+                    <span class="string">"values"</span>: <span class="number">1
                 </span>}
             ],
             [
                 {
-                    <span class="string">&quot;keys&quot;</span>: <span class="string">&quot;blogs&quot;</span>,
-                    <span class="string">&quot;values&quot;</span>: <span class="number">2
+                    <span class="string">"keys"</span>: <span class="string">"blogs"</span>,
+                    <span class="string">"values"</span>: <span class="number">2
                 </span>},
                 {
-                    <span class="string">&quot;keys&quot;</span>: <span class="string">&quot;foo&quot;</span>,
-                    <span class="string">&quot;values&quot;</span>: <span class="number">4
+                    <span class="string">"keys"</span>: <span class="string">"foo"</span>,
+                    <span class="string">"values"</span>: <span class="number">4
                 </span>}
             ],
             [],
@@ -3762,13 +3846,13 @@
 
         <span class="kw">let </span><span class="kw-2">mut </span>builder = MapBuilder::new(<span class="prelude-val">None</span>, string_builder, int_builder);
 
-        builder.keys().append_value(<span class="string">&quot;joe&quot;</span>);
+        builder.keys().append_value(<span class="string">"joe"</span>);
         builder.values().append_value(<span class="number">1</span>);
         builder.append(<span class="bool-val">true</span>).unwrap();
 
-        builder.keys().append_value(<span class="string">&quot;blogs&quot;</span>);
+        builder.keys().append_value(<span class="string">"blogs"</span>);
         builder.values().append_value(<span class="number">2</span>);
-        builder.keys().append_value(<span class="string">&quot;foo&quot;</span>);
+        builder.keys().append_value(<span class="string">"foo"</span>);
         builder.values().append_value(<span class="number">4</span>);
         builder.append(<span class="bool-val">true</span>).unwrap();
         builder.append(<span class="bool-val">true</span>).unwrap();
@@ -3790,20 +3874,20 @@
                 <span class="prelude-val">None</span>,
                 <span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>]),
             ]));
-            <span class="kw">let </span>field = Arc::new(Field::new(<span class="string">&quot;list&quot;</span>, array.data_type().clone(), <span class="bool-val">true</span>));
-            <span class="comment">// [{&quot;list&quot;:[null,null,null]},{&quot;list&quot;:[1,2,3]},{&quot;list&quot;:null},{&quot;list&quot;:[null,null,null]}]
+            <span class="kw">let </span>field = Arc::new(Field::new(<span class="string">"list"</span>, array.data_type().clone(), <span class="bool-val">true</span>));
+            <span class="comment">// [{"list":[null,null,null]},{"list":[1,2,3]},{"list":null},{"list":[null,null,null]}]
             </span>(array, field)
         }
 
         <span class="kw">fn </span>nested_dict() -&gt; (Arc&lt;DictionaryArray&lt;Int32Type&gt;&gt;, Arc&lt;Field&gt;) {
             <span class="kw">let </span>array = Arc::new(DictionaryArray::from_iter(<span class="macro">vec!</span>[
-                <span class="prelude-val">Some</span>(<span class="string">&quot;cupcakes&quot;</span>),
+                <span class="prelude-val">Some</span>(<span class="string">"cupcakes"</span>),
                 <span class="prelude-val">None</span>,
-                <span class="prelude-val">Some</span>(<span class="string">&quot;bear&quot;</span>),
-                <span class="prelude-val">Some</span>(<span class="string">&quot;kuma&quot;</span>),
+                <span class="prelude-val">Some</span>(<span class="string">"bear"</span>),
+                <span class="prelude-val">Some</span>(<span class="string">"kuma"</span>),
             ]));
-            <span class="kw">let </span>field = Arc::new(Field::new(<span class="string">&quot;dict&quot;</span>, array.data_type().clone(), <span class="bool-val">true</span>));
-            <span class="comment">// [{&quot;dict&quot;:&quot;cupcakes&quot;},{&quot;dict&quot;:null},{&quot;dict&quot;:&quot;bear&quot;},{&quot;dict&quot;:&quot;kuma&quot;}]
+            <span class="kw">let </span>field = Arc::new(Field::new(<span class="string">"dict"</span>, array.data_type().clone(), <span class="bool-val">true</span>));
+            <span class="comment">// [{"dict":"cupcakes"},{"dict":null},{"dict":"bear"},{"dict":"kuma"}]
             </span>(array, field)
         }
 
@@ -3812,8 +3896,8 @@
             <span class="kw">let </span>int_builder = Int64Builder::new();
             <span class="kw">let </span><span class="kw-2">mut </span>builder = MapBuilder::new(<span class="prelude-val">None</span>, string_builder, int_builder);
 
-            <span class="comment">// [{&quot;foo&quot;: 10}, null, {}, {&quot;bar&quot;: 20, &quot;baz&quot;: 30, &quot;qux&quot;: 40}]
-            </span>builder.keys().append_value(<span class="string">&quot;foo&quot;</span>);
+            <span class="comment">// [{"foo": 10}, null, {}, {"bar": 20, "baz": 30, "qux": 40}]
+            </span>builder.keys().append_value(<span class="string">"foo"</span>);
             builder.values().append_value(<span class="number">10</span>);
             builder.append(<span class="bool-val">true</span>).unwrap();
 
@@ -3821,38 +3905,38 @@
 
             builder.append(<span class="bool-val">true</span>).unwrap();
 
-            builder.keys().append_value(<span class="string">&quot;bar&quot;</span>);
+            builder.keys().append_value(<span class="string">"bar"</span>);
             builder.values().append_value(<span class="number">20</span>);
-            builder.keys().append_value(<span class="string">&quot;baz&quot;</span>);
+            builder.keys().append_value(<span class="string">"baz"</span>);
             builder.values().append_value(<span class="number">30</span>);
-            builder.keys().append_value(<span class="string">&quot;qux&quot;</span>);
+            builder.keys().append_value(<span class="string">"qux"</span>);
             builder.values().append_value(<span class="number">40</span>);
             builder.append(<span class="bool-val">true</span>).unwrap();
 
             <span class="kw">let </span>array = Arc::new(builder.finish());
-            <span class="kw">let </span>field = Arc::new(Field::new(<span class="string">&quot;map&quot;</span>, array.data_type().clone(), <span class="bool-val">true</span>));
+            <span class="kw">let </span>field = Arc::new(Field::new(<span class="string">"map"</span>, array.data_type().clone(), <span class="bool-val">true</span>));
             (array, field)
         }
 
         <span class="kw">fn </span>root_list() -&gt; (Arc&lt;ListArray&gt;, Field) {
             <span class="kw">let </span>struct_array = StructArray::from(<span class="macro">vec!</span>[
                 (
-                    Arc::new(Field::new(<span class="string">&quot;utf8&quot;</span>, DataType::Utf8, <span class="bool-val">true</span>)),
-                    Arc::new(StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;b&quot;</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>])) <span class="kw">as </span>ArrayRef,
+                    Arc::new(Field::new(<span class="string">"utf8"</span>, DataType::Utf8, <span class="bool-val">true</span>)),
+                    Arc::new(StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"a"</span>), <span class="prelude-val">Some</span>(<span class="string">"b"</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>])) <span class="kw">as </span>ArrayRef,
                 ),
                 (
-                    Arc::new(Field::new(<span class="string">&quot;int32&quot;</span>, DataType::Int32, <span class="bool-val">true</span>)),
+                    Arc::new(Field::new(<span class="string">"int32"</span>, DataType::Int32, <span class="bool-val">true</span>)),
                     Arc::new(Int32Array::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">5</span>), <span class="prelude-val">None</span>])) <span class="kw">as </span>ArrayRef,
                 ),
             ]);
 
             <span class="kw">let </span>field = Field::new_list(
-                <span class="string">&quot;list&quot;</span>,
-                Field::new(<span class="string">&quot;struct&quot;</span>, struct_array.data_type().clone(), <span class="bool-val">true</span>),
+                <span class="string">"list"</span>,
+                Field::new(<span class="string">"struct"</span>, struct_array.data_type().clone(), <span class="bool-val">true</span>),
                 <span class="bool-val">true</span>,
             );
 
-            <span class="comment">// [{&quot;list&quot;:[{&quot;int32&quot;:1,&quot;utf8&quot;:&quot;a&quot;},{&quot;int32&quot;:null,&quot;utf8&quot;:&quot;b&quot;}]},{&quot;list&quot;:null},{&quot;list&quot;:[{int32&quot;:5,&quot;utf8&quot;:null}]},{&quot;list&quot;:null}]
+            <span class="comment">// [{"list":[{"int32":1,"utf8":"a"},{"int32":null,"utf8":"b"}]},{"list":null},{"list":[{int32":5,"utf8":null}]},{"list":null}]
             </span><span class="kw">let </span>entry_offsets = Buffer::from(<span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>].to_byte_slice());
             <span class="kw">let </span>data = ArrayData::builder(field.data_type().clone())
                 .len(<span class="number">4</span>)
@@ -3871,12 +3955,12 @@
         <span class="kw">let </span>(root_list_array, root_list_field) = root_list();
 
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[
-            Field::new(<span class="string">&quot;date&quot;</span>, DataType::Date32, <span class="bool-val">true</span>),
-            Field::new(<span class="string">&quot;null&quot;</span>, DataType::Null, <span class="bool-val">true</span>),
+            Field::new(<span class="string">"date"</span>, DataType::Date32, <span class="bool-val">true</span>),
+            Field::new(<span class="string">"null"</span>, DataType::Null, <span class="bool-val">true</span>),
             Field::new_struct(
-                <span class="string">&quot;struct&quot;</span>,
+                <span class="string">"struct"</span>,
                 <span class="macro">vec!</span>[
-                    Arc::new(Field::new(<span class="string">&quot;utf8&quot;</span>, DataType::Utf8, <span class="bool-val">true</span>)),
+                    Arc::new(Field::new(<span class="string">"utf8"</span>, DataType::Utf8, <span class="bool-val">true</span>)),
                     nested_list_field.clone(),
                     nested_dict_field.clone(),
                     nested_map_field.clone(),
@@ -3889,28 +3973,28 @@
         <span class="kw">let </span>arr_date32 = Date32Array::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">None</span>]);
         <span class="kw">let </span>arr_null = NullArray::new(<span class="number">4</span>);
         <span class="kw">let </span>arr_struct = StructArray::from(<span class="macro">vec!</span>[
-            <span class="comment">// [{&quot;utf8&quot;:&quot;a&quot;},{&quot;utf8&quot;:null},{&quot;utf8&quot;:null},{&quot;utf8&quot;:&quot;b&quot;}]
+            <span class="comment">// [{"utf8":"a"},{"utf8":null},{"utf8":null},{"utf8":"b"}]
             </span>(
-                Arc::new(Field::new(<span class="string">&quot;utf8&quot;</span>, DataType::Utf8, <span class="bool-val">true</span>)),
-                Arc::new(StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">&quot;a&quot;</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;b&quot;</span>)])) <span class="kw">as </span>ArrayRef,
+                Arc::new(Field::new(<span class="string">"utf8"</span>, DataType::Utf8, <span class="bool-val">true</span>)),
+                Arc::new(StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"a"</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">"b"</span>)])) <span class="kw">as </span>ArrayRef,
             ),
-            <span class="comment">// [{&quot;list&quot;:[null,null,null]},{&quot;list&quot;:[1,2,3]},{&quot;list&quot;:null},{&quot;list&quot;:[null,null,null]}]
+            <span class="comment">// [{"list":[null,null,null]},{"list":[1,2,3]},{"list":null},{"list":[null,null,null]}]
             </span>(nested_list_field, nested_list_array <span class="kw">as </span>ArrayRef),
-            <span class="comment">// [{&quot;dict&quot;:&quot;cupcakes&quot;},{&quot;dict&quot;:null},{&quot;dict&quot;:&quot;bear&quot;},{&quot;dict&quot;:&quot;kuma&quot;}]
+            <span class="comment">// [{"dict":"cupcakes"},{"dict":null},{"dict":"bear"},{"dict":"kuma"}]
             </span>(nested_dict_field, nested_dict_array <span class="kw">as </span>ArrayRef),
-            <span class="comment">// [{&quot;foo&quot;: 10}, null, {}, {&quot;bar&quot;: 20, &quot;baz&quot;: 30, &quot;qux&quot;: 40}]
+            <span class="comment">// [{"foo": 10}, null, {}, {"bar": 20, "baz": 30, "qux": 40}]
             </span>(nested_map_field, nested_map_array <span class="kw">as </span>ArrayRef),
         ]);
 
         <span class="kw">let </span>batch = RecordBatch::try_new(
             Arc::new(schema),
             <span class="macro">vec!</span>[
-                <span class="comment">// [{&quot;date&quot;:&quot;1970-01-01&quot;},{&quot;date&quot;:null},{&quot;date&quot;:&quot;1970-01-02&quot;},{&quot;date&quot;:null}]
+                <span class="comment">// [{"date":"1970-01-01"},{"date":null},{"date":"1970-01-02"},{"date":null}]
                 </span>Arc::new(arr_date32),
-                <span class="comment">// [{&quot;null&quot;:null},{&quot;null&quot;:null},{&quot;null&quot;:null},{&quot;null&quot;:null}]
+                <span class="comment">// [{"null":null},{"null":null},{"null":null},{"null":null}]
                 </span>Arc::new(arr_null),
                 Arc::new(arr_struct),
-                <span class="comment">// [{&quot;list&quot;:[{&quot;int32&quot;:1,&quot;utf8&quot;:&quot;a&quot;},{&quot;int32&quot;:null,&quot;utf8&quot;:&quot;b&quot;}]},{&quot;list&quot;:null},{&quot;list&quot;:[{int32&quot;:5,&quot;utf8&quot;:null}]},{&quot;list&quot;:null}]
+                <span class="comment">// [{"list":[{"int32":1,"utf8":"a"},{"int32":null,"utf8":"b"}]},{"list":null},{"list":[{int32":5,"utf8":null}]},{"list":null}]
                 </span>root_list_array,
             ],
         )<span class="question-mark">?</span>;
@@ -3927,79 +4011,79 @@
         <span class="kw">let </span>actual = serde_json::from_slice::&lt;Vec&lt;Value&gt;&gt;(<span class="kw-2">&amp;</span>buf).unwrap();
         <span class="kw">let </span>expected = serde_json::from_value::&lt;Vec&lt;Value&gt;&gt;(<span class="macro">json!</span>([
           {
-            <span class="string">&quot;date&quot;</span>: <span class="string">&quot;1970-01-01&quot;</span>,
-            <span class="string">&quot;list&quot;</span>: [
+            <span class="string">"date"</span>: <span class="string">"1970-01-01"</span>,
+            <span class="string">"list"</span>: [
               {
-                <span class="string">&quot;int32&quot;</span>: <span class="number">1</span>,
-                <span class="string">&quot;utf8&quot;</span>: <span class="string">&quot;a&quot;
+                <span class="string">"int32"</span>: <span class="number">1</span>,
+                <span class="string">"utf8"</span>: <span class="string">"a"
               </span>},
               {
-                <span class="string">&quot;int32&quot;</span>: null,
-                <span class="string">&quot;utf8&quot;</span>: <span class="string">&quot;b&quot;
+                <span class="string">"int32"</span>: null,
+                <span class="string">"utf8"</span>: <span class="string">"b"
               </span>}
             ],
-            <span class="string">&quot;null&quot;</span>: null,
-            <span class="string">&quot;struct&quot;</span>: {
-              <span class="string">&quot;dict&quot;</span>: <span class="string">&quot;cupcakes&quot;</span>,
-              <span class="string">&quot;list&quot;</span>: [
+            <span class="string">"null"</span>: null,
+            <span class="string">"struct"</span>: {
+              <span class="string">"dict"</span>: <span class="string">"cupcakes"</span>,
+              <span class="string">"list"</span>: [
                 null,
                 null,
                 null
               ],
-              <span class="string">&quot;map&quot;</span>: {
-                <span class="string">&quot;foo&quot;</span>: <span class="number">10
+              <span class="string">"map"</span>: {
+                <span class="string">"foo"</span>: <span class="number">10
               </span>},
-              <span class="string">&quot;utf8&quot;</span>: <span class="string">&quot;a&quot;
+              <span class="string">"utf8"</span>: <span class="string">"a"
             </span>}
           },
           {
-            <span class="string">&quot;date&quot;</span>: null,
-            <span class="string">&quot;list&quot;</span>: null,
-            <span class="string">&quot;null&quot;</span>: null,
-            <span class="string">&quot;struct&quot;</span>: {
-              <span class="string">&quot;dict&quot;</span>: null,
-              <span class="string">&quot;list&quot;</span>: [
+            <span class="string">"date"</span>: null,
+            <span class="string">"list"</span>: null,
+            <span class="string">"null"</span>: null,
+            <span class="string">"struct"</span>: {
+              <span class="string">"dict"</span>: null,
+              <span class="string">"list"</span>: [
                 <span class="number">1</span>,
                 <span class="number">2</span>,
                 <span class="number">3
               </span>],
-              <span class="string">&quot;map&quot;</span>: null,
-              <span class="string">&quot;utf8&quot;</span>: null
+              <span class="string">"map"</span>: null,
+              <span class="string">"utf8"</span>: null
             }
           },
           {
-            <span class="string">&quot;date&quot;</span>: <span class="string">&quot;1970-01-02&quot;</span>,
-            <span class="string">&quot;list&quot;</span>: [
+            <span class="string">"date"</span>: <span class="string">"1970-01-02"</span>,
+            <span class="string">"list"</span>: [
               {
-                <span class="string">&quot;int32&quot;</span>: <span class="number">5</span>,
-                <span class="string">&quot;utf8&quot;</span>: null
+                <span class="string">"int32"</span>: <span class="number">5</span>,
+                <span class="string">"utf8"</span>: null
               }
             ],
-            <span class="string">&quot;null&quot;</span>: null,
-            <span class="string">&quot;struct&quot;</span>: {
-              <span class="string">&quot;dict&quot;</span>: <span class="string">&quot;bear&quot;</span>,
-              <span class="string">&quot;list&quot;</span>: null,
-              <span class="string">&quot;map&quot;</span>: {},
-              <span class="string">&quot;utf8&quot;</span>: null
+            <span class="string">"null"</span>: null,
+            <span class="string">"struct"</span>: {
+              <span class="string">"dict"</span>: <span class="string">"bear"</span>,
+              <span class="string">"list"</span>: null,
+              <span class="string">"map"</span>: {},
+              <span class="string">"utf8"</span>: null
             }
           },
           {
-            <span class="string">&quot;date&quot;</span>: null,
-            <span class="string">&quot;list&quot;</span>: null,
-            <span class="string">&quot;null&quot;</span>: null,
-            <span class="string">&quot;struct&quot;</span>: {
-              <span class="string">&quot;dict&quot;</span>: <span class="string">&quot;kuma&quot;</span>,
-              <span class="string">&quot;list&quot;</span>: [
+            <span class="string">"date"</span>: null,
+            <span class="string">"list"</span>: null,
+            <span class="string">"null"</span>: null,
+            <span class="string">"struct"</span>: {
+              <span class="string">"dict"</span>: <span class="string">"kuma"</span>,
+              <span class="string">"list"</span>: [
                 null,
                 null,
                 null
               ],
-              <span class="string">&quot;map&quot;</span>: {
-                <span class="string">&quot;bar&quot;</span>: <span class="number">20</span>,
-                <span class="string">&quot;baz&quot;</span>: <span class="number">30</span>,
-                <span class="string">&quot;qux&quot;</span>: <span class="number">40
+              <span class="string">"map"</span>: {
+                <span class="string">"bar"</span>: <span class="number">20</span>,
+                <span class="string">"baz"</span>: <span class="number">30</span>,
+                <span class="string">"qux"</span>: <span class="number">40
               </span>},
-              <span class="string">&quot;utf8&quot;</span>: <span class="string">&quot;b&quot;
+              <span class="string">"utf8"</span>: <span class="string">"b"
             </span>}
           }
         ]))
