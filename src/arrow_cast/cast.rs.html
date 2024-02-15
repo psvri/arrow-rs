@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-cast/src/cast.rs`."><title>cast.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_cast" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (1a648b397 2024-02-11)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-cast/src/cast.rs`."><title>cast.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_cast" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (ee9c7c940 2024-02-14)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../arrow_cast/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -9723,6 +9723,25 @@
 <a href="#9721" id="9721">9721</a>
 <a href="#9722" id="9722">9722</a>
 <a href="#9723" id="9723">9723</a>
+<a href="#9724" id="9724">9724</a>
+<a href="#9725" id="9725">9725</a>
+<a href="#9726" id="9726">9726</a>
+<a href="#9727" id="9727">9727</a>
+<a href="#9728" id="9728">9728</a>
+<a href="#9729" id="9729">9729</a>
+<a href="#9730" id="9730">9730</a>
+<a href="#9731" id="9731">9731</a>
+<a href="#9732" id="9732">9732</a>
+<a href="#9733" id="9733">9733</a>
+<a href="#9734" id="9734">9734</a>
+<a href="#9735" id="9735">9735</a>
+<a href="#9736" id="9736">9736</a>
+<a href="#9737" id="9737">9737</a>
+<a href="#9738" id="9738">9738</a>
+<a href="#9739" id="9739">9739</a>
+<a href="#9740" id="9740">9740</a>
+<a href="#9741" id="9741">9741</a>
+<a href="#9742" id="9742">9742</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -14634,6 +14653,25 @@
         <span class="macro">assert_eq!</span>(<span class="number">10000</span>, c.value(<span class="number">0</span>));
         <span class="macro">assert_eq!</span>(<span class="number">17890</span>, c.value(<span class="number">1</span>));
         <span class="macro">assert!</span>(c.is_null(<span class="number">2</span>));
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_cast_string_to_integral_overflow() {
+        <span class="kw">let </span>str = Arc::new(StringArray::from(<span class="macro">vec!</span>[
+            <span class="prelude-val">Some</span>(<span class="string">"123"</span>),
+            <span class="prelude-val">Some</span>(<span class="string">"-123"</span>),
+            <span class="prelude-val">Some</span>(<span class="string">"86374"</span>),
+            <span class="prelude-val">None</span>,
+        ])) <span class="kw">as </span>ArrayRef;
+
+        <span class="kw">let </span>options = CastOptions {
+            safe: <span class="bool-val">true</span>,
+            format_options: FormatOptions::default(),
+        };
+        <span class="kw">let </span>res = cast_with_options(<span class="kw-2">&amp;</span>str, <span class="kw-2">&amp;</span>DataType::Int16, <span class="kw-2">&amp;</span>options).expect(<span class="string">"should cast to i16"</span>);
+        <span class="kw">let </span>expected =
+            Arc::new(Int16Array::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">123</span>), <span class="prelude-val">Some</span>(-<span class="number">123</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>])) <span class="kw">as </span>ArrayRef;
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>res, <span class="kw-2">&amp;</span>expected);
     }
 
     <span class="attr">#[test]
