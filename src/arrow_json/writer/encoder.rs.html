@@ -1,6 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-json/src/writer/encoder.rs`."><title>encoder.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="arrow_json" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (381d69953 2024-02-24)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c37d3936c59ababd.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
-            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../arrow_json/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-json/src/writer/encoder.rs`."><title>encoder.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-b21aa549bf6d91ff.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="arrow_json" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0-nightly (c987ad527 2024-05-01)" data-channel="nightly" data-search-js="search-bf21c90c8c1d92b1.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-e32f0c247825364d.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-09095024cf37855e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../arrow_json/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Type ‘S’ or ‘/’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings">Settings</a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -445,6 +443,81 @@
 <a href="#443" id="443">443</a>
 <a href="#444" id="444">444</a>
 <a href="#445" id="445">445</a>
+<a href="#446" id="446">446</a>
+<a href="#447" id="447">447</a>
+<a href="#448" id="448">448</a>
+<a href="#449" id="449">449</a>
+<a href="#450" id="450">450</a>
+<a href="#451" id="451">451</a>
+<a href="#452" id="452">452</a>
+<a href="#453" id="453">453</a>
+<a href="#454" id="454">454</a>
+<a href="#455" id="455">455</a>
+<a href="#456" id="456">456</a>
+<a href="#457" id="457">457</a>
+<a href="#458" id="458">458</a>
+<a href="#459" id="459">459</a>
+<a href="#460" id="460">460</a>
+<a href="#461" id="461">461</a>
+<a href="#462" id="462">462</a>
+<a href="#463" id="463">463</a>
+<a href="#464" id="464">464</a>
+<a href="#465" id="465">465</a>
+<a href="#466" id="466">466</a>
+<a href="#467" id="467">467</a>
+<a href="#468" id="468">468</a>
+<a href="#469" id="469">469</a>
+<a href="#470" id="470">470</a>
+<a href="#471" id="471">471</a>
+<a href="#472" id="472">472</a>
+<a href="#473" id="473">473</a>
+<a href="#474" id="474">474</a>
+<a href="#475" id="475">475</a>
+<a href="#476" id="476">476</a>
+<a href="#477" id="477">477</a>
+<a href="#478" id="478">478</a>
+<a href="#479" id="479">479</a>
+<a href="#480" id="480">480</a>
+<a href="#481" id="481">481</a>
+<a href="#482" id="482">482</a>
+<a href="#483" id="483">483</a>
+<a href="#484" id="484">484</a>
+<a href="#485" id="485">485</a>
+<a href="#486" id="486">486</a>
+<a href="#487" id="487">487</a>
+<a href="#488" id="488">488</a>
+<a href="#489" id="489">489</a>
+<a href="#490" id="490">490</a>
+<a href="#491" id="491">491</a>
+<a href="#492" id="492">492</a>
+<a href="#493" id="493">493</a>
+<a href="#494" id="494">494</a>
+<a href="#495" id="495">495</a>
+<a href="#496" id="496">496</a>
+<a href="#497" id="497">497</a>
+<a href="#498" id="498">498</a>
+<a href="#499" id="499">499</a>
+<a href="#500" id="500">500</a>
+<a href="#501" id="501">501</a>
+<a href="#502" id="502">502</a>
+<a href="#503" id="503">503</a>
+<a href="#504" id="504">504</a>
+<a href="#505" id="505">505</a>
+<a href="#506" id="506">506</a>
+<a href="#507" id="507">507</a>
+<a href="#508" id="508">508</a>
+<a href="#509" id="509">509</a>
+<a href="#510" id="510">510</a>
+<a href="#511" id="511">511</a>
+<a href="#512" id="512">512</a>
+<a href="#513" id="513">513</a>
+<a href="#514" id="514">514</a>
+<a href="#515" id="515">515</a>
+<a href="#516" id="516">516</a>
+<a href="#517" id="517">517</a>
+<a href="#518" id="518">518</a>
+<a href="#519" id="519">519</a>
+<a href="#520" id="520">520</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -501,7 +574,7 @@
     array: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw">dyn </span>Array,
     options: <span class="kw-2">&amp;</span>EncoderOptions,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;(Box&lt;<span class="kw">dyn </span>Encoder + <span class="lifetime">'a</span>&gt;, <span class="prelude-ty">Option</span>&lt;NullBuffer&gt;), ArrowError&gt; {
-    <span class="macro">macro_rules! </span>primitive_helper {
+    <span class="macro">macro_rules!</span> primitive_helper {
         (<span class="macro-nonterminal">$t</span>:ty) =&gt; {{
             <span class="kw">let </span>array = array.as_primitive::&lt;<span class="macro-nonterminal">$t</span>&gt;();
             <span class="kw">let </span>nulls = array.nulls().cloned();
@@ -509,23 +582,23 @@
         }};
     }
 
-    <span class="prelude-val">Ok</span>(<span class="macro">downcast_integer! </span>{
+    <span class="prelude-val">Ok</span>(<span class="macro">downcast_integer!</span> {
         array.data_type() =&gt; (primitive_helper),
         DataType::Float16 =&gt; <span class="macro">primitive_helper!</span>(Float16Type),
         DataType::Float32 =&gt; <span class="macro">primitive_helper!</span>(Float32Type),
         DataType::Float64 =&gt; <span class="macro">primitive_helper!</span>(Float64Type),
         DataType::Boolean =&gt; {
             <span class="kw">let </span>array = array.as_boolean();
-            (Box::new(BooleanEncoder(array.clone())), array.nulls().cloned())
+            (Box::new(BooleanEncoder(array)), array.nulls().cloned())
         }
         DataType::Null =&gt; (Box::new(NullEncoder), array.logical_nulls()),
         DataType::Utf8 =&gt; {
             <span class="kw">let </span>array = array.as_string::&lt;i32&gt;();
-            (Box::new(StringEncoder(array.clone())) <span class="kw">as _</span>, array.nulls().cloned())
+            (Box::new(StringEncoder(array)) <span class="kw">as _</span>, array.nulls().cloned())
         }
         DataType::LargeUtf8 =&gt; {
             <span class="kw">let </span>array = array.as_string::&lt;i64&gt;();
-            (Box::new(StringEncoder(array.clone())) <span class="kw">as _</span>, array.nulls().cloned())
+            (Box::new(StringEncoder(array)) <span class="kw">as _</span>, array.nulls().cloned())
         }
         DataType::List(<span class="kw">_</span>) =&gt; {
             <span class="kw">let </span>array = array.as_list::&lt;i32&gt;();
@@ -535,8 +608,12 @@
             <span class="kw">let </span>array = array.as_list::&lt;i64&gt;();
             (Box::new(ListEncoder::try_new(array, options)<span class="question-mark">?</span>) <span class="kw">as _</span>, array.nulls().cloned())
         }
+        DataType::FixedSizeList(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; {
+            <span class="kw">let </span>array = array.as_fixed_size_list();
+            (Box::new(FixedSizeListEncoder::try_new(array, options)<span class="question-mark">?</span>) <span class="kw">as _</span>, array.nulls().cloned())
+        }
 
-        DataType::Dictionary(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="macro">downcast_dictionary_array! </span>{
+        DataType::Dictionary(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="macro">downcast_dictionary_array!</span> {
             array =&gt; (Box::new(DictionaryEncoder::try_new(array, options)<span class="question-mark">?</span>) <span class="kw">as _</span>,  array.logical_nulls()),
             <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>()
         }
@@ -544,6 +621,11 @@
         DataType::Map(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; {
             <span class="kw">let </span>array = array.as_map();
             (Box::new(MapEncoder::try_new(array, options)<span class="question-mark">?</span>) <span class="kw">as _</span>,  array.nulls().cloned())
+        }
+
+        DataType::FixedSizeBinary(<span class="kw">_</span>) =&gt; {
+            <span class="kw">let </span>array = array.as_fixed_size_binary();
+            (Box::new(FixedSizeBinaryEncoder::new(array)) <span class="kw">as _</span>, array.nulls().cloned())
         }
 
         DataType::Struct(fields) =&gt; {
@@ -632,7 +714,7 @@
     </span><span class="kw">fn </span>encode(<span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Buffer) -&gt; <span class="kw-2">&amp;</span>[u8];
 }
 
-<span class="macro">macro_rules! </span>integer_encode {
+<span class="macro">macro_rules!</span> integer_encode {
     ($(<span class="macro-nonterminal">$t</span>:ty),<span class="kw-2">*</span>) =&gt; {
         $(
             <span class="kw">impl </span>PrimitiveEncode <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
@@ -651,7 +733,7 @@
 }
 <span class="macro">integer_encode!</span>(i8, i16, i32, i64, u8, u16, u32, u64);
 
-<span class="macro">macro_rules! </span>float_encode {
+<span class="macro">macro_rules!</span> float_encode {
     ($(<span class="macro-nonterminal">$t</span>:ty),<span class="kw-2">*</span>) =&gt; {
         $(
             <span class="kw">impl </span>PrimitiveEncode <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
@@ -706,9 +788,9 @@
     }
 }
 
-<span class="kw">struct </span>BooleanEncoder(BooleanArray);
+<span class="kw">struct </span>BooleanEncoder&lt;<span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>BooleanArray);
 
-<span class="kw">impl </span>Encoder <span class="kw">for </span>BooleanEncoder {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Encoder <span class="kw">for </span>BooleanEncoder&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">fn </span>encode(<span class="kw-2">&amp;mut </span><span class="self">self</span>, idx: usize, out: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;) {
         <span class="kw">match </span><span class="self">self</span>.<span class="number">0</span>.value(idx) {
             <span class="bool-val">true </span>=&gt; out.extend_from_slice(<span class="string">b"true"</span>),
@@ -717,9 +799,9 @@
     }
 }
 
-<span class="kw">struct </span>StringEncoder&lt;O: OffsetSizeTrait&gt;(GenericStringArray&lt;O&gt;);
+<span class="kw">struct </span>StringEncoder&lt;<span class="lifetime">'a</span>, O: OffsetSizeTrait&gt;(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>GenericStringArray&lt;O&gt;);
 
-<span class="kw">impl</span>&lt;O: OffsetSizeTrait&gt; Encoder <span class="kw">for </span>StringEncoder&lt;O&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, O: OffsetSizeTrait&gt; Encoder <span class="kw">for </span>StringEncoder&lt;<span class="lifetime">'a</span>, O&gt; {
     <span class="kw">fn </span>encode(<span class="kw-2">&amp;mut </span><span class="self">self</span>, idx: usize, out: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;) {
         encode_string(<span class="self">self</span>.<span class="number">0</span>.value(idx), out);
     }
@@ -763,6 +845,53 @@
             <span class="prelude-val">None </span>=&gt; (start..end).for_each(|idx| {
                 <span class="kw">if </span>idx != start {
                     out.push(<span class="string">b','</span>)
+                }
+                <span class="self">self</span>.encoder.encode(idx, out);
+            }),
+        }
+        out.push(<span class="string">b']'</span>);
+    }
+}
+
+<span class="kw">struct </span>FixedSizeListEncoder&lt;<span class="lifetime">'a</span>&gt; {
+    value_length: usize,
+    nulls: <span class="prelude-ty">Option</span>&lt;NullBuffer&gt;,
+    encoder: Box&lt;<span class="kw">dyn </span>Encoder + <span class="lifetime">'a</span>&gt;,
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; FixedSizeListEncoder&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">fn </span>try_new(
+        array: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>FixedSizeListArray,
+        options: <span class="kw-2">&amp;</span>EncoderOptions,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ArrowError&gt; {
+        <span class="kw">let </span>(encoder, nulls) = make_encoder_impl(array.values().as_ref(), options)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+            encoder,
+            nulls,
+            value_length: array.value_length().as_usize(),
+        })
+    }
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Encoder <span class="kw">for </span>FixedSizeListEncoder&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">fn </span>encode(<span class="kw-2">&amp;mut </span><span class="self">self</span>, idx: usize, out: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;) {
+        <span class="kw">let </span>start = idx * <span class="self">self</span>.value_length;
+        <span class="kw">let </span>end = start + <span class="self">self</span>.value_length;
+        out.push(<span class="string">b'['</span>);
+        <span class="kw">match </span><span class="self">self</span>.nulls.as_ref() {
+            <span class="prelude-val">Some</span>(n) =&gt; (start..end).for_each(|idx| {
+                <span class="kw">if </span>idx != start {
+                    out.push(<span class="string">b','</span>);
+                }
+                <span class="kw">if </span>n.is_null(idx) {
+                    out.extend_from_slice(<span class="string">b"null"</span>);
+                } <span class="kw">else </span>{
+                    <span class="self">self</span>.encoder.encode(idx, out);
+                }
+            }),
+            <span class="prelude-val">None </span>=&gt; (start..end).for_each(|idx| {
+                <span class="kw">if </span>idx != start {
+                    out.push(<span class="string">b','</span>);
                 }
                 <span class="self">self</span>.encoder.encode(idx, out);
             }),
@@ -888,6 +1017,25 @@
             }
         }
         out.push(<span class="string">b'}'</span>);
+    }
+}
+
+<span class="kw">struct </span>FixedSizeBinaryEncoder&lt;<span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>FixedSizeBinaryArray);
+
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; FixedSizeBinaryEncoder&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">fn </span>new(array: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>FixedSizeBinaryArray) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>(array)
+    }
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Encoder <span class="kw">for </span>FixedSizeBinaryEncoder&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">fn </span>encode(<span class="kw-2">&amp;mut </span><span class="self">self</span>, idx: usize, out: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;) {
+        out.push(<span class="string">b'"'</span>);
+        <span class="kw">for </span>byte <span class="kw">in </span><span class="self">self</span>.<span class="number">0</span>.value(idx) {
+            <span class="comment">// this write is infallible
+            </span><span class="macro">write!</span>(out, <span class="string">"{byte:02x}"</span>).unwrap();
+        }
+        out.push(<span class="string">b'"'</span>);
     }
 }
 </code></pre></div></section></main></body></html>

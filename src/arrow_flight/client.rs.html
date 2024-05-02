@@ -1,6 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-flight/src/client.rs`."><title>client.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_flight" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (381d69953 2024-02-24)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-c37d3936c59ababd.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
-            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../arrow_flight/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-flight/src/client.rs`."><title>client.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-b21aa549bf6d91ff.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_flight" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0-nightly (c987ad527 2024-05-01)" data-channel="nightly" data-search-js="search-bf21c90c8c1d92b1.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-e32f0c247825364d.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-09095024cf37855e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../arrow_flight/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Type ‘S’ or ‘/’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings">Settings</a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -688,6 +686,24 @@
 <a href="#686" id="686">686</a>
 <a href="#687" id="687">687</a>
 <a href="#688" id="688">688</a>
+<a href="#689" id="689">689</a>
+<a href="#690" id="690">690</a>
+<a href="#691" id="691">691</a>
+<a href="#692" id="692">692</a>
+<a href="#693" id="693">693</a>
+<a href="#694" id="694">694</a>
+<a href="#695" id="695">695</a>
+<a href="#696" id="696">696</a>
+<a href="#697" id="697">697</a>
+<a href="#698" id="698">698</a>
+<a href="#699" id="699">699</a>
+<a href="#700" id="700">700</a>
+<a href="#701" id="701">701</a>
+<a href="#702" id="702">702</a>
+<a href="#703" id="703">703</a>
+<a href="#704" id="704">704</a>
+<a href="#705" id="705">705</a>
+<a href="#706" id="706">706</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1107,9 +1123,7 @@
     ///
     /// // encode the batch as a stream of `FlightData`
     /// let flight_data_stream = FlightDataEncoderBuilder::new()
-    ///   .build(futures::stream::iter(vec![Ok(batch)]))
-    ///   // data encoder return Results, but do_exchange requires FlightData
-    ///   .map(|batch|batch.unwrap());
+    ///   .build(futures::stream::iter(vec![Ok(batch)]));
     ///
     /// // send the stream and get the results as `RecordBatches`
     /// let response: Vec&lt;RecordBatch&gt; = client
@@ -1121,20 +1135,40 @@
     ///   .expect("error calling do_exchange");
     /// # }
     /// ```
-    </span><span class="kw">pub async fn </span>do_exchange&lt;S: Stream&lt;Item = FlightData&gt; + Send + <span class="lifetime">'static</span>&gt;(
+    </span><span class="kw">pub async fn </span>do_exchange&lt;S: Stream&lt;Item = <span class="prelude-ty">Result</span>&lt;FlightData&gt;&gt; + Send + <span class="lifetime">'static</span>&gt;(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         request: S,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;FlightRecordBatchStream&gt; {
-        <span class="kw">let </span>request = <span class="self">self</span>.make_request(request);
+        <span class="kw">let </span>(sender, <span class="kw-2">mut </span>receiver) = futures::channel::oneshot::channel();
 
-        <span class="kw">let </span>response = <span class="self">self
-            </span>.inner
-            .do_exchange(request)
-            .<span class="kw">await</span><span class="question-mark">?
-            </span>.into_inner()
-            .map_err(FlightError::Tonic);
+        <span class="comment">// Intercepts client errors and sends them to the oneshot channel above
+        </span><span class="kw">let </span><span class="kw-2">mut </span>request = Box::pin(request); <span class="comment">// Pin to heap
+        </span><span class="kw">let </span><span class="kw-2">mut </span>sender = <span class="prelude-val">Some</span>(sender); <span class="comment">// Wrap into Option so can be taken
+        </span><span class="kw">let </span>request_stream = futures::stream::poll_fn(<span class="kw">move </span>|cx| {
+            Poll::Ready(<span class="kw">match </span><span class="macro">ready!</span>(request.poll_next_unpin(cx)) {
+                <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(data)) =&gt; <span class="prelude-val">Some</span>(data),
+                <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(e)) =&gt; {
+                    <span class="kw">let _ </span>= sender.take().unwrap().send(e);
+                    <span class="prelude-val">None
+                </span>}
+                <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
+            })
+        });
 
-        <span class="prelude-val">Ok</span>(FlightRecordBatchStream::new_from_flight_data(response))
+        <span class="kw">let </span>request = <span class="self">self</span>.make_request(request_stream);
+        <span class="kw">let </span><span class="kw-2">mut </span>response_stream = <span class="self">self</span>.inner.do_exchange(request).<span class="kw">await</span><span class="question-mark">?</span>.into_inner();
+
+        <span class="comment">// Forwards errors from the error oneshot with priority over responses from server
+        </span><span class="kw">let </span>error_stream = futures::stream::poll_fn(<span class="kw">move </span>|cx| {
+            <span class="kw">if let </span>Poll::Ready(<span class="prelude-val">Ok</span>(err)) = receiver.poll_unpin(cx) {
+                <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(err)));
+            }
+            <span class="kw">let </span>next = <span class="macro">ready!</span>(response_stream.poll_next_unpin(cx));
+            Poll::Ready(next.map(|x| x.map_err(FlightError::Tonic)))
+        });
+
+        <span class="comment">// combine the response from the server and any error from the client
+        </span><span class="prelude-val">Ok</span>(FlightRecordBatchStream::new_from_flight_data(error_stream))
     }
 
     <span class="doccomment">/// Make a `ListFlights` call to the server with the provided
