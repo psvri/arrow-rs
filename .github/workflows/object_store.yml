@@ -47,7 +47,7 @@ jobs:
       - name: Setup Rust toolchain
         uses: ./.github/actions/setup-builder
         with:
-          rust-version: nightly
+          rust-version: beta
       - name: Setup Clippy
         run: rustup component add clippy
       # Run different tests for the library on its own as well as
